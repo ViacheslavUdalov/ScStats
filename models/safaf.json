@@ -1,0 +1,40 @@
+{
+  "Name": "Pro Tour",
+  "player1":
+  {
+    "rank": 1,
+    "nickname": "Maru",
+    "country": "kr",
+    "race": "terran",
+    "rating": 1
+  },
+  "player2":
+  {
+    "rank": 2,
+    "nickname": "Dark",
+    "country": "kr",
+    "race": "zerg",
+    "rating": 15
+  },
+  "about": "good"
+  },
+{
+  "Name": "Pro Tour",
+  "Players": [
+    {
+      "rank": 1,
+      "nickname": "Maru",
+      "country": "kr",
+      "race": "terran",
+      "rating": 3500
+    },
+    {
+      "rank": 3,
+      "nickname": "Serral",
+      "country": "eu",
+      "race": "zerg",
+      "rating": 3450
+    }
+  ],
+  "about": "For Pro Players"
+}

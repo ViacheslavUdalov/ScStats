@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>add Post  | <%= title %></title>
+</head>
+<body>
+<%- include('./partials/nav.ejs') %>
+<form action="/add-tournament" method="post" class="form-example" id="tournament-form">
+    <div class="form-example">
+        <label for="Name">Name of tournament </label>
+        <input type="text" name="Name" id="Name" required>
+    </div>
+    <div class="form-example">
+        <label for="about">Enter about: </label>
+        <input type="text" name="about" id="about" required>
+    </div>
+
+        <div class="form-example">
+            <input type="submit" value="Send!">
+    </div>
+</form>
+</body>
+</html>

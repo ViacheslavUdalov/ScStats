@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>contacts  | <%= title %></title>
+</head>
+<body>
+<%- include('./partials/nav.ejs') %>
+<ul>
+    <%if (contacts.length) { %>
+    <% contacts.forEach(({name, race}) => { %>
+        <li>
+            <a href="<%= race %>"><%= name %></a>
+        </li>
+   <% })%>
+  <% }%>
+</ul>
+</body>
+</html>
