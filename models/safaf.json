@@ -38,3 +38,33 @@
   ],
   "about": "For Pro Players"
 }
+{
+rank: 10,
+nickname: "TYTY",
+country: "kr",
+race: "terran",
+rating: 2500
+},
+
+{
+rank: 2,
+nickname: "Serral",
+country: "eu",
+race: "zerg",
+rating: 3400
+},
+{
+rank: 10,
+nickname: "TYTY",
+country: "kr",
+race: "terran",
+rating: 2500
+},
+{
+rank: 5,
+nickname: "Dark",
+country: "kr",
+race: "zerg",
+rating: 3300
+}
+]

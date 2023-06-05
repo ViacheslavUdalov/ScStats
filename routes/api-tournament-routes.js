@@ -7,8 +7,8 @@ const {
     addTournament,
     editTournament } = require('../controllers/api-tournament-controller')
 router.get('/api/tournaments', getTournaments);
-router.get('/api/tournament/:id', getTournament);
-router.delete('/api/tournament/:id', deleteTournament);
-router.post('/api/tournament', addTournament);
-router.put('/api/tournament/:id', editTournament);
+router.get('/api/tournaments/:id', getTournament);
+router.delete('/api/tournaments/:id', deleteTournament);
+router.post('/api/tournaments', addTournament);
+router.put('/api/tournaments/:id', editTournament);
 module.exports = router;
