@@ -6,25 +6,37 @@ const TournamentSchema = new Schema({
         type: String,
         required: true
     },
-    players: [Player],
+    players: {
+        type: Array,
+        ref: 'Player',
+        required: false
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        unique: true
+    },
     about: {
         type: String,
         required: true
     },
+    tournamentAvatar: String
 }, { timestamps: true });
 const Tournament = mongoose.model('Tournament', TournamentSchema);
 module.exports = Tournament;
 
-    // {
-    //     rank: Number,
-    //     nickname: {
-    //         type: String
-    //     },
-    //     country: String,
-    //     race: {
-    //         type: String
-    //     },
-    //     rating: Number
+
     // }
 
 
+// {
+//     //     rank: Number,
+//     //     nickname: {
+//     //         type: String
+//     //     },
+//     //     country: String,
+//     //     race: {
+//     //         type: String
+//     //     },
+//     //     rating: Number

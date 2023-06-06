@@ -1,13 +1,8 @@
 const userModel = require('../models/user.js');
-const {validationResult} = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const register = async (req, res) => {
     try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json(errors.array());
-        }
         const password = req.body.password;
         // алгоритм шифрования пароля
         const salt = await bcrypt.genSalt(10);
@@ -56,6 +51,7 @@ const login = async (req, res) => {
         }
         const isValidPass = await bcrypt.compare(req.body.password, user._doc.passwordHash);
         if (!isValidPass) {
+            // return нужен, чтобы дальнейший нижений код не выполнялся и сразу выдавало сообщение об ошибке
             return res.status(404).json({
                 message: 'Неверный логин или пароль!'
             })
