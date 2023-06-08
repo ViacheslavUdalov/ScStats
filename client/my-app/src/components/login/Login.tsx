@@ -15,8 +15,16 @@ const Login = () => {
   },
   mode: 'all'
  });
- const onSubmit = (values: AuthModel) => {
-  dispatch(fetchAuth(values))
+ const onSubmit = async (values: AuthModel) => {
+  const data = await dispatch(fetchAuth(values));
+  console.log(data);
+  if (!data.payload) {
+   alert('Не удалось авторизоваться!');
+  }
+  const DATA: any = data.payload
+  if ('token' in DATA) {
+window.localStorage.setItem('token', DATA.token);
+  }
  };
  console.log(isAuth);
  if (isAuth) {
