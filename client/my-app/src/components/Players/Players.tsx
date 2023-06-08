@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {TournamentModel} from "../models/tournament-model";
 import axios from "axios";
-import {PlayersModel} from "../models/Players-model";
+import {PlayersModel} from "../../models/Players-model";
 
 const Players = () => {
     const [players, setPlayers] = useState<PlayersModel[]>([])

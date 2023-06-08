@@ -15,7 +15,7 @@ const playerSchema = new Schema({
     },
     race: {
         type: String,
-        required: true
+        required: false
     },
     rating: {
         type: Number,

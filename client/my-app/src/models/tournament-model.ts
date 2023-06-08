@@ -13,5 +13,10 @@ export type TournamentModel = {
         rating: Number
     }
     ],
+    user: {
+        fullName: string,
+        avatarURL: string
+    }
     about: String,
+    tournamentAvatar: String
 }
