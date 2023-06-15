@@ -1,13 +1,19 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import instance from "../api/MainAPI";
-import {useParams} from "react-router-dom";
-import {AuthModel} from "../models/auth-model";
+import {AuthModel, RegisterModel} from "../models/auth-model";
 import {AppStateType} from "./store";
-import App from "../App";
 
 export const fetchAuth = createAsyncThunk('auth/fetchUserData', async (params: AuthModel, thunkAPI) => {
     const response = await instance.post('auth/login', params);
-    return response.data as AuthModel;
+    return response.data;
+})
+export const fetchAuthMe = createAsyncThunk('auth/fetchAuthMe', async () => {
+    const response = await instance.get('auth/me');
+    return response.data;
+})
+export const fetchRegister = createAsyncThunk('auth/fetchRegister', async (params: RegisterModel) => {
+    const response = await instance.post('auth/register', params);
+    return response.data;
 })
 const initialState = {
     data: null as AuthModel | null,
@@ -36,7 +42,19 @@ const authSlice = createSlice({
             .addCase(fetchAuth.rejected, (state) => {
                 state.status = 'error'
                 state.data = null
+            })
+            .addCase(fetchAuthMe.pending, (state) => {
+                state.status = 'loading'
+                state.data = null
+            })
+            .addCase(fetchAuthMe.fulfilled, (state, action: AppStateType) => {
+                state.status = 'loaded'
+                state.data = action.payload
 
+            })
+            .addCase(fetchAuthMe.rejected, (state) => {
+                state.status = 'error'
+                state.data = null
             })
     }
 });

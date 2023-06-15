@@ -33,8 +33,8 @@ window.localStorage.setItem('token', DATA.token);
  return (
      <div>
 <form onSubmit={handleSubmit(onSubmit)}>
- <input {...register('email', {required: 'Укажите почту!'})}/>
- <input {...register('password', {required: 'Введите пароль!'})}/>
+ <input {...register('email', {required: 'Укажите почту!'})} placeholder={'почта'}/>
+ <input {...register('password', {required: 'Введите пароль!'})} placeholder={'пароль'}/>
  <input type={'submit'}/>
 </form>
      </div>

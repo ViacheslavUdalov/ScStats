@@ -10,6 +10,7 @@ const Home = () => {
     const dispatch = useAppDispatch();
     const {tournaments} = useSelector((state: AppStateType) => state.tournaments);
     const isTournamentLoading = tournaments.status;
+
     useEffect(() => {
        dispatch(fetchTournaments());
     }, []);

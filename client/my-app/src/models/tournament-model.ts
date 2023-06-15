@@ -15,7 +15,8 @@ export type TournamentModel = {
     ],
     user: {
         fullName: string,
-        avatarURL: string
+        avatarURL: string,
+        _id: number
     }
     about: String,
     tournamentAvatar: String
