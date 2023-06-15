@@ -15,7 +15,7 @@ const Header = (  ) => {
         }
         navigate('/');
     }
-
+    console.log(isAuth)
     return (
         <div>
             {isAuth ?

@@ -21,13 +21,12 @@ const Registration = () => {
         if (!data.payload) {
             alert('Не удалось зарегистрироваться!');
         }
-        const DATA: any = data.payload;
-        if ('token' in DATA) {
-            window.localStorage.setItem('token', DATA.token);
+        if (data.payload?.token) {
+            window.localStorage.setItem('token', data.payload.token);
         };
     };
     console.log(`registration is Auth ${isAuth}`);
-    if (isAuth) {
+    if (window.localStorage.getItem('token') || isAuth) {
         return <Navigate to={'/'} />
     }
     return (

@@ -14,6 +14,7 @@ const getTournaments =async (req, res) => {
 const getTournament = (req, res) => {
     Tournament
         .findById(req.params.id)
+        .populate('user')
         .then((tournament) => res.status(200).json(tournament))
         .catch((err) => handleError(res, err));
 }

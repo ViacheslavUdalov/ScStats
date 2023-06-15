@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {TournamentModel} from "../../models/tournament-model";
-import instance from "../../api/MainAPI";
 import {useSelector} from "react-redux";
 import {AppStateType} from "../../redux/store";
 type props = {
@@ -8,6 +7,7 @@ type props = {
 }
 const Tournament = ({tournament}: props) => {
     const userData = useSelector((state: AppStateType) => state.auth.data)
+
     console.log(tournament);
     console.log(userData);
         return (

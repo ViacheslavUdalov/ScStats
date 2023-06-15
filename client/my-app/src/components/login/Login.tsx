@@ -21,10 +21,9 @@ const Login = () => {
   if (!data.payload) {
    alert('Не удалось авторизоваться!');
   }
-  const DATA: any = data.payload
-  if ('token' in DATA) {
-window.localStorage.setItem('token', DATA.token);
-  }
+  if (data.payload?.token) {
+   window.localStorage.setItem('token', data.payload.token);
+  };
  };
  console.log(isAuth);
  if (isAuth) {
