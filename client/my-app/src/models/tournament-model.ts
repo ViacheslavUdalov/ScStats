@@ -1,16 +1,17 @@
 export type TournamentModel = {
-    Name: String,
+    Name: string,
+    _id: string | undefined,
     players: [
         {
-        rank: Number,
+        rank: number,
         nickname: {
-            type: String
+            type: string
         },
-        country: String,
+        country: string,
         race: {
-            type: String
+            type: string
         },
-        rating: Number
+        rating: number
     }
     ],
     user: {
@@ -18,6 +19,6 @@ export type TournamentModel = {
         avatarURL: string,
         _id: number
     }
-    about: String,
-    tournamentAvatar: String
+    about: string,
+    imageUrl: string
 }

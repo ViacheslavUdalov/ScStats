@@ -24,7 +24,7 @@ const Home = () => {
                     return <div key={index}>
                         {obj.Name}
                         {obj.about}
-                        {obj.user.fullName}
+                        {obj.user?.fullName}
                         {obj.players.map((player: any, index ) => {
                             return <div key={index}>
                                 {player.rank}

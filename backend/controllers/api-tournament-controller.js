@@ -2,21 +2,22 @@ const Tournament = require("../models/tournament");
 const handleError = (res, err) => {
     res.status(500).send(err.message)
 }
-const getTournaments =async (req, res) => {
+const getTournaments = async (req, res) => {
     // С помощью  .populate('user').exec() подключаем к турниру связь с игроком
-    await Tournament
-        .find()
-        .sort({createdAt: -1})
-        .populate('user').exec()
-        .then((tournaments) => res.status(200).json(tournaments))
-        .catch((err) => handleError(res, err));
+    try {
+        const tournaments = await Tournament.find().sort({createdAt: -1}).populate('user').exec();
+        res.status(200).json(tournaments)
+    } catch (err) {
+        handleError(res, err)
+    }
 };
-const getTournament = (req, res) => {
-    Tournament
-        .findById(req.params.id)
-        .populate('user')
-        .then((tournament) => res.status(200).json(tournament))
-        .catch((err) => handleError(res, err));
+const getTournament = async (req, res) => {
+    try {
+        const tournament = await Tournament.findById(req.params.id).populate('user');
+        res.status(200).json(tournament);
+    } catch (err) {
+        handleError(res, err)
+    }
 }
 const deleteTournament = (req, res) => {
     Tournament
@@ -31,7 +32,7 @@ const addTournament = async (req, res) => {
             players: req.body.players,
             user: req.userId,
             about: req.body.about,
-            tournamentAvatar: req.body.tournamentAvatar
+            imageUrl: req.body.imageUrl
         });
         const tournament = await doc.save();
             res.status(200).json(tournament)

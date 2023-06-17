@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Player = require('./player').schema;
+
 const TournamentSchema = new Schema({
     Name: {
         type: String,
@@ -12,16 +12,16 @@ const TournamentSchema = new Schema({
         required: false
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
-        unique: false
+        unique: true
     },
     about: {
         type: String,
         required: true
     },
-    tournamentAvatar: String
+    imageUrl: String
 }, { timestamps: true });
 const Tournament = mongoose.model('Tournament', TournamentSchema);
 module.exports = Tournament;

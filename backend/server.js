@@ -19,7 +19,7 @@ app.listen(PORT, (error) => {
     error ? console.log(error) : console.log(`listening port ${PORT}`);
 });
 
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 // разрешает делать запросы на backend с других доменов
 app.use(cors());

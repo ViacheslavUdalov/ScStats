@@ -6,6 +6,13 @@ export const fetchTournaments = createAsyncThunk('tournaments/fetchTournaments',
     const {data} = await instance.get('/tournaments')
     return data;
 })
+export const fetchTournament = createAsyncThunk('tournaments/fetchTournament', async (id:string) => {
+    const {data} = await instance.get(`/tournaments${id}`)
+    return data;
+})
+export const fetchDeleteTournaments = createAsyncThunk('tournaments/fetchDeleteTournaments', async (id:string) => {
+    await instance.delete(`/tournaments/${id}`)
+})
 const initialState = {
     tournaments: {
         items: [],
@@ -29,6 +36,26 @@ const tournamentSlice = createSlice({
             .addCase(fetchTournaments.rejected, (state, ) => {
                 state.tournaments.items = [];
                 state.tournaments.status = 'error'
+            })
+            .addCase(fetchTournament.pending, (state) => {
+                state.tournaments.items = [];
+                state.tournaments.status = 'loading'
+            })
+            .addCase(fetchTournament.fulfilled, (state, action) => {
+                state.tournaments.items = action.payload;
+                state.tournaments.status = 'loaded'
+            })
+            .addCase(fetchTournament.rejected, (state, ) => {
+                state.tournaments.items = [];
+                state.tournaments.status = 'error'
+            })
+            .addCase(fetchDeleteTournaments.pending, (state) => {
+                state.tournaments.items = [];
+                state.tournaments.status = 'loading'
+            })
+            .addCase(fetchDeleteTournaments.fulfilled, (state, action) => {
+                state.tournaments.items = state.tournaments.items.filter((obj) => obj['_id'] !== action.meta.arg);
+                state.tournaments.status = 'loaded'
             })
     }
 });

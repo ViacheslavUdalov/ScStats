@@ -12,6 +12,7 @@ import {useSelector} from "react-redux";
 import {fetchAuthMe, selectIsAuth} from "./redux/authReducer";
 import Registration from "./components/registration/Registration";
 import CreateTournament from "./components/Tournaments/createTournament";
+import FullTournament from "./components/Tournaments/FullTournament";
 function App() {
     const dispatch = useAppDispatch();
     const isAuth = useSelector(selectIsAuth);
@@ -26,8 +27,9 @@ function App() {
         <Routes>
             <Route path={'/'} element={<Home />}/>
             <Route path={'/tournaments'} element={<Tournaments />}/>
+            <Route path={'/tournaments/:id?'} element={<FullTournament />}/>
             <Route path={'/auth/login'} element={<Login />}/>
-            <Route path={'/players'} element={<Players />}/>
+            {/*<Route path={'/players'} element={<Players />}/>*/}
             <Route path={'/auth/register'} element={<Registration />}/>
             <Route path={'/add-tournament'} element={<CreateTournament />}/>
         </Routes>
