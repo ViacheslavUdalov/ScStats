@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
 const TournamentSchema = new Schema({
     Name: {
         type: String,
@@ -15,8 +14,9 @@ const TournamentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
-        unique: true
+        unique: false
     },
+    // user: [User],
     about: {
         type: String,
         required: true

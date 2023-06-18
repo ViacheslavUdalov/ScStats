@@ -1,4 +1,5 @@
 const Tournament = require("../models/tournament");
+const User = require('../models/user')
 const handleError = (res, err) => {
     res.status(500).send(err.message)
 }
@@ -13,7 +14,7 @@ const getTournaments = async (req, res) => {
 };
 const getTournament = async (req, res) => {
     try {
-        const tournament = await Tournament.findById(req.params.id).populate('user');
+        const tournament = await Tournament.findById(req.params.id).populate('user').exec();
         res.status(200).json(tournament);
     } catch (err) {
         handleError(res, err)
@@ -27,6 +28,7 @@ const deleteTournament = (req, res) => {
 }
 const addTournament = async (req, res) => {
     try {
+        // const doc = new Tournament(req.body)
         const doc = new Tournament({
             Name: req.body.Name,
             players: req.body.players,

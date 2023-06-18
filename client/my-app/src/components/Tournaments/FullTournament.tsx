@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppStateType, useAppDispatch} from "../../redux/store";
 import {logout} from "../../redux/authReducer";
 import {fetchDeleteTournaments, fetchTournament, fetchTournaments} from "../../redux/TournamentsReducer";
-import {useNavigate, useParams} from "react-router-dom";
+import {NavLink, useNavigate, useParams} from "react-router-dom";
 import instance from "../../api/MainAPI";
 import styles from './FullTournament.module.css';
 
@@ -22,7 +22,6 @@ const FullTournament = () => {
                 console.warn(err);
                 alert('Не удалось получить турнир')
             })
-        // dispatch(fetchTournament(id))
     }, [])
     const RemoveTournament = () => {
             if (window.confirm('Вы действительно хотите удалить турнир?')) {
@@ -33,7 +32,6 @@ const FullTournament = () => {
             }
     }
     console.log(data);
-    // console.log(userData);
     return (
         <div className="App">
             {data &&
@@ -52,7 +50,7 @@ const FullTournament = () => {
                     {userData?._id === data.user?._id &&
                         <div>
                             <button onClick={RemoveTournament}>удалить</button>
-                            <button>редактировать</button>
+                            <NavLink to={`/tournaments/${id}/edit`}>редактировать</NavLink>
                         </div>
                     }
                 </div>

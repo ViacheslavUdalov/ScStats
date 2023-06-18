@@ -12,7 +12,6 @@ type props = {
 const Tournament = ({tournament}: props) => {
     const dispatch = useAppDispatch();
     const userData = useSelector((state: AppStateType) => state.auth.data);
-    // const id = tournament._id
     const navigate = useNavigate();
     const RemoveTournament = () => {
         if (window.confirm('Вы действительно хотите удалить турнир?')) {

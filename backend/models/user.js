@@ -13,13 +13,7 @@ const UserSchema = new mongoose.Schema({
             type: String,
             required: true
         },
-        avatarURL: String,
-        // player:
-        //     {
-        //         type: mongoose.Schema.Types.ObjectId,
-        //         ref: 'Player',
-        //         required: false
-        //     }
+        avatarURL: String
     },
     {
     timestamps: true
