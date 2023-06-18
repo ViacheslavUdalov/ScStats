@@ -20,10 +20,12 @@ const getTournament = async (req, res) => {
         handleError(res, err)
     }
 }
-const deleteTournament = (req, res) => {
-    Tournament
+const deleteTournament = async (req, res) => {
+   Tournament
         .findByIdAndDelete(req.params.id)
-        .then(() => res.status(200).json(req.params.id))
+        .then(() => res.status(200).json({
+            success: true
+        }))
         .catch((err) => handleError(res, err));
 }
 const addTournament = async (req, res) => {
@@ -42,7 +44,7 @@ const addTournament = async (req, res) => {
         handleError(res, err);
     }
 };
-const editTournament = (req, res) => {
+const editTournament = async (req, res) => {
     //вытаскиваем все данные из запроса и передаём их в метод update по определённому _id
     const {Name, players, user, about, tournamentAvatar} = req.body;
     const {id} = req.params;

@@ -49,13 +49,13 @@ const tournamentSlice = createSlice({
                 state.tournaments.items = [];
                 state.tournaments.status = 'error'
             })
-            .addCase(fetchDeleteTournaments.pending, (state) => {
-                state.tournaments.items = [];
-                state.tournaments.status = 'loading'
-            })
-            .addCase(fetchDeleteTournaments.fulfilled, (state, action) => {
+            // .addCase(fetchDeleteTournaments.pending, (state) => {
+            //     state.tournaments.items = [];
+            //     state.tournaments.status = 'loading'
+            // })
+            .addCase(fetchDeleteTournaments.pending, (state, action) => {
                 state.tournaments.items = state.tournaments.items.filter((obj) => obj['_id'] !== action.meta.arg);
-                state.tournaments.status = 'loaded'
+                // state.tournaments.status = 'loaded'
             })
     }
 });

@@ -51,15 +51,15 @@ if (id) {
                 about,
                 imageUrl
             }
-            const data: TournamentModel = isEditing ? await instance.patch(`/tournaments/${id}`, fields)
-                : await instance.post('/tournaments', fields)
+            const {data} = isEditing ? await instance.patch(`/tournaments/${id}`, fields)
+                : await instance.post('/tournaments', fields);
             const _id = isEditing ? id : data._id;
             navigate(`/tournaments/${_id}`);
         } catch (err) {
 
         }
     }
-    console.log(`isEditing ==== ${isEditing}`);
+    // console.log(`isEditing ==== ${isEditing}`);
     return (
         <div>
             <input type="file" onChange={handleFileChange} />

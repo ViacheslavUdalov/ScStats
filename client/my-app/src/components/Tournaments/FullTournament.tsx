@@ -11,7 +11,7 @@ import styles from './FullTournament.module.css';
 const FullTournament = () => {
     const dispatch = useAppDispatch();
     const {id} = useParams();
-    const [data, setData] = useState<TournamentModel | undefined>(undefined);
+    const [data, setData] = useState<TournamentModel>();
     const userData = useSelector((state: AppStateType) => state.auth.data);
     const navigate = useNavigate();
     useEffect(() => {
@@ -23,11 +23,11 @@ const FullTournament = () => {
                 alert('Не удалось получить турнир')
             })
     }, [])
-    const RemoveTournament = () => {
+    const RemoveTournament = async () => {
             if (window.confirm('Вы действительно хотите удалить турнир?')) {
                 if ( data && data._id != null) {
-                    dispatch(fetchDeleteTournaments(data._id))
-                    navigate(`/tournaments`);
+                  await  dispatch(fetchDeleteTournaments(data._id))
+                    navigate('/tournaments');
                 }
             }
     }

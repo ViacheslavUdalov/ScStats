@@ -7,12 +7,12 @@ import {AppStateType, useAppDispatch} from "../../redux/store";
 import {fetchTournaments} from "../../redux/TournamentsReducer";
 
 const Tournaments = () => {
-    const {tournaments} = useSelector((state: AppStateType) => state.tournaments);
     const dispatch = useAppDispatch();
     useEffect(() => {
        dispatch(fetchTournaments())
     }, [])
-    // console.log(tournaments)
+    const tournaments = useSelector((state: AppStateType) => state.tournaments.tournaments);
+    console.log(tournaments)
     return (
         <div className="App">
             {tournaments.items.map((tournament: TournamentModel, index: number) => {

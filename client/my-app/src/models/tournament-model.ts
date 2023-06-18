@@ -1,6 +1,6 @@
 export type TournamentModel = {
     Name: string,
-    _id: string | undefined,
+    _id: string,
     players: [
         {
         rank: number,

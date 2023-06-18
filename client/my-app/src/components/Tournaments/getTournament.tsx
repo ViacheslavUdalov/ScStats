@@ -5,7 +5,7 @@ import {AppStateType, useAppDispatch} from "../../redux/store";
 import {logout} from "../../redux/authReducer";
 import {fetchDeleteTournaments} from "../../redux/TournamentsReducer";
 import {NavLink, useNavigate} from "react-router-dom";
-
+import styles from './FullTournament.module.css';
 type props = {
     tournament: TournamentModel
 }
@@ -13,22 +13,22 @@ const Tournament = ({tournament}: props) => {
     const dispatch = useAppDispatch();
     const userData = useSelector((state: AppStateType) => state.auth.data);
     const navigate = useNavigate();
-    const RemoveTournament = () => {
+    const RemoveTournament = async () => {
         if (window.confirm('Вы действительно хотите удалить турнир?')) {
-            if (tournament._id != null) {
-                dispatch(fetchDeleteTournaments(tournament._id))
-            }
-            navigate(`/tournaments`);
+            await dispatch(fetchDeleteTournaments(tournament._id));
+                navigate('/tournaments');
         }
     }
-    console.log(tournament);
+    // console.log(tournament);
     // console.log(userData);
     return (
-        <NavLink to={`/tournaments/` + tournament._id}>
+
             <div className="App">
+                <NavLink to={`/tournaments/` + tournament._id}>
                 <h1>{tournament.Name}</h1>
+        </NavLink>
                 <h3> {tournament.about}</h3>
-                <img src={ tournament.imageUrl ? `http://localhost:3000${tournament.imageUrl}` : ""}/>
+                <img className={styles.image} src={ tournament.imageUrl ? `http://localhost:3000${tournament.imageUrl}` : ""}/>
                 {tournament.players.map((player: any, index: number) => {
                     return <div key={index}>
                         {player.nickname}
@@ -40,12 +40,13 @@ const Tournament = ({tournament}: props) => {
                     {userData?._id === tournament.user?._id &&
                         <div>
                             <button onClick={RemoveTournament}>удалить</button>
-                            <button>редактировать</button>
+                            <button>
+                                <NavLink to={`/tournaments/${tournament._id}/edit`} >редактировать</NavLink></button>
                         </div>
                     }
                 </div>
             </div>
-        </NavLink>
+
     )
 }
 export default Tournament;
