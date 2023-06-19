@@ -1,7 +1,7 @@
-import {useAppDispatch} from "../../redux/store";
+import {AppStateType, useAppDispatch} from "../../redux/store";
 import {selectIsAuth} from "../../redux/authReducer";
 import {useSelector} from "react-redux";
-import {useNavigate, useParams} from "react-router-dom";
+import {Navigate, useNavigate, useParams} from "react-router-dom";
 import {ChangeEvent, useEffect, useState} from "react";
 import instance from "../../api/MainAPI";
 import {TournamentModel} from "../../models/tournament-model";
@@ -15,6 +15,7 @@ const CreateTournament = () => {
     const [Name, setName] = useState('');
     const [about, setAbout] = useState('');
     const [imageUrl, setImageUrl] = useState('');
+    const user = useSelector((state: AppStateType) => state.auth.data)
     const isEditing = Boolean(id);
     useEffect(() => {
 if (id) {
@@ -42,14 +43,14 @@ if (id) {
             console.warn(err);
             alert('ошибка загрузки файла')
         }
-
     };
     const onSubmit = async () => {
         try {
             const fields = {
                 Name,
                 about,
-                imageUrl
+                imageUrl,
+                user
             }
             const {data} = isEditing ? await instance.patch(`/tournaments/${id}`, fields)
                 : await instance.post('/tournaments', fields);
@@ -58,6 +59,9 @@ if (id) {
         } catch (err) {
 
         }
+    }
+    if (!isAuth) {
+        return <Navigate to={'/'} />
     }
     // console.log(`isEditing ==== ${isEditing}`);
     return (

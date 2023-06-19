@@ -9,7 +9,8 @@ const {
     deleteTournament,
     getTournament,
     addTournament,
-    editTournament}
+    editTournament
+}
     = require('../controllers/api-tournament-controller')
 router.get('/tournaments', getTournaments);
 router.get('/tournaments/:id', getTournament);

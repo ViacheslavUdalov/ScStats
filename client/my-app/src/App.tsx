@@ -3,7 +3,6 @@ import './App.css';
 import {Route, Routes} from "react-router-dom";
 import Tournaments from "./components/Tournaments/getTournaments";
 import Navigation from "./components/Navigation/Navigation";
-import Players from "./components/Players/Players";
 import Home from "./components/Home/Home";
 import Login from "./components/login/Login";
 import Header from "./components/Header";

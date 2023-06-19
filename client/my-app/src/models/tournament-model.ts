@@ -17,7 +17,7 @@ export type TournamentModel = {
     user: {
         fullName: string,
         avatarURL: string,
-        _id: number
+        _id: string
     }
     about: string,
     imageUrl: string
