@@ -14,6 +14,7 @@ export type TournamentModel = {
         rating: number
     }
     ],
+    followed: boolean,
     user: {
         fullName: string,
         avatarURL: string,
@@ -21,4 +22,8 @@ export type TournamentModel = {
     }
     about: string,
     imageUrl: string
+}
+export interface DataTournamentModel {
+    items: Array<TournamentModel> | [],
+    status: string
 }

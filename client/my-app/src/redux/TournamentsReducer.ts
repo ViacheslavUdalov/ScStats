@@ -1,9 +1,11 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import instance from "../api/MainAPI";
-import {AppStateType} from "./store";
+import {DataTournamentModel, TournamentModel} from "../models/tournament-model";
+import {TournamentsAPI} from "../api/tournamentsAPI";
 
 export const fetchTournaments = createAsyncThunk('tournaments/fetchTournaments', async () => {
-    const {data} = await instance.get('/tournaments')
+    const data  = await TournamentsAPI.fetchALL()
+    console.log(data);
     return data;
 })
 export const fetchTournament = createAsyncThunk('tournaments/fetchTournament', async (id:string) => {
@@ -13,9 +15,18 @@ export const fetchTournament = createAsyncThunk('tournaments/fetchTournament', a
 export const fetchDeleteTournaments = createAsyncThunk('tournaments/fetchDeleteTournaments', async (id:string) => {
     await instance.delete(`/tournaments/${id}`)
 })
+export const fetchFollowTournaments = createAsyncThunk('tournaments/fetchFollowTournaments', async (id:string, params) => {
+    const {data} = await instance.patch(`/tournaments/${id}`, params)
+
+    return data;
+})
+export const fetchUnFollowTournaments = createAsyncThunk('tournaments/fetchUnFollowTournaments', async (id:string, params) => {
+    const {data} = await instance.patch(`/tournaments/${id}`, params)
+    return data;
+})
 const initialState = {
     tournaments: {
-        items: [],
+        items: [] as Array<TournamentModel>,
         status: 'loading'
     }
 };

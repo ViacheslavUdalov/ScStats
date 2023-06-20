@@ -28,6 +28,20 @@ const deleteTournament = async (req, res) => {
         }))
         .catch((err) => handleError(res, err));
 }
+// const followTournament = async (req, res) => {
+//     const {followed} = req.body
+//     Tournament
+//         .findByIdAndUpdate(req.params.id, {followed}, {new: true})
+//         .then((tournament) => res.status(200).json(tournament))
+//         .catch((err) => handleError(res, err));
+// }
+// const unFollowTournament = async (req, res) => {
+//     const {followed} = req.body
+//     Tournament
+//         .findByIdAndUpdate(req.params.id, {followed}, {new: true})
+//         .then((tournament) => res.status(200).json(tournament))
+//         .catch((err) => handleError(res, err));
+// }
 const addTournament = async (req, res) => {
     try {
         // const doc = new Tournament(req.body)
@@ -46,11 +60,11 @@ const addTournament = async (req, res) => {
 };
 const editTournament = async (req, res) => {
     //вытаскиваем все данные из запроса и передаём их в метод update по определённому _id
-    const {Name, players, user, about, tournamentAvatar} = req.body;
+    const {Name, players, user, about, followed, tournamentAvatar} = req.body;
     const {id} = req.params;
     Tournament
-        .findByIdAndUpdate(id, {Name, players, user, about, tournamentAvatar}, {new: true})
-        .then((tournament) => res.status(200).json(tournament))
+        .findByIdAndUpdate(id, {Name, players, user, about, followed, tournamentAvatar}, {new: true})
+.then((tournament) => res.status(200).json(tournament))
         .catch((err) => handleError(res, err));
 };
 

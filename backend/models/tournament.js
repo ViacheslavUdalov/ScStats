@@ -13,9 +13,10 @@ const TournamentSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        unique: false
     },
-    // user: [User],
+    followed: Boolean,
     about: {
         type: String,
         required: true
@@ -24,18 +25,3 @@ const TournamentSchema = new Schema({
 }, { timestamps: true });
 const Tournament = mongoose.model('Tournament', TournamentSchema);
 module.exports = Tournament;
-
-
-    // }
-
-
-// {
-//     //     rank: Number,
-//     //     nickname: {
-//     //         type: String
-//     //     },
-//     //     country: String,
-//     //     race: {
-//     //         type: String
-//     //     },
-//     //     rating: Number
