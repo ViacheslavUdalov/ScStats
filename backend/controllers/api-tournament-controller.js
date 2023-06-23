@@ -6,7 +6,7 @@ const handleError = (res, err) => {
 const getTournaments = async (req, res) => {
     // С помощью  .populate('user').exec() подключаем к турниру связь с игроком
     try {
-        const tournaments = await Tournament.find().sort({createdAt: -1}).populate('user').exec();
+        const tournaments = await Tournament.find().sort({createdAt: -1}).populate('Owner').exec();
         res.status(200).json(tournaments)
     } catch (err) {
         handleError(res, err)
@@ -14,7 +14,7 @@ const getTournaments = async (req, res) => {
 };
 const getTournament = async (req, res) => {
     try {
-        const tournament = await Tournament.findById(req.params.id).populate('user').exec();
+        const tournament = await Tournament.findById(req.params.id).populate('Owner').exec();
         res.status(200).json(tournament);
     } catch (err) {
         handleError(res, err)
@@ -48,7 +48,7 @@ const addTournament = async (req, res) => {
         const doc = new Tournament({
             Name: req.body.Name,
             players: req.body.players,
-            user: req.userId,
+            Owner: req.userId,
             about: req.body.about,
             imageUrl: req.body.imageUrl
         });
@@ -60,13 +60,22 @@ const addTournament = async (req, res) => {
 };
 const editTournament = async (req, res) => {
     //вытаскиваем все данные из запроса и передаём их в метод update по определённому _id
-    const {Name, players, user, about, followed, tournamentAvatar} = req.body;
+    const {Name, players, Owner, about, tournamentAvatar} = req.body;
     const {id} = req.params;
     Tournament
-        .findByIdAndUpdate(id, {Name, players, user, about, followed, tournamentAvatar}, {new: true})
+        .findByIdAndUpdate(id, {Name, players, Owner, about, tournamentAvatar}, {new: true})
 .then((tournament) => res.status(200).json(tournament))
         .catch((err) => handleError(res, err));
 };
+// const JoinTournament = async (req, res) => {
+//     //вытаскиваем все данные из запроса и передаём их в метод update по определённому _id
+//     const {id} = req.params;
+//     const user = req.userId;
+//     Tournament
+//         .findByIdAndUpdate(id, {$push: {players: user}})
+//         .then((tournament) => res.status(200).json(tournament))
+//         .catch((err) => handleError(res, err));
+// };
 
 module.exports = {
     getTournaments,

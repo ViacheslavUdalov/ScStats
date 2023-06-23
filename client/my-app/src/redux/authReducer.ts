@@ -1,7 +1,7 @@
-import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
+import {createSlice, createAsyncThunk, AnyAction} from "@reduxjs/toolkit";
 import instance from "../api/MainAPI";
 import {AuthModel, RegisterModel} from "../models/auth-model";
-import {AppStateType} from "./store";
+import {rootStateType} from "./store";
 
 export const fetchAuth = createAsyncThunk('auth/fetchUserData', async (params: AuthModel, thunkAPI) => {
     const response = await instance.post('auth/login', params);
@@ -24,7 +24,7 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        logout: (state: AppStateType) => {
+        logout: (state: rootStateType) => {
             state.data = null;
         }
     },
@@ -34,7 +34,7 @@ const authSlice = createSlice({
                 state.status = 'loading'
                 state.data = null
             })
-            .addCase(fetchAuth.fulfilled, (state, action: AppStateType) => {
+            .addCase(fetchAuth.fulfilled, (state, action: rootStateType) => {
                 state.status = 'loaded'
                 state.data = action.payload
 
@@ -47,7 +47,7 @@ const authSlice = createSlice({
                 state.status = 'loading'
                 state.data = null
             })
-            .addCase(fetchAuthMe.fulfilled, (state, action: AppStateType) => {
+            .addCase(fetchAuthMe.fulfilled, (state, action: AnyAction) => {
                 state.status = 'loaded'
                 state.data = action.payload
 
@@ -58,7 +58,7 @@ const authSlice = createSlice({
             })
     }
 });
-export const selectIsAuth = (state: AppStateType) => Boolean(state.auth.data)
+export const selectIsAuth = (state: rootStateType) => Boolean(state.auth.data)
 // @ts-ignore
 export const authReducer = authSlice.reducer;
 export const {logout} = authSlice.actions;

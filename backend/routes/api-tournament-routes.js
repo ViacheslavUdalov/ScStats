@@ -17,5 +17,6 @@ router.get('/tournaments/:id', getTournament);
 router.delete('/tournaments/:id', checkAuth, deleteTournament);
 router.post('/tournaments', checkAuth, tournamentValidation, handleValidationErrors, addTournament);
 router.patch('/tournaments/:id', checkAuth, tournamentValidation, handleValidationErrors, editTournament);
+// router.patch('/tournaments/:id', checkAuth, tournamentValidation, handleValidationErrors, JoinTournament);
 
 module.exports = router;

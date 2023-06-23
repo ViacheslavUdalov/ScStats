@@ -3,19 +3,23 @@ import {TournamentModel} from "../../models/tournament-model";
 import instance from "../../api/MainAPI";
 import Tournament from "./getTournament";
 import {useDispatch, useSelector} from "react-redux";
-import {AppStateType, useAppDispatch} from "../../redux/store";
-import {fetchTournaments} from "../../redux/TournamentsReducer";
+import {rootStateType, useAppDispatch} from "../../redux/store";
+// import {fetchTournaments} from "../../redux/TournamentsReducer";
+import {tournamentsAPI, useGetAllTournamentsQuery} from "../../redux/RTKtournaments";
 
 const Tournaments = () => {
     const dispatch = useAppDispatch();
-    useEffect(() => {
-       dispatch(fetchTournaments())
-    }, [])
-    const tournaments = useSelector((state: AppStateType) => state.tournaments.tournaments);
-    console.log(tournaments)
+    const [searchTerm, setSearchTerm] = useState('');
+    const [queryTerm, setQueryTerm] = useState('');
+    const {data, isLoading} = useGetAllTournamentsQuery(queryTerm);
+    console.log(data);
     return (
         <div className="App">
-            {tournaments.items.map((tournament: TournamentModel, index: number) => {
+            <input type={'search'}
+                   value = {searchTerm}
+                   onChange={(e) => {setSearchTerm(e.target.value)}}
+                />
+            { data && data.map((tournament: TournamentModel, index: number) => {
                 return <div key={index}>
                     <Tournament
                         tournament={tournament}

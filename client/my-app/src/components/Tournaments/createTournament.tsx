@@ -1,4 +1,4 @@
-import {AppStateType, useAppDispatch} from "../../redux/store";
+import {rootStateType, useAppDispatch, useAppSelector} from "../../redux/store";
 import {selectIsAuth} from "../../redux/authReducer";
 import {useSelector} from "react-redux";
 import {Navigate, useNavigate, useParams} from "react-router-dom";
@@ -10,12 +10,13 @@ const CreateTournament = () => {
     const navigate = useNavigate();
     const {id} = useParams();
     const dispatch = useAppDispatch();
-    const isAuth = useSelector(selectIsAuth);
+    const isAuth = useAppSelector(selectIsAuth);
     const [isLoading, setIsLoading] = useState('');
     const [Name, setName] = useState('');
+    const followed = false;
     const [about, setAbout] = useState('');
     const [imageUrl, setImageUrl] = useState('');
-    const user = useSelector((state: AppStateType) => state.auth.data)
+    const Owner = useSelector((state: rootStateType) => state.auth.data)
     const isEditing = Boolean(id);
     useEffect(() => {
 if (id) {
@@ -49,15 +50,14 @@ if (id) {
             const fields = {
                 Name,
                 about,
-                imageUrl,
-                user
+                imageUrl
             }
             const {data} = isEditing ? await instance.patch(`/tournaments/${id}`, fields)
                 : await instance.post('/tournaments', fields);
             const _id = isEditing ? id : data._id;
             navigate(`/tournaments/${_id}`);
         } catch (err) {
-
+            console.warn(err)
         }
     }
     if (!isAuth) {

@@ -15,7 +15,7 @@ export type TournamentModel = {
     }
     ],
     followed: boolean,
-    user: {
+    Owner: {
         fullName: string,
         avatarURL: string,
         _id: string
@@ -24,6 +24,6 @@ export type TournamentModel = {
     imageUrl: string
 }
 export interface DataTournamentModel {
-    items: Array<TournamentModel> | [],
+    tournaments: Array<TournamentModel> | [],
     status: string
 }

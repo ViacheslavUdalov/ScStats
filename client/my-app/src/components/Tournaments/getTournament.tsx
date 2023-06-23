@@ -1,9 +1,7 @@
 import React from "react";
 import {TournamentModel} from "../../models/tournament-model";
 import {useDispatch, useSelector} from "react-redux";
-import {AppStateType, useAppDispatch} from "../../redux/store";
-import {logout} from "../../redux/authReducer";
-import {fetchDeleteTournaments} from "../../redux/TournamentsReducer";
+import {useAppDispatch} from "../../redux/store";
 import {NavLink, useNavigate} from "react-router-dom";
 import styles from './FullTournament.module.css';
 type props = {
@@ -11,14 +9,14 @@ type props = {
 }
 const Tournament = ({tournament}: props) => {
     const dispatch = useAppDispatch();
-    const userData = useSelector((state: AppStateType) => state.auth.data);
+    // const userData = useSelector((state: AppStateType) => state.auth.data);
     const navigate = useNavigate();
-    const RemoveTournament = async () => {
-        if (window.confirm('Вы действительно хотите удалить турнир?')) {
-            await dispatch(fetchDeleteTournaments(tournament._id));
-                navigate('/tournaments');
-        }
-    }
+    // const RemoveTournament = async () => {
+    //     if (window.confirm('Вы действительно хотите удалить турнир?')) {
+    //         await dispatch(fetchDeleteTournaments(tournament._id));
+    //             navigate('/tournaments');
+    //     }
+    // }
     // console.log(tournament);
     // console.log(userData);
     return (
@@ -37,13 +35,13 @@ const Tournament = ({tournament}: props) => {
                     </div>
                 })}
                 <div>
-                    {userData?._id === tournament.user?._id &&
+                    {/*{userData?._id === tournament.Owner?._id &&*/}
                         <div>
-                            <button onClick={RemoveTournament}>удалить</button>
+                            {/*<button onClick={RemoveTournament}>удалить</button>*/}
                             <button>
                                 <NavLink to={`/tournaments/${tournament._id}/edit`} >редактировать</NavLink></button>
                         </div>
-                    }
+                    {/*}*/}
                 </div>
             </div>
 

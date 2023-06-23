@@ -1,30 +1,28 @@
-import {useEffect} from "react";
-import {fetchTournaments} from "../../redux/TournamentsReducer";
-import {AppStateType, useAppDispatch} from "../../redux/store";
 import {useSelector} from "react-redux";
-import isLoading from "../../helpers/isLoading";
 import IsLoading from "../../helpers/isLoading";
 import {TournamentModel} from "../../models/tournament-model";
-import {PlayersModel} from "../../models/Players-model";
+import {rootStateType, useAppDispatch} from "../../redux/store";
+import {useGetAllTournamentsQuery} from "../../redux/RTKtournaments";
 const Home = () => {
     const dispatch = useAppDispatch();
-    const {tournaments} = useSelector((state: AppStateType) => state.tournaments);
-    const isTournamentLoading = tournaments.status;
-
-    useEffect(() => {
-       dispatch(fetchTournaments());
-    }, []);
-    if(isTournamentLoading === 'loading') {
+    // const {tournaments} = useSelector((state: rootStateType) => state.tournaments);
+    const {data, isLoading} = useGetAllTournamentsQuery('');
+    //
+    // useEffect(() => {
+    //    dispatch(fetchTournaments());
+    // }, []);
+    if(isLoading ) {
         return <IsLoading />
-    }
+    };
+    console.log(data)
     return (
         <div>
             <div>
-                {isTournamentLoading === 'loaded' && tournaments.items.map((obj: TournamentModel, index: number) => {
+                {data &&  data.map((obj: TournamentModel, index: number) => {
                     return <div key={index}>
                         {obj.Name}
                         {obj.about}
-                        {obj.user?.fullName}
+                        {obj.Owner?.fullName}
                         {obj.players.map((player: any, index ) => {
                             return <div key={index}>
                                 {player.rank}

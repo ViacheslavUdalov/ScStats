@@ -5,18 +5,18 @@ const TournamentSchema = new Schema({
         type: String,
         required: true
     },
-    players: {
-        type: Array,
-        ref: 'Player',
-        required: false
-    },
-    user: {
+    Owner: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
         unique: false
     },
-    followed: Boolean,
+   players: [{
+       type: Schema.Types.ObjectId,
+       ref: 'User',
+       required: true,
+       unique: true
+   }],
     about: {
         type: String,
         required: true
