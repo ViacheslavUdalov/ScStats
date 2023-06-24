@@ -1,10 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {TournamentModel} from "../../models/tournament-model";
-import {useDispatch, useSelector} from "react-redux";
-import {useAppDispatch, useAppSelector} from "../../redux/store";
-// import {
-//     fetchDeleteTournaments
-// } from "../../redux/TournamentsReducer";
+import {useAppDispatch} from "../../redux/store";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
 import instance from "../../api/MainAPI";
 import styles from './FullTournament.module.css';

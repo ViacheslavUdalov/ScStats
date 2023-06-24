@@ -1,11 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {TournamentModel} from "../../models/tournament-model";
-import instance from "../../api/MainAPI";
 import Tournament from "./getTournament";
-import {useDispatch, useSelector} from "react-redux";
 import {rootStateType, useAppDispatch} from "../../redux/store";
-// import {fetchTournaments} from "../../redux/TournamentsReducer";
-import {tournamentsAPI, useGetAllTournamentsQuery} from "../../redux/RTKtournaments";
+import {useGetAllTournamentsQuery} from "../../redux/RTKtournaments";
 
 const Tournaments = () => {
     const dispatch = useAppDispatch();
