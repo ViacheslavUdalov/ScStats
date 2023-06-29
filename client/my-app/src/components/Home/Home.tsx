@@ -6,7 +6,7 @@ import {useGetAllTournamentsQuery} from "../../redux/RTKtournaments";
 const Home = () => {
     const dispatch = useAppDispatch();
     // const {tournaments} = useSelector((state: rootStateType) => state.tournaments);
-    const {data, isLoading} = useGetAllTournamentsQuery('');
+    const {data, isLoading} = useGetAllTournamentsQuery( { searchTerm: '' });
     //
     // useEffect(() => {
     //    dispatch(fetchTournaments());
