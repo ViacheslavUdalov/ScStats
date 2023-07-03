@@ -8,9 +8,9 @@ type props = {
     tournament: TournamentModel
 }
 const Tournament = ({tournament}: props) => {
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
     // const userData = useSelector((state: AppStateType) => state.auth.data);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     // const RemoveTournament = async () => {
     //     if (window.confirm('Вы действительно хотите удалить турнир?')) {
     //         await dispatch(fetchDeleteTournaments(tournament._id));

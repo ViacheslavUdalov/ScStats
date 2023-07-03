@@ -6,7 +6,11 @@ import {useGetAllTournamentsQuery} from "../../redux/RTKtournaments";
 const Home = () => {
     const dispatch = useAppDispatch();
     // const {tournaments} = useSelector((state: rootStateType) => state.tournaments);
-    const {data, isLoading} = useGetAllTournamentsQuery( { searchTerm: '' });
+    const {data, isLoading} = useGetAllTournamentsQuery({
+        page: 1,
+    searchTerm: '',
+        perPage: 10
+    });
     //
     // useEffect(() => {
     //    dispatch(fetchTournaments());
@@ -18,7 +22,7 @@ const Home = () => {
     return (
         <div>
             <div>
-                {data &&  data.map((obj: TournamentModel, index: number) => {
+                {data &&  data.tournaments.map((obj: TournamentModel, index: number) => {
                     return <div key={index}>
                         {obj.Name}
                         {obj.about}

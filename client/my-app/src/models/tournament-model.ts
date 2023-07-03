@@ -25,5 +25,10 @@ export type TournamentModel = {
 }
 export interface DataTournamentModel {
     tournaments: Array<TournamentModel> | [],
-    status: string
+    totalCount: number
+}
+export interface queryParams {
+    searchTerm: string,
+    page: number,
+    perPage: number
 }

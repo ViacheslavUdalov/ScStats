@@ -1,26 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {TournamentModel} from "../../models/tournament-model";
-import {useAppDispatch} from "../../redux/store";
-import {NavLink, useNavigate, useParams} from "react-router-dom";
-import instance from "../../api/MainAPI";
+import React from "react";
+import {NavLink, useParams} from "react-router-dom";
 import styles from './FullTournament.module.css';
+import {useGetFullTournamentQuery} from "../../redux/RTKtournaments";
 
 const FullTournament = () => {
-    const dispatch = useAppDispatch();
     const {id} = useParams();
-    const [data, setData] = useState<TournamentModel>();
-    // const userData = useAppSelector((state: AppStateType) => state.auth.data);
-    const [Follow, setFollow] = useState(false);
-    const navigate = useNavigate();
-    useEffect(() => {
-        instance.get(`/tournaments/${id}`).then((res) => {
-            setData(res.data)
-        })
-            .catch((err) => {
-                console.warn(err);
-                alert('Не удалось получить турнир')
-            })
-    }, [])
+    // @ts-ignore
+    const {data, isLoading} = useGetFullTournamentQuery(id)
     // const RemoveTournament = async () => {
     //     if (window.confirm('Вы действительно хотите удалить турнир?')) {
     //         if (data && data._id != null) {
@@ -28,14 +14,6 @@ const FullTournament = () => {
     //             navigate('/tournaments');
     //         }
     //     }
-    // }
-    // const Join = async () => {
-    //     // const players = data?.players.push(userData?._id)
-    //     // const fields = {
-    //     //     players
-    //     // }
-    //     await instance.patch(`/tournaments/${id}/players`, userData)
-    //     console.log(userData);
     // }
     console.log(data);
     return (

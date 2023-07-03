@@ -1,21 +1,28 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import {TournamentModel} from "../models/tournament-model";
-import * as querystring from "querystring";
+import {DataTournamentModel, queryParams, TournamentModel} from "../models/tournament-model";
 
 export const tournamentsAPI = createApi({
     reducerPath: 'tournamentsAPI',
     baseQuery: fetchBaseQuery({baseUrl: "http://localhost:3000"}),
-    // tagTypes: ['Tournament'],
+    tagTypes: ['Tournaments'],
     endpoints: (builder) => ({
-        getAllTournaments: builder.query<TournamentModel[], { searchTerm: string }>({
-            query: ({ searchTerm }) => ({
-                url: `tournaments?q=${searchTerm}`
+        getAllTournaments: builder.query<DataTournamentModel, queryParams>({
+            query: (params) => ({
+                url: `/tournaments`,
+                params: {
+                    searchTerm: params.searchTerm,
+                    page: params.page,
+                    perPage: params.perPage
+                }
             }),
             // transformResponse: (response: { data: TournamentModel[] }, meta, arg) => response.data
-            // providesTags: (result,arg, error) => [
-            //     { type: 'Tournament'}
-            // ]
-        })
+            providesTags: (result) => ['Tournaments']
+        }),
+        getFullTournament: builder.query<TournamentModel, string>({
+            query: (id) => ({
+                url: `/tournaments/${id}`
+            })
+        }),
     })
 })
-export const {useGetAllTournamentsQuery} = tournamentsAPI
+export const {useGetAllTournamentsQuery, useGetFullTournamentQuery} = tournamentsAPI

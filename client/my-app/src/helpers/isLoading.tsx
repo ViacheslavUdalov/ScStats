@@ -1,6 +1,6 @@
-const isLoading = () => {
+const PreLoader = () => {
     return <div>
         Загрузка
     </div>
 }
-export default isLoading;
+export default PreLoader;

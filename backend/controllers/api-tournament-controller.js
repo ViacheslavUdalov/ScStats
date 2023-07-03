@@ -6,8 +6,22 @@ const handleError = (res, err) => {
 const getTournaments = async (req, res) => {
     // С помощью  .populate('user').exec() подключаем к турниру связь с игроком
     try {
-        const tournaments = await Tournament.find().sort({createdAt: -1}).populate('Owner').exec();
-        res.status(200).json(tournaments)
+        const {searchTerm, page, perPage} = req.query;
+        // new RegExp -  конструктор объекта регулярного выражения в JavaScript.
+        // Позволяет искать сопостовления в строке без учёта регистра - 'i'
+        const regex = new RegExp(searchTerm, 'i');
+        const filter = searchTerm ? {Name: {$regex: regex}} : {};
+        const tournaments = await Tournament.find(filter)
+            .skip((page - 1) * perPage)
+            .limit(perPage)
+            .sort({createdAt: -1})
+            .populate('Owner')
+            .exec();
+        const totalCount = await Tournament.countDocuments(filter);
+        res.status(200).json({
+            tournaments: tournaments,
+            totalCount: totalCount
+        })
     } catch (err) {
         handleError(res, err)
     }
@@ -21,7 +35,7 @@ const getTournament = async (req, res) => {
     }
 }
 const deleteTournament = async (req, res) => {
-   Tournament
+    Tournament
         .findByIdAndDelete(req.params.id)
         .then(() => res.status(200).json({
             success: true
@@ -53,8 +67,8 @@ const addTournament = async (req, res) => {
             imageUrl: req.body.imageUrl
         });
         const tournament = await doc.save();
-            res.status(200).json(tournament)
-    }catch (err) {
+        res.status(200).json(tournament)
+    } catch (err) {
         handleError(res, err);
     }
 };
@@ -64,7 +78,7 @@ const editTournament = async (req, res) => {
     const {id} = req.params;
     Tournament
         .findByIdAndUpdate(id, {Name, players, Owner, about, tournamentAvatar}, {new: true})
-.then((tournament) => res.status(200).json(tournament))
+        .then((tournament) => res.status(200).json(tournament))
         .catch((err) => handleError(res, err));
 };
 // const JoinTournament = async (req, res) => {
