@@ -1,7 +1,8 @@
-import {useAppDispatch} from "../redux/store";
-import {logout, selectIsAuth} from "../redux/authReducer";
 import {useSelector} from "react-redux";
 import {useNavigate, NavLink} from "react-router-dom";
+import {useAppDispatch} from "../../redux/store";
+import {logout, selectIsAuth} from "../../redux/authReducer";
+import useTheme from "../../helpers/useTheme";
 
 const Header = (  ) => {
     const dispatch = useAppDispatch();
@@ -14,7 +15,15 @@ const Header = (  ) => {
         }
         navigate('/');
     }
+    const {theme, setTheme} = useTheme();
+    const handleLight = () => {
+        setTheme('light')
+    }
+    const handleDark = () => {
+        setTheme('dark')
+    }
     console.log(isAuth)
+
     return (
         <div>
             {isAuth ?
@@ -25,6 +34,8 @@ const Header = (  ) => {
             <NavLink to={'/auth/register'}><button>зарегистрироваться</button></NavLink>
                 </div>
             }
+            <button onClick={handleDark}>темная</button>
+            <button onClick={handleLight}>светлая</button>
         </div>
     )
 };

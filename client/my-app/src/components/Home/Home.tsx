@@ -11,10 +11,6 @@ const Home = () => {
     searchTerm: '',
         perPage: 10
     });
-    //
-    // useEffect(() => {
-    //    dispatch(fetchTournaments());
-    // }, []);
     if(isLoading ) {
         return <IsLoading />
     };

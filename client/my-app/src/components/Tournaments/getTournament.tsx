@@ -1,7 +1,7 @@
 import React from "react";
 import {TournamentModel} from "../../models/tournament-model";
 import {useDispatch, useSelector} from "react-redux";
-import {useAppDispatch} from "../../redux/store";
+import {rootStateType, useAppDispatch} from "../../redux/store";
 import {NavLink, useNavigate} from "react-router-dom";
 import styles from './FullTournament.module.css';
 type props = {
@@ -9,7 +9,7 @@ type props = {
 }
 const Tournament = ({tournament}: props) => {
     // const dispatch = useAppDispatch();
-    // const userData = useSelector((state: AppStateType) => state.auth.data);
+    const userData = useSelector((state: rootStateType) => state.auth.data);
     // const navigate = useNavigate();
     // const RemoveTournament = async () => {
     //     if (window.confirm('Вы действительно хотите удалить турнир?')) {
@@ -35,13 +35,13 @@ const Tournament = ({tournament}: props) => {
                     </div>
                 })}
                 <div>
-                    {/*{userData?._id === tournament.Owner?._id &&*/}
+                    {userData?._id === tournament.Owner?._id &&
                         <div>
                             {/*<button onClick={RemoveTournament}>удалить</button>*/}
                             <button>
                                 <NavLink to={`/tournaments/${tournament._id}/edit`} >редактировать</NavLink></button>
                         </div>
-                    {/*}*/}
+                    }
                 </div>
             </div>
 

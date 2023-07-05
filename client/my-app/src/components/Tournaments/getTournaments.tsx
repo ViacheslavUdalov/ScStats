@@ -6,6 +6,7 @@ import {useDebounce} from "../../helpers/debounce";
 import PreLoader from "../../helpers/isLoading";
 import {createPages} from "../../helpers/Paginator";
 import styles from './Tournaments.module.css';
+
 const Tournaments = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -18,44 +19,37 @@ const Tournaments = () => {
             perPage: perPage
         });
     const totalCount = DataTournamentModel?.totalCount
-        const pagesCount = totalCount ? Math.ceil(totalCount / perPage) : 0;
-    // console.log(`pagesCount  ====== ${pagesCount}`)
+    const pagesCount = totalCount ? Math.ceil(totalCount / perPage) : 0;
     const pages: Array<number> = [];
-
-    // const handleSearchClick = () => {
-    //     // console.log(searchTerm)
-    //     setQueryTerm(searchTerm)
-    // }
     createPages(pages, pagesCount, currentPage)
-    // useEffect(() => {
-    //     console.log(debounce)
-    // }, [debounce])
     console.log(DataTournamentModel);
     if (isLoading) {
-        return <PreLoader />
+        return <PreLoader/>
     }
-    // console.log(`pages ======== ${pages}`)
     return (
         <div className="App">
             <input type={'search'}
-                   value = {searchTerm}
+                   value={searchTerm}
                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            { DataTournamentModel && DataTournamentModel.tournaments.map((tournament: TournamentModel, index: number) => {
+            />
+            {DataTournamentModel && DataTournamentModel.tournaments.length == 0 &&
+                <span>Не найдено турниров с таким названием</span>}
+            {DataTournamentModel && DataTournamentModel.tournaments.map((tournament: TournamentModel, index: number) => {
                 return <div key={index}>
                     <Tournament
                         tournament={tournament}
                     />
                 </div>
-            })}<div>
-            {pages.map((page: number, index: number) =>
-                <span key= {index}
-                      className={currentPage == page ? styles.currentPage : styles.page}
-                onClick={() => setCurrentPage(page)}>
+            })}
+            <div>
+                {pages.map((page: number, index: number) =>
+                        <span key={index}
+                              className={currentPage == page ? styles.currentPage : styles.page}
+                              onClick={() => setCurrentPage(page)}>
 {page}
                 </span>
-            )}
-        </div>
+                )}
+            </div>
 
         </div>
     )

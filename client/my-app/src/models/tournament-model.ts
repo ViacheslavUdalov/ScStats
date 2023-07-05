@@ -3,18 +3,10 @@ export type TournamentModel = {
     _id: string,
     players: [
         {
-        rank: number,
-        nickname: {
-            type: string
-        },
-        country: string,
-        race: {
-            type: string
-        },
-        rating: number
+            fullName: string,
+            avatarURL: string,
     }
     ],
-    followed: boolean,
     Owner: {
         fullName: string,
         avatarURL: string,

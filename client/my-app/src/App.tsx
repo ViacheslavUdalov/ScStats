@@ -1,17 +1,17 @@
 import React, {useEffect} from 'react';
-import './App.css';
+import styles from './App.module.css';
 import {Route, Routes} from "react-router-dom";
 import Tournaments from "./components/Tournaments/getTournaments";
 import Navigation from "./components/Navigation/Navigation";
 import Home from "./components/Home/Home";
 import Login from "./components/login/Login";
-import Header from "./components/Header";
 import {useAppDispatch} from "./redux/store";
 import {useSelector} from "react-redux";
 import {fetchAuthMe, selectIsAuth} from "./redux/authReducer";
 import Registration from "./components/registration/Registration";
-import CreateTournament from "./components/Tournaments/createTournament";
 import FullTournament from "./components/Tournaments/FullTournament";
+import CreateTournament from "./components/Tournaments/CreateTournament/createTournament";
+import Header from "./components/Header/Header";
 function App() {
     const dispatch = useAppDispatch();
     const isAuth = useSelector(selectIsAuth);
@@ -20,7 +20,7 @@ function App() {
     }, [])
     console.log(`registration is Auth ${isAuth}`);
   return (
-      <div>
+      <div className={styles.App}>
         <Navigation />
           <Header />
         <Routes>
