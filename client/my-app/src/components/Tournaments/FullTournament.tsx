@@ -1,29 +1,40 @@
 import React from "react";
-import {NavLink, useParams} from "react-router-dom";
+import {NavLink, useNavigate, useParams} from "react-router-dom";
 import styles from './FullTournament.module.css';
-import {useGetFullTournamentQuery} from "../../redux/RTKtournaments";
+import {useDeleteTournamentMutation, useGetFullTournamentQuery} from "../../redux/RTKtournaments";
+import {useSelector} from "react-redux";
+import {rootStateType} from "../../redux/store";
 
 const FullTournament = () => {
     const {id} = useParams();
     // @ts-ignore
     const {data, isLoading} = useGetFullTournamentQuery(id)
-    // const RemoveTournament = async () => {
-    //     if (window.confirm('Вы действительно хотите удалить турнир?')) {
-    //         if (data && data._id != null) {
-    //             await dispatch(fetchDeleteTournaments(data._id))
-    //             navigate('/tournaments');
-    //         }
-    //     }
-    // }
+    const [deleteTournament, {error, isLoading: isFetching}] = useDeleteTournamentMutation();
+    const userData = useSelector((state: rootStateType) => state.auth.data);
+    const navigate = useNavigate();
+    const RemoveTournament = async () => {
+        if (window.confirm('Вы действительно хотите удалить турнир?')) {
+            if (data && data._id != null) {
+                await deleteTournament(data._id)
+                navigate('/tournaments');
+            }
+        }
+    }
     console.log(data);
     return (
-        <div className="App">
+        <div >
             {data &&
-            <div>
+            <div className={styles.container}>
+                <div className={styles.MainInfo}>
+                    <img className={styles.image}
+                         src={data.imageUrl ? `http://localhost:3000${data.imageUrl}`
+                             : ""}/>
+                    <div className={styles.about}>
                 <h1>{data.Name}</h1>
                 <h3> {data.about}</h3>
+                    </div>
+                </div>
 
-                <img className={styles.image} src={data.imageUrl ? `http://localhost:3000${data.imageUrl}`: ""}/>
                 {data.players.map((player: any, index: number) => {
                     return  <div key={index}>
                         {player.nickname}
@@ -31,14 +42,14 @@ const FullTournament = () => {
                         {player.rank}
                     </div>
                 })}
-                {/*<button onClick={Join}>gogo</button>*/}
+
                 <div>
-                    {/*{userData?._id === data?.Owner?._id &&*/}
+                    {userData?._id === data?.Owner?._id &&
                         <div>
-                            {/*<button onClick={RemoveTournament}>удалить</button>*/}
-                            <NavLink to={`/tournaments/${id}/edit`}>редактировать</NavLink>
+                            <NavLink className={styles.NavLink} to={`/tournaments/${id}/edit`}>редактировать</NavLink>
+                            <button className={styles.RemoveTournament} onClick={RemoveTournament}>удалить</button>
                         </div>
-                    {/*}*/}
+                    }
                 </div>
             </div>
             }

@@ -1,0 +1,80 @@
+.NavLinks {
+    text-decoration: none;
+    color: var(--NavLink-color);
+    font-size: large;
+    padding: 10px;
+    flex-wrap: nowrap;
+}
+.NavLinks:hover {
+    color: #28f608;
+}
+.Buttons {
+    text-decoration: none;
+    background-color: var(--Button-color);
+    color: var(--button-text-color);
+    border: 1px solid #fffefe;
+    border-radius: 20px;
+    padding: 7px;
+    margin: 10px;
+}
+.logout {
+    background-color: var(--Button-color);
+    color: var(--button-text-color);
+    border: 1px solid black;
+    padding: 5px 10px;
+    border-radius: 10%;
+    margin-right: 10%;
+}
+.logout:hover {
+    border: 1px solid white;
+}
+.Buttons:hover {
+    text-decoration: none;
+    color: #020202;
+    background-color: #ffffff;
+    transition: background-color 500ms;
+}
+.flexBox {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: var(--Header-backgound-color);
+    flex-wrap: nowrap;
+}
+.rightBox {
+    /*margin-right: 20px;*/
+    display: flex;
+}
+
+.Themes:nth-child(2) {
+    padding: 7px;
+    border-radius: 5px;
+    background-color: #4d4d4d;
+    margin-right: 10px;
+    margin-top: -7px;
+    color: white;
+    cursor: pointer;
+}
+.Themes:nth-last-child(1) {
+     padding: 7px;
+     border-radius: 5px;
+     background-color: #ffffff;
+     margin-right: 20px;
+     cursor: pointer;
+    color: black;
+    margin-top: -7px;
+ }
+
+@media only screen and (max-width: 950px) {
+    .NavLinks {
+        padding: 5px;
+    }
+}
+
+@media only screen and (max-width: 890px) {
+    .NavLinks {
+        padding: 5px;
+        font-size: medium;
+        font-weight: bold;
+    }
+}

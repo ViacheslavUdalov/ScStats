@@ -1,3 +1,46 @@
 .image {
     width: 100px;
 }
+.container {
+    background-color: var(--Main-background-color);
+    display: flex;
+    justify-content: space-between;
+    padding-top: 30px;
+}
+h1 {
+    margin: 0;
+}
+.MainInfo {
+    display: flex;
+    /*justify-content: center;*/
+    padding: 20px;
+}
+.about {
+    padding-left: 40%;
+}
+.RemoveTournament {
+    background-color: var(--Button-color);
+    color: var(--button-text-color);
+    border: 1px solid black;
+    padding: 5px 10px;
+    border-radius: 10%;
+    margin-left: 30px;
+}
+.RemoveTournament:hover {
+    border: 1px solid white;
+
+}
+.NavLink {
+    text-decoration: none;
+    background-color: var(--Button-color);
+color: var(--button-text-color);
+    padding: 10px 30px;
+border: 1px solid black;
+    border-radius: 20px;
+}
+.NavLink:hover {
+    background-color: #572883;
+    color: #59de0b;
+    transition: background-color 500ms, color 500ms;
+    border: 1px solid white;
+}

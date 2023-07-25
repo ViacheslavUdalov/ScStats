@@ -12,12 +12,15 @@ const Tournaments = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(10);
     const debounce = useDebounce(searchTerm);
-    const {data: DataTournamentModel, error, isLoading} =
+    const {data: DataTournamentModel, error, isLoading, refetch } =
         useGetAllTournamentsQuery({
             searchTerm: debounce,
             page: currentPage,
             perPage: perPage
         });
+    useEffect(() => {
+        refetch()
+    }, [DataTournamentModel])
     const totalCount = DataTournamentModel?.totalCount
     const pagesCount = totalCount ? Math.ceil(totalCount / perPage) : 0;
     const pages: Array<number> = [];
@@ -27,9 +30,12 @@ const Tournaments = () => {
         return <PreLoader/>
     }
     return (
-        <div className="App">
+        <div className={styles.mainPage}>
+            <div className={styles.mainPageContainer}>
             <input type={'search'}
+                   className={styles.searchInput}
                    value={searchTerm}
+                   placeholder={'Введите название турнира'}
                    onChange={(e) => setSearchTerm(e.target.value)}
             />
             {DataTournamentModel && DataTournamentModel.tournaments.length == 0 &&
@@ -41,7 +47,7 @@ const Tournaments = () => {
                     />
                 </div>
             })}
-            <div>
+            <div className={styles.pagination}>
                 {pages.map((page: number, index: number) =>
                         <span key={index}
                               className={currentPage == page ? styles.currentPage : styles.page}
@@ -50,7 +56,7 @@ const Tournaments = () => {
                 </span>
                 )}
             </div>
-
+            </div>
         </div>
     )
 }

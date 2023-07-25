@@ -42,20 +42,6 @@ const deleteTournament = async (req, res) => {
         }))
         .catch((err) => handleError(res, err));
 }
-// const followTournament = async (req, res) => {
-//     const {followed} = req.body
-//     Tournament
-//         .findByIdAndUpdate(req.params.id, {followed}, {new: true})
-//         .then((tournament) => res.status(200).json(tournament))
-//         .catch((err) => handleError(res, err));
-// }
-// const unFollowTournament = async (req, res) => {
-//     const {followed} = req.body
-//     Tournament
-//         .findByIdAndUpdate(req.params.id, {followed}, {new: true})
-//         .then((tournament) => res.status(200).json(tournament))
-//         .catch((err) => handleError(res, err));
-// }
 const addTournament = async (req, res) => {
     try {
         // const doc = new Tournament(req.body)
@@ -81,15 +67,7 @@ const editTournament = async (req, res) => {
         .then((tournament) => res.status(200).json(tournament))
         .catch((err) => handleError(res, err));
 };
-// const JoinTournament = async (req, res) => {
-//     //вытаскиваем все данные из запроса и передаём их в метод update по определённому _id
-//     const {id} = req.params;
-//     const user = req.userId;
-//     Tournament
-//         .findByIdAndUpdate(id, {$push: {players: user}})
-//         .then((tournament) => res.status(200).json(tournament))
-//         .catch((err) => handleError(res, err));
-// };
+
 
 module.exports = {
     getTournaments,

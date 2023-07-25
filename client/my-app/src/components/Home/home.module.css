@@ -1,0 +1,19 @@
+.container {
+    background-color: var(--Main-background-color);
+}
+.main {
+    display: flex;
+    flex-direction: column;
+    /*width: 10%;*/
+    height: 100%;
+    margin-left: 70%;
+    padding-top: 30px;
+    /*margin-right: auto;*/
+}
+.oneTournament {
+    padding: 5px 10px;
+    border-bottom: 1px solid black;
+}
+.fullName {
+    opacity: 70%;
+}

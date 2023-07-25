@@ -7,7 +7,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /*color: white;*/
   /*background-color: #3a3a3a;*/
-
+  font-family: 'Lato', sans-serif;
 }
 
 code {
@@ -15,12 +15,28 @@ code {
     monospace;
 }
 html[data-theme='dark'] {
-  --button-text-color: #d30000;
-  --background-color: #4d4d4d;
+  --button-text-color: #c5c5c5;
+  --Main-background-color: #575757;
+  --SideMenu-background-color: #4a004f;
   --color: white;
+  --NavLink-color: white;
+  --Button-color: #165716;
+  --Header-backgound-color: #101846;
+  --CreateTournament-inputs-background-color: #00004d;
+  --CreateTournament-inputs-color: #ffffff;
+  --Registration-inputs-background-color: #00004d;
+  --Registration-inputs-color: #ffffff;
 }
 html[data-theme='light'] {
-  --button-text-color: #003aff;
-  --background-color: white;
+  --button-text-color: #84e3ff;
+  --Main-background-color: white;
+  --SideMenu-background-color: #9703a1;
   --color: black;
+  --NavLink-color: black;
+  --Button-color: #37b41b;
+  --Header-backgound-color: #1d3ace;
+  --CreateTournament-inputs-background-color: #a8a7a7;
+  --CreateTournament-inputs-color: #0b16de;
+  --Registration-inputs-background-color: #a8a7a7;
+  --Registration-inputs-color: #000000;
 }

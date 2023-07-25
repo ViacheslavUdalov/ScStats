@@ -1,5 +1,7 @@
 .image {
     width: 100px;
+    padding-right: 10px;
+    border-radius: 20px;
 }
 .pages{
     margin: 20px 0;
@@ -17,4 +19,79 @@ border: 1px solid lightgray;
     padding: 5px 10px;
     margin: 0 10px;
     cursor: pointer;
+}
+.mainPageContainer {
+    width: 70%;
+    height: 100%;
+    background-color: #8a8a8a;
+    border-radius: 50px;
+    margin-top: 10px;
+}
+.mainPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--Main-background-color);
+    }
+.searchInput {
+    margin: 3% 30%;
+    padding: 10px 80px;
+    background-color: var(--CreateTournament-inputs-color);
+    color: white;
+    border-radius: 40px;
+    font-size: large;
+    border: 1px solid #f8f8f8;
+}
+.searchInput:hover {
+    /*border: 1px solid #c41717;*/
+    box-shadow: inset 2px 2px 10px rgba(255, 255, 255, 0.5);
+}
+.NavLinkName {
+    text-decoration: none;
+    color: var(--color);
+}
+.NavLinkName:hover {
+    text-decoration: underline;
+    color: green;
+}
+.mainContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid white;
+    padding: 5px 10px 10px 20px;
+}
+.Buttons {
+    text-decoration: none;
+    background-color: var(--Button-color);
+    color: var(--button-text-color);
+    border: 1px solid #fffefe;
+    border-radius: 20px;
+    padding: 7px;
+    margin: 10px;
+}
+.Buttons:hover {
+    text-decoration: none;
+    color: #020202;
+    background-color: #ffffff;
+    transition: background-color 500ms;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+.rightButtons {
+    display: flex;
+    flex-direction: column;
+}
+.imgAndName {
+    display: flex;
+    flex-direction: row;
+
+}
+.NameAndAbout {
+    padding-left: 30px;
 }

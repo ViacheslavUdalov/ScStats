@@ -1,0 +1,31 @@
+.inputs {
+    padding: 10px 30px;
+    background-color: var(--Registration-inputs-background-color);
+    color: var(--Registration-inputs-color);
+    margin: 20px;
+    border-radius: 20px;
+    border: white;
+    display: flex;
+    flex-direction: column;
+}
+.inputs:hover {
+   outline: 2px solid black;
+    box-shadow: 2px 2px 10px 2px inset;
+}
+.container {
+ padding: 10% 40%;
+    height: 100vh;
+    background-color: var(--Main-background-color);
+}
+.inputs[type='submit'] {
+padding: 10px 30px;
+    background-color: #be0d0d;
+    color: #bdb3b3;
+    border-radius: 30px;
+    position: relative;
+    left: 23%;
+}
+.inputs[type='submit']:hover {
+    color: white;
+    outline: 2px solid black;
+}

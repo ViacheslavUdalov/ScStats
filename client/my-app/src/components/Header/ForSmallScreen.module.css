@@ -1,0 +1,139 @@
+.burgerBTN {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.menu {
+    position: fixed;
+    top: 98px;
+    left: 0px;
+    width: 100vh;
+    height: 100vh;
+    transform: translateX(-100%);
+}
+
+.menuActive {
+    position: fixed;
+    top: 98px;
+    left: 0px;
+    width: 100vh;
+    height: 100vh;
+    transform: translateX(0);
+}
+
+.menuContent {
+    width: 30%;
+    height: 100%;
+    background-color: var(--SideMenu-background-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logres {
+    display: flex;
+    flex-direction: column;
+}
+
+.burgerBTN:before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    width: 20px;
+    background-color: #00004d;
+    height: 2px;
+}
+
+.burgerBTN span {
+    position: absolute;
+    top: 9px;
+    width: 20px;
+    background-color: #00004d;
+    height: 2px;
+}
+
+.burgerBTN:after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    width: 20px;
+    background-color: #00004d;
+    height: 2px;
+}
+
+.NavLinks {
+    text-decoration: none;
+    color: var(--NavLink-color);
+    font-size: large;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.NavLinks:hover {
+    color: #28f608;
+}
+
+.Buttons {
+    text-decoration: none;
+    background-color: var(--Button-color);
+    color: var(--button-text-color);
+    border: 1px solid #fffefe;
+    border-radius: 20px;
+    padding: 7px 3px;
+    margin: 10px 0;
+}
+
+.logout {
+    background-color: var(--Button-color);
+    color: var(--button-text-color);
+    border: 1px solid black;
+    padding: 5px 10px;
+    border-radius: 10%;
+}
+
+.logout:hover {
+    border: 1px solid white;
+}
+
+.Buttons:hover {
+    text-decoration: none;
+    color: #020202;
+    background-color: #ffffff;
+    transition: background-color 500ms;
+}
+
+.flexBox {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: var(--Header-backgound-color);
+    flex-wrap: nowrap;
+}
+
+.rightBox {
+    margin-top: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.Themes:nth-child(2) {
+    padding: 7px;
+    border-radius: 5px;
+    background-color: #4d4d4d;
+    color: white;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.Themes:nth-last-child(1) {
+    padding: 7px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    cursor: pointer;
+    color: black;
+    margin: 5px;
+}

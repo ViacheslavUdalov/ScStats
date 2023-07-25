@@ -1,3 +1,51 @@
 .container {
+    padding: 5% 20%;
     height: 100vh;
+    background-color: var(--Main-background-color);
+}
+.inputs:nth-child(1) {
+    padding: 10px 40px;
+    margin: 20px;
+    border-radius: 10px;
+    background-color: var(--CreateTournament-inputs-background-color);
+    color: var(--CreateTournament-inputs-color);
+}
+.inputs:nth-last-child(2) {
+    padding: 20px 60px;
+    margin: 5px;
+    border-radius: 10px;
+    background-color: var(--CreateTournament-inputs-background-color);
+    color: var(--CreateTournament-inputs-color);
+}
+.image {
+    width: 150px;
+}
+.Buttons {
+    text-decoration: none;
+    background-color: var(--Button-color);
+    color: var(--button-text-color);
+    border: 1px solid #fffefe;
+    border-radius: 20px;
+    padding: 7px;
+    margin: 10px;
+}
+.Buttons:hover {
+    text-decoration: none;
+    color: #020202;
+    background-color: #ffffff;
+    transition: background-color 500ms;
+}
+.Main {
+    display: flex;
+}
+.ChoseFile {
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.textAreas {
+    margin-left: 50px;
+    border: 1px solid black;
+    padding: 50px;
 }

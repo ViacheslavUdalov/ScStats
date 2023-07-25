@@ -4,6 +4,7 @@ import {fetchRegister, selectIsAuth} from "../../redux/authReducer";
 import {RegisterModel} from "../../models/auth-model";
 import {useSelector} from "react-redux";
 import {Navigate} from "react-router-dom";
+import styles from './Registration.module.css'
 type Inputs = {
     fullName: string,
     email: string,
@@ -30,12 +31,12 @@ const Registration = () => {
         return <Navigate to={'/'} />
     }
     return (
-        <div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <input {...register('fullName', {required: 'Укажите почту!'})}placeholder={'имя'}/>
-                <input {...register('email', {required: 'Укажите почту!'})}placeholder={'почта'}/>
-                <input {...register('password', {required: 'Введите пароль!'})}placeholder={'пароль'}/>
-                <input type={'submit'}/>
+        <div className={styles.container}>
+            <form  onSubmit={handleSubmit(onSubmit)}>
+                <input className={styles.inputs} {...register('fullName', {required: 'Введите имя'})}placeholder={'имя'}/>
+                <input className={styles.inputs} {...register('email', {required: 'Укажите почту!'})}placeholder={'почта'}/>
+                <input className={styles.inputs} {...register('password', {required: 'Введите пароль!'})}placeholder={'пароль'}/>
+                <input className={styles.inputs} type={'submit'}/>
             </form>
         </div>
     )

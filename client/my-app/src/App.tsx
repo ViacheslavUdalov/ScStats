@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import styles from './App.module.css';
 import {Route, Routes} from "react-router-dom";
 import Tournaments from "./components/Tournaments/getTournaments";
-import Navigation from "./components/Navigation/Navigation";
 import Home from "./components/Home/Home";
 import Login from "./components/login/Login";
 import {useAppDispatch} from "./redux/store";
@@ -21,7 +20,6 @@ function App() {
     console.log(`registration is Auth ${isAuth}`);
   return (
       <div className={styles.App}>
-        <Navigation />
           <Header />
         <Routes>
             <Route path={'/'} element={<Home />}/>

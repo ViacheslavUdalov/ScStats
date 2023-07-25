@@ -4,7 +4,7 @@ import {fetchAuth, selectIsAuth} from "../../redux/authReducer";
 import {AuthModel} from "../../models/auth-model";
 import {useSelector} from "react-redux";
 import {Navigate} from "react-router-dom";
-
+import styles from './login.module.css';
 const Login = () => {
     const dispatch = useAppDispatch();
     const isAuth = useSelector(selectIsAuth);
@@ -31,11 +31,11 @@ const Login = () => {
         return <Navigate to={'/'}/>
     }
     return (
-        <div>
+        <div className={styles.container}>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <input {...register('email', {required: 'Укажите почту!'})} placeholder={'почта'}/>
-                <input {...register('password', {required: 'Введите пароль!'})} placeholder={'пароль'}/>
-                <input type={'submit'}/>
+                <input className={styles.inputs} {...register('email', {required: 'Укажите почту!'})} placeholder={'почта'}/>
+                <input className={styles.inputs} {...register('password', {required: 'Введите пароль!'})} placeholder={'пароль'}/>
+                <input className={styles.inputs} type={'submit'}/>
             </form>
         </div>
     )
