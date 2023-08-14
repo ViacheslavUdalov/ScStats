@@ -12,8 +12,8 @@ const Players = () => {
 return <div>
     {players.map((player: PlayersModel, index) => {
         return <div key={index}>
-            {player.country}
-            {player.nickname}
+            {player.fullName}
+            {player.avatarURL}
         </div>
     })}
 </div>

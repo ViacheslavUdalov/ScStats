@@ -4,6 +4,7 @@ import styles from './FullTournament.module.css';
 import {useDeleteTournamentMutation, useGetFullTournamentQuery} from "../../redux/RTKtournaments";
 import {useSelector} from "react-redux";
 import {rootStateType} from "../../redux/store";
+import instance from "../../api/MainAPI";
 
 const FullTournament = () => {
     const {id} = useParams();
@@ -15,7 +16,7 @@ const FullTournament = () => {
     const RemoveTournament = async () => {
         if (window.confirm('Вы действительно хотите удалить турнир?')) {
             if (data && data._id != null) {
-                await deleteTournament(data._id)
+                await instance.delete(`/tournaments/${data._id}`);
                 navigate('/tournaments');
             }
         }

@@ -1,12 +1,9 @@
-export type TournamentModel = {
+import {UserModel} from "./user-model";
+
+export interface TournamentModel {
     Name: string,
     _id: string,
-    players: [
-        {
-            fullName: string,
-            avatarURL: string,
-    }
-    ],
+    players: UserModel[],
     Owner: {
         fullName: string,
         avatarURL: string,

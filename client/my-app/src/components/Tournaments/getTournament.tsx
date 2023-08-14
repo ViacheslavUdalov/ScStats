@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {TournamentModel} from "../../models/tournament-model";
 import {useDispatch, useSelector} from "react-redux";
 import {rootStateType, useAppDispatch, useAppSelector} from "../../redux/store";
@@ -6,24 +6,29 @@ import {NavLink, useNavigate} from "react-router-dom";
 import styles from './Tournaments.module.css';
 import instance from "../../api/MainAPI";
 import image from '../../common/maxresdefault.jpg'
+import {PlayersModel} from "../../models/Players-model";
+import {useDeleteTournamentMutation} from "../../redux/RTKtournaments";
 
 type props = {
     tournament: TournamentModel
 }
 const Tournament = ({tournament}: props) => {
+    const [deleteTournament] = useDeleteTournamentMutation()
     // const dispatch = useAppDispatch();
     const userData = useSelector((state: rootStateType) => state.auth.data);
     const navigate = useNavigate();
     const RemoveTournament = async () => {
         if (window.confirm('Вы действительно хотите удалить турнир?')) {
-            await instance.delete(tournament._id);
-            navigate('/tournaments');
+            await instance.delete(`/tournaments/${tournament._id}`);
+            window.location.reload();
         }
     }
     // console.log(tournament);
     const followForTournament = async () => {
-        const users = [...tournament.players, userData]
-const response = await instance.patch(`/tournaments/${tournament._id}`, users)
+        if (tournament.players.find((player: PlayersModel) => player.fullName === userData.fullName)) {
+            const users = [...tournament.players,  userData]
+            const response = await instance.patch(`/tournaments/${tournament._id}`, {players: users})
+        }
     }
     // console.log(userData);
     return (
