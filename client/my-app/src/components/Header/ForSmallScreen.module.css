@@ -16,7 +16,7 @@
 
 .menuActive {
     position: fixed;
-    top: 98px;
+    top: 60px;
     left: 0px;
     width: 100vh;
     height: 100vh;
@@ -42,7 +42,7 @@
     position: absolute;
     top: 0px;
     width: 20px;
-    background-color: #00004d;
+    background-color: #20ff00;
     height: 2px;
 }
 
@@ -50,7 +50,7 @@
     position: absolute;
     top: 9px;
     width: 20px;
-    background-color: #00004d;
+    background-color: #20ff00;
     height: 2px;
 }
 
@@ -59,7 +59,7 @@
     position: absolute;
     bottom: 0px;
     width: 20px;
-    background-color: #00004d;
+    background-color: #20ff00;
     height: 2px;
 }
 

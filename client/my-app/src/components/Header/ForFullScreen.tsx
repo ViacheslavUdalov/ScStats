@@ -29,13 +29,13 @@ const ForFullScreen = () => {
     return (
         <div className={styles.flexBox}>
                 <div className={styles.leftBox}>
-                    <NavLink className={styles.NavLinks} to={'/'}>Home</NavLink>
-                    <NavLink className={styles.NavLinks} to={'/tournaments'}>Tournaments</NavLink>
-                    <NavLink className={styles.NavLinks} to={'/players'}>Players</NavLink>
-                    <NavLink className={styles.NavLinks} to={'/add-tournament'}>Create Tournament</NavLink>
+                    <NavLink className={({isActive}) => isActive ? styles.active : styles.NavLinks} to={'/'}>Home</NavLink>
+                    <NavLink className={({isActive}) => isActive ? styles.active : styles.NavLinks} to={'/tournaments'}>Tournaments</NavLink>
+                    <NavLink className={({isActive}) => isActive ? styles.active : styles.NavLinks} to={'/players'}>Players</NavLink>
+                    <NavLink className={({isActive}) => isActive ? styles.active : styles.NavLinks} to={'/add-tournament'}>Create Tournament</NavLink>
                 </div>
                 <div className={styles.rightBox}>
-            {isAuth ?
+            {isAuth || window.localStorage.getItem('token') ?
                 <button className={styles.logout} onClick={Logout}>Выйти</button>
                 :
                 <div>

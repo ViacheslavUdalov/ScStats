@@ -1,5 +1,9 @@
 .image {
-    width: 100px;
+    width: 300px;
+    height: 200px;
+    border-radius: 10%;
+    /*overflow: hidden;*/
+    object-fit: cover;
 }
 .container {
     background-color: var(--Main-background-color);
@@ -16,24 +20,37 @@ h1 {
     padding: 20px;
 }
 .about {
-    padding-left: 40%;
+    padding-left: 40px;
+    width: 300px;
+}
+.player {
+    display: flex;
+    border: 1px solid black;
+    flex-wrap: wrap;
+    inline-size: 300px;
+    padding: 3px 0 3px 0;
+    margin-top: 5px;
 }
 .RemoveTournament {
     background-color: var(--Button-color);
     color: var(--button-text-color);
     border: 1px solid black;
-    padding: 5px 10px;
-    border-radius: 10%;
-    margin-left: 30px;
+    padding: 10px 30px;
+    align-self: center;
+    border-radius: 10px;
+    margin-top: 20px;
 }
 .RemoveTournament:hover {
+    background-color: #572883;
+    color: #59de0b;
+    transition: background-color 500ms, color 500ms;
     border: 1px solid white;
-
 }
 .NavLink {
     text-decoration: none;
     background-color: var(--Button-color);
 color: var(--button-text-color);
+    align-self: center;
     padding: 10px 30px;
 border: 1px solid black;
     border-radius: 20px;
@@ -43,4 +60,76 @@ border: 1px solid black;
     color: #59de0b;
     transition: background-color 500ms, color 500ms;
     border: 1px solid white;
+}
+.PlayerFullName {
+    padding-left: 4px;
+}
+.UserIcon {
+    width: 30px; /* Задайте ширину */
+    height: 30px; /* Задайте высоту */
+    border-radius: 50%; /* Сделайте круглой */
+    overflow: hidden;
+}
+.Buttons {
+    text-decoration: none;
+    background-color: var(--Button-color);
+    color: var(--button-text-color);
+    border: 1px solid #fffefe;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 10px;
+}
+.Buttons:hover {
+    text-decoration: none;
+    color: #020202;
+    background-color: #ffffff;
+    transition: background-color 500ms;
+}
+.time {
+    font-size: small;
+    position: relative;
+    top: 20px;
+    display: inline-block;
+}
+.AboutTournament {
+    word-wrap: break-word;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.NavLinkName {
+    position: relative;
+    top: -4px;
+    left: 5px;
+    text-decoration: none;
+    color: var(--color);
+}
+.NavLinkName:hover {
+    text-decoration: underline;
+    color: green;
+}
+.OwnerAndTime {
+    padding: 10px 20px 0 0;
+}
+.buttons {
+    display: flex;
+    flex-direction: column;
+}
+.updateAndDelete {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+.rightMenu {
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+}
+.NameOfTournament:hover {
+    background-image: linear-gradient(to right, red, #3776ff);
+    background-clip: text;
+    color: transparent;
+}
+.LeaveFromTournament {
+    display: flex;
+    flex-direction: column;
 }

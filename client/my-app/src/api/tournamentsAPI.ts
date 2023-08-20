@@ -7,11 +7,11 @@ export const TournamentsAPI = {
         })
     },
     fetchOne(id: string) {
-     return instance.get(`/tournaments${id}`).then((res) => {
+     return instance.get(`/tournaments/${id}`).then((res) => {
             return res.data
         })},
     fetchDelete(id: string) {
-        return instance.delete(`/tournaments${id}`).then((res) => {
+        return instance.delete(`/tournaments/${id}`).then((res) => {
             return res.data
         })},
     fetchUpdate(params: TournamentModel) {

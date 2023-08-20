@@ -2,6 +2,7 @@ import {createSlice, createAsyncThunk, AnyAction} from "@reduxjs/toolkit";
 import instance from "../api/MainAPI";
 import {AuthModel, RegisterModel} from "../models/auth-model";
 import {rootStateType} from "./store";
+import {UserModel} from "../models/user-model";
 
 export const fetchAuth = createAsyncThunk('auth/fetchUserData', async (params: AuthModel, thunkAPI) => {
     const response = await instance.post('auth/login', params);
@@ -14,6 +15,10 @@ export const fetchAuthMe = createAsyncThunk('auth/fetchAuthMe', async () => {
 export const fetchRegister = createAsyncThunk('auth/fetchRegister', async (params: RegisterModel) => {
     const response = await instance.post('auth/register', params);
     return response.data;
+})
+export const fetchEditMe = createAsyncThunk('auth/fetchEditMe', async (params: UserModel) => {
+    const response = await instance.patch('auth/edit', params)
+    return response.data
 })
 const initialState = {
     data: null as AuthModel | null,
@@ -43,16 +48,42 @@ const authSlice = createSlice({
                 state.status = 'error'
                 state.data = null
             })
+            .addCase(fetchRegister.pending, (state) => {
+                state.status = 'loading'
+                state.data = null
+            })
+            .addCase(fetchRegister.fulfilled, (state, action: rootStateType) => {
+                state.status = 'loaded'
+                state.data = action.payload
+
+            })
+            .addCase(fetchRegister.rejected, (state) => {
+                state.status = 'error'
+                state.data = null
+            })
             .addCase(fetchAuthMe.pending, (state) => {
                 state.status = 'loading'
                 state.data = null
             })
-            .addCase(fetchAuthMe.fulfilled, (state, action: AnyAction) => {
+            .addCase(fetchAuthMe.fulfilled, (state, action: rootStateType) => {
                 state.status = 'loaded'
                 state.data = action.payload
 
             })
             .addCase(fetchAuthMe.rejected, (state) => {
+                state.status = 'error'
+                state.data = null
+            })
+            .addCase(fetchEditMe.pending, (state) => {
+                state.status = 'loading'
+                state.data = null
+            })
+            .addCase(fetchEditMe.fulfilled, (state, action: rootStateType) => {
+                state.status = 'loaded'
+                state.data = action.payload
+
+            })
+            .addCase(fetchEditMe.rejected, (state) => {
                 state.status = 'error'
                 state.data = null
             })

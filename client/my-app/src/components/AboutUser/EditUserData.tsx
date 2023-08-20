@@ -1,0 +1,68 @@
+import React, {ChangeEvent, useEffect, useState} from 'react';
+import {useForm} from "react-hook-form";
+import {RegisterModel} from "../../models/auth-model";
+import {fetchEditMe, fetchRegister} from "../../redux/authReducer";
+import styles from "../registration/Registration.module.css";
+import {rootStateType, useAppDispatch, useAppSelector} from "../../redux/store";
+import {UserModel} from "../../models/user-model";
+import instance from "../../api/MainAPI";
+import {useNavigate, useParams} from "react-router-dom";
+const EditUserData = () => {
+    const {id} = useParams();
+    const navigate = useNavigate();
+    const [avatarURL, setImage] = useState('');
+    const [fullName, setUserName] = useState('')
+    const [email, setEmail] = useState('')
+    const UserData = useAppSelector((state: rootStateType) => state.auth.data);
+
+    useEffect(() => {
+        UserData &&
+        setImage(UserData.avatarURL)
+        setUserName(UserData.fullName)
+        setEmail(UserData.email)
+    }, [UserData])
+
+    const handleUploadImage = async (e: ChangeEvent<HTMLInputElement>) => {
+        try {
+        if (e.target.files) {
+            const formData = new FormData();
+            const file = e.target.files[0];
+            formData.append('image', file);
+            const {data} = await instance.post('/upload', formData);
+            console.log(data)
+            setImage(data.url);
+        }
+        } catch (err) {
+            console.warn(err);
+            alert('ошибка загрузки файла')
+        }
+    };
+
+    const onSubmit = async () => {
+        try {
+        const fields = {
+            fullName,
+            email,
+            avatarURL
+        }
+        const {data} =  await instance.patch(`/auth/${id}`, fields)
+        console.log(data);
+        navigate(`/aboutUser/${id}`);
+    } catch (err) {
+        console.warn(err)
+      }
+    };
+
+    console.log(UserData);
+    return (
+        <div className={styles.container}>
+            <img src={avatarURL ? `http://localhost:3000${avatarURL}` : ''}/>
+                <input value={fullName} className={styles.inputs} onChange={(e) => setUserName(e.target.value)} placeholder={'имя'}/>
+            <input value={email} className={styles.inputs} onChange={(e) => setEmail(e.target.value)} placeholder={'email'}/>
+                <input className={styles.inputs} type="file" onChange={handleUploadImage}/>
+            <button className={styles.inputs} onClick={onSubmit}>сохранить</button>
+        </div>
+    );
+};
+
+export default EditUserData;

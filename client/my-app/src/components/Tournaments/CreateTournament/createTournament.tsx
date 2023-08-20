@@ -1,40 +1,47 @@
 import styles from './createTournament.module.css';
 import {Navigate, useNavigate, useParams} from "react-router-dom";
-import {ChangeEvent, useEffect, useState} from "react";
-import {rootStateType, useAppSelector} from "../../../redux/store";
-import {selectIsAuth} from "../../../redux/authReducer";
+import {ChangeEvent, MouseEventHandler, useEffect, useRef, useState} from "react";
+import {rootStateType, useAppDispatch, useAppSelector} from "../../../redux/store";
+import {fetchAuthMe, selectIsAuth} from "../../../redux/authReducer";
 import instance from "../../../api/MainAPI";
-import {useGetFullTournamentQuery} from "../../../redux/RTKtournaments";
+import {useSelector} from "react-redux";
+import {fetchTournament} from "../../../redux/TournamentsReducer";
 
 const CreateTournament = () => {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const {id} = useParams();
-    const isAuth = useAppSelector(selectIsAuth);
-    const Owner = useAppSelector((state: rootStateType) => state.auth.data)
     const isEditing = Boolean(id);
     const [Name, setName] = useState('');
     const [about, setAbout] = useState('');
     const [imageUrl, setImageUrl] = useState('');
-        // @ts-ignore
-    const {data} = useGetFullTournamentQuery(id)
+    const hiddenFileInput = useRef(null);
     useEffect(() => {
-        if (data) {
-            setName(data.Name);
-            setAbout(data.about);
-            setImageUrl(data.imageUrl);
+        id &&
+        dispatch(fetchTournament(id))
+        dispatch(fetchAuthMe())
+    }, [])
+    const tournament = useSelector((state: rootStateType) => state.tournaments.tournament);
+    console.log(tournament)
+    useEffect(() => {
+        if (tournament) {
+            setName(tournament.Name);
+            setAbout(tournament.about);
+            setImageUrl(tournament.imageUrl);
         }
-    }, [data]);
-    console.log(imageUrl)
+    }, [tournament]);
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        try {
         if (e.target.files) {
             const formData = new FormData();
             const file = e.target.files[0];
             formData.append('image', file);
-            const {data} = await instance.post('/upload', formData);
-            console.log(data)
-            setImageUrl(data.url);
+            const uploadResponse = await instance.post('/upload', formData);
+            console.log(uploadResponse)
+            setImageUrl(uploadResponse.data.url);
+            console.log(imageUrl)
         }
-        try {
+
         } catch (err) {
             console.warn(err);
             alert('ошибка загрузки файла')
@@ -56,22 +63,30 @@ const CreateTournament = () => {
             console.warn(err)
         }
     }
-    if (!isAuth) {
+    // console.log(UserData)
+    if (!window.localStorage.getItem('token')) {
         return <Navigate to={'/'} />
     }
+ const handleClick = () => {
+     // @ts-ignore
+     hiddenFileInput.current.click()
+ }
+        console.log(imageUrl)
     return (
         <div className={styles.container}>
             <div className={styles.Main}>
             <div className={styles.ChoseFile}>
-            <input type="file" onChange={handleFileChange} />
+                    <label className={styles.uploadButton} onClick={handleClick}>
+                        {!imageUrl ? 'Выберите файл' : 'Выбрать другой файл'}</label>
+                    <input ref={hiddenFileInput} style={{display: 'none'}} type="file" onChange={handleFileChange} />
             {imageUrl &&
-            <img className={styles.image} style={{width: "100px"}} src={`http://localhost:3000${imageUrl}`}/>}
+            <img className={styles.image} style={{width: "200px", paddingTop: '30px'}} src={`http://localhost:3000${imageUrl}`}/>}
             </div>
                 <div className={styles.textAreas}>
           <textarea placeholder={'Имя турнира'} className={styles.inputs} value={Name} onChange={(e) => setName(e.target.value)}/>
             <textarea placeholder={'о турнире'} className={styles.inputs} value={about} onChange={(e) => setAbout(e.target.value)}/>
             <button onClick={onSubmit} className={styles.Buttons}>
-                {isEditing ? 'сохранить' : 'отправить'}</button>
+                {isEditing ? 'Сохранить' : 'Создать'}</button>
                 </div>
             </div>
         </div>

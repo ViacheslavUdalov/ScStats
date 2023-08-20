@@ -2,21 +2,25 @@
     padding: 10px 40px;
     border-radius: 40px;
     border: 1px solid white;
-    background-color: #9a9999;
+    background-color: var(--Login-background-color);
     color: black;
     display: flex;
     flex-direction: column;
     margin: 20px;
 }
+.inputs::placeholder {
+    color: var(--Placeholder-color-inputs);
+}
 .inputs:hover {
-    border: 2px solid black;
-    background-color: #9f9e9e;
+    border: 1px solid black;
+    background-color: #ee38d5;
     color: black;
+    box-shadow: inset 0 0 10px 2px white;
 }
 .inputs[type='submit'] {
     background-color: #00004d;
     color: white;
-    border: none;
+    border: 2px solid white;
     margin-left: 75px;
     border-radius: 40px;
 }
@@ -26,6 +30,7 @@
 }
 .container {
     padding: 15% 40%;
-    height: 100vh;
-    background-color: var(--Main-background-color);
+    background: var(--Login-background-image) no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
 }

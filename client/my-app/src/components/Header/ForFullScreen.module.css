@@ -8,6 +8,13 @@
 .NavLinks:hover {
     color: #28f608;
 }
+.active {
+    font-size: large;
+    padding: 10px;
+    flex-wrap: nowrap;
+    color: #59de0b;
+    text-decoration: underline;
+}
 .Buttons {
     text-decoration: none;
     background-color: var(--Button-color);

@@ -11,23 +11,27 @@ import Registration from "./components/registration/Registration";
 import FullTournament from "./components/Tournaments/FullTournament";
 import CreateTournament from "./components/Tournaments/CreateTournament/createTournament";
 import Header from "./components/Header/Header";
+import AboutUser from "./components/AboutUser/AboutUser";
+import EditUserData from "./components/AboutUser/EditUserData";
 function App() {
     const dispatch = useAppDispatch();
     const isAuth = useSelector(selectIsAuth);
     useEffect(() => {
         dispatch(fetchAuthMe())
     }, [])
-    console.log(`registration is Auth ${isAuth}`);
+    // console.log(`registration is Auth ${isAuth}`);
   return (
       <div className={styles.App}>
           <Header />
         <Routes>
             <Route path={'/'} element={<Home />}/>
+            <Route path={'/aboutUser/:id?'} element={<AboutUser />}/>
+            <Route path={'/aboutUser/:id?/edit'} element={<EditUserData />}/>
             <Route path={'/tournaments'} element={<Tournaments />}/>
             <Route path={'/tournaments/:id?'} element={<FullTournament />}/>
  .           <Route path={'/tournaments/:id?/edit'} element={<CreateTournament />}/>
             <Route path={'/auth/login'} element={<Login />}/>
-            {/*<Route path={'/players'} element={<Players />}/>*/}
+            {/*<Route path={'/players'} element={<Players />} />*/}
             <Route path={'/auth/register'} element={<Registration />}/>
             <Route path={'/add-tournament'} element={<CreateTournament />}/>
         </Routes>

@@ -1,18 +1,22 @@
 .container {
     padding: 5% 20%;
     height: 100vh;
-    background-color: var(--Main-background-color);
+    margin: 0;
+    /*padding: 0;*/
+    background: var(--CreateTournament-background-image) no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
 }
 .inputs:nth-child(1) {
     padding: 10px 40px;
-    margin: 20px;
+    margin: 10px;
     border-radius: 10px;
     background-color: var(--CreateTournament-inputs-background-color);
     color: var(--CreateTournament-inputs-color);
 }
 .inputs:nth-last-child(2) {
     padding: 20px 60px;
-    margin: 5px;
+    margin: 10px;
     border-radius: 10px;
     background-color: var(--CreateTournament-inputs-background-color);
     color: var(--CreateTournament-inputs-color);
@@ -27,7 +31,7 @@
     border: 1px solid #fffefe;
     border-radius: 20px;
     padding: 7px;
-    margin: 10px;
+    margin-top: 10px;
 }
 .Buttons:hover {
     text-decoration: none;
@@ -41,11 +45,27 @@
 .ChoseFile {
     border: 1px solid black;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    background-color: var(--Header-backgound-color);
+    border-radius: 50px;
     justify-content: center;
+    padding: 0 20px 0 20px;
 }
 .textAreas {
     margin-left: 50px;
     border: 1px solid black;
+    display: flex;
+    flex-direction: column;;
     padding: 50px;
+    background-color: var(--Header-backgound-color);
+    border-radius: 50px;
+}
+.uploadButton {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff0000;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
 }

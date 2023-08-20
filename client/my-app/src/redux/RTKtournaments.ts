@@ -1,13 +1,12 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {DataTournamentModel, queryParams, TournamentModel} from "../models/tournament-model";
-import CreateTournament from "../components/Tournaments/CreateTournament/createTournament";
 import {AuthModel, RegisterModel} from "../models/auth-model";
 
 export const tournamentsAPI = createApi({
     reducerPath: 'tournamentsAPI',
     baseQuery: fetchBaseQuery(
         {baseUrl: "http://localhost:3000"}),
-    tagTypes: ['Tournaments', 'UserData'],
+    tagTypes: ['TournamentModel', 'UserData'],
     endpoints: (builder) => ({
         getAllTournaments: builder.query<DataTournamentModel, queryParams>({
             query: (params) => ({
@@ -19,20 +18,22 @@ export const tournamentsAPI = createApi({
                 }
             }),
             // transformResponse: (response: { data: TournamentModel[] }, meta, arg) => response.data
-            providesTags: (result) => ['Tournaments']
+            providesTags: (result) => ['TournamentModel']
         }),
         getFullTournament: builder.query<TournamentModel, string>({
             query: (id) => ({
                 url: `/tournaments/${id}`
-            })
+            }),
+            providesTags:  ['TournamentModel']
         }),
+
         createTournament: builder.mutation<TournamentModel, Partial<TournamentModel>>({
             query: (tournament) => ({
                 url: `/tournaments`,
                 method: 'POST',
                 body: tournament
             }),
-            invalidatesTags: ['Tournaments']
+            invalidatesTags: ['TournamentModel']
         }),
         updateTournament: builder.mutation<TournamentModel,  { _id: string| undefined; data: Partial<TournamentModel> }>({
             query: ({_id, data}) => ({
@@ -40,14 +41,14 @@ export const tournamentsAPI = createApi({
                 method: 'PATCH',
                 body: data
             }),
-            invalidatesTags: ['Tournaments']
+            invalidatesTags: ['TournamentModel']
         }),
         deleteTournament: builder.mutation<TournamentModel, string>({
             query: (id) => ({
                 url: `/tournaments/${id}`,
                 method: 'DELETE'
             }),
-            invalidatesTags: ['Tournaments']
+            invalidatesTags: ['TournamentModel']
         }),
         getUserData: builder.query<AuthModel, void>({
             query: () => ({

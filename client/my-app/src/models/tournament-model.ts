@@ -1,17 +1,23 @@
 import {UserModel} from "./user-model";
 
-export interface TournamentModel {
-    Name: string,
-    _id: string,
-    players: UserModel[],
-    Owner: {
-        fullName: string,
-        avatarURL: string,
-        _id: string
+    export interface TournamentModel {
+        Name: string,
+        _id: string,
+        players: UserModel[],
+        Owner: {
+            fullName: string,
+            avatarURL: string,
+            _id: string
+        }
+        about: string,
+        imageUrl: string,
+
+        createdAt: string,
+
+        updatedAt: string
+
+
     }
-    about: string,
-    imageUrl: string
-}
 export interface DataTournamentModel {
     tournaments: Array<TournamentModel> | [],
     totalCount: number

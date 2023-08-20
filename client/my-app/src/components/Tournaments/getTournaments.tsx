@@ -39,9 +39,9 @@ const Tournaments = () => {
                    onChange={(e) => setSearchTerm(e.target.value)}
             />
             {DataTournamentModel && DataTournamentModel.tournaments.length == 0 &&
-                <span>Не найдено турниров с таким названием</span>}
+                <span style={{marginLeft: '40%'}}>Не найдено турниров</span>}
             {DataTournamentModel && DataTournamentModel.tournaments.map((tournament: TournamentModel, index: number) => {
-                return <div key={index}>
+                return <div key={index} >
                     <Tournament
                         tournament={tournament}
                     />

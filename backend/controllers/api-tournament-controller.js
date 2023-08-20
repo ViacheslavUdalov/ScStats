@@ -1,5 +1,4 @@
 const Tournament = require("../models/tournament");
-const User = require('../models/user')
 const handleError = (res, err) => {
     res.status(500).send(err.message)
 }
@@ -16,7 +15,7 @@ const getTournaments = async (req, res) => {
             .limit(perPage)
             .sort({createdAt: -1})
             .populate('Owner')
-            .exec();
+            .populate('players')
         const totalCount = await Tournament.countDocuments(filter);
         res.status(200).json({
             tournaments: tournaments,
@@ -28,7 +27,7 @@ const getTournaments = async (req, res) => {
 };
 const getTournament = async (req, res) => {
     try {
-        const tournament = await Tournament.findById(req.params.id).populate('Owner').exec();
+        const tournament = await Tournament.findById(req.params.id).populate('Owner').populate('players');
         res.status(200).json(tournament);
     } catch (err) {
         handleError(res, err)
@@ -59,13 +58,19 @@ const addTournament = async (req, res) => {
     }
 };
 const editTournament = async (req, res) => {
+    try {
     //вытаскиваем все данные из запроса и передаём их в метод update по определённому _id
-    const {Name, players, Owner, about, tournamentAvatar} = req.body;
+    const {Name, players, Owner, about, imageUrl} = req.body;
     const {id} = req.params;
-    Tournament
-        .findByIdAndUpdate(id, {Name, players, Owner, about, tournamentAvatar}, {new: true})
-        .then((tournament) => res.status(200).json(tournament))
-        .catch((err) => handleError(res, err));
+    const tournament = await Tournament
+        .findByIdAndUpdate(id, {Name, players, Owner, about, imageUrl}, {new: true})
+        .populate('Owner') // Загрузка данных об авторе турнира
+        .populate('players')
+        res.status(200).json(tournament)
+}
+        catch (err) {
+    handleError(res, err)
+}
 };
 
 

@@ -5,6 +5,7 @@ import {useGetAllTournamentsQuery} from "../../redux/RTKtournaments";
 import styles from './home.module.css'
 import {NavLink} from "react-router-dom";
 import React from "react";
+import image from '../../common/4151292-1.jpg'
 const Home = () => {
     const dispatch = useAppDispatch();
     // const {tournaments} = useSelector((state: rootStateType) => state.tournaments);
@@ -18,13 +19,24 @@ const Home = () => {
     };
     console.log(data)
     return (
+        <div className={styles.global}>
         <div className={styles.container}>
-            <div className={styles.main}>
-                {data &&  data.tournaments.map((obj: TournamentModel, index: number) => {
+            {/*<img src={image} className={styles.imageCSS}/>*/}
+
+             <div className={styles.main}>
+                 <h2 style={{paddingLeft: '20px', textDecoration: 'underline white'}}>Предстоящие турниры:</h2>
+                {data &&  data.tournaments.slice(0, 5).map((obj: TournamentModel, index: number) => {
+                    const charactersToRemove = ["T", "Z"];
+                    const modifiedString = obj.createdAt.replace(new RegExp(`[${charactersToRemove.join('')}]`, 'g'), ' ');
                     return <div className={styles.oneTournament} key={index}>
-                       <NavLink to={`/tournaments/` + obj._id}> {obj.Name}</NavLink>
-                        <span>{obj.about}</span>
-                        <span className={styles.fullName}> {obj.Owner?.fullName}</span>
+                        <div style={{display: 'flex'}}>
+                        <img src={obj.imageUrl ? `http://localhost:3000${obj.imageUrl}` : image}
+                             className={styles.TournamentImage}/>
+                       <NavLink to={`/tournaments/` + obj._id} className={styles.Participant}> {obj.Name}</NavLink>
+                        </div>
+                        {obj.about.length > 23 && <span>{obj.about.slice(0, 30)}...</span>}
+                        <span className={styles.fullName}><span style={{fontSize: 'small'}}>Создатель турнира:</span> {obj.Owner?.fullName}</span>
+                        <span style={{fontSize: 'small', color: "yellow"}}>Турнир создан: {modifiedString.slice(0, 16)}</span>
                         {/*{obj.players.map((player: any, index ) => {*/}
                         {/*    return <div key={index}>*/}
                         {/*        {player.rank}*/}
@@ -33,6 +45,10 @@ const Home = () => {
                         {/*})} */}
                     </div>
                 })}
+            </div>
+
+        </div>
+            <div>
             </div>
         </div>
     )

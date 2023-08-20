@@ -16,27 +16,43 @@ code {
 }
 html[data-theme='dark'] {
   --button-text-color: #c5c5c5;
-  --Main-background-color: #575757;
+  --Main-background-color: #3f3f3f;
   --SideMenu-background-color: #4a004f;
   --color: white;
   --NavLink-color: white;
   --Button-color: #165716;
   --Header-backgound-color: #101846;
-  --CreateTournament-inputs-background-color: #00004d;
+  --CreateTournament-inputs-background-color: #4d000e;
   --CreateTournament-inputs-color: #ffffff;
   --Registration-inputs-background-color: #00004d;
   --Registration-inputs-color: #ffffff;
+  --Background-image: url("common/background(2)jpg.jpg");
+  --CreateTournament-background-image: url("common/with Stormgate word.webp");
+  --SomeText-color: rgb(247, 0, 255);
+  --Text-color-bright: #42fd00;
+  --Login-background-image: url('common/4151412-stormgate-2.jpg');
+  --Login-background-color: green;
+  --Registration-background-image: url('common/with Stormgate word.webp');
+  --Placeholder-color-inputs: #f6f300;
 }
 html[data-theme='light'] {
   --button-text-color: #84e3ff;
-  --Main-background-color: white;
+  --Main-background-color: #9a9a9a;
   --SideMenu-background-color: #9703a1;
   --color: black;
   --NavLink-color: black;
   --Button-color: #37b41b;
   --Header-backgound-color: #1d3ace;
-  --CreateTournament-inputs-background-color: #a8a7a7;
+  --CreateTournament-inputs-background-color: rgba(234, 9, 60, 0.98);
   --CreateTournament-inputs-color: #0b16de;
-  --Registration-inputs-background-color: #a8a7a7;
+  --Registration-inputs-background-color: #00ff00;
   --Registration-inputs-color: #000000;
+  --Background-image: url("common/with Stormgate word.webp");
+  --SomeText-color: rgb(99, 0, 108);
+  --Text-color-bright: #de00f6;
+  --CreateTournament-background-image: url("common/4151412-stormgate-2.jpg");
+  --Registration-background-image: url('common/download2.jpg');
+  --Login-background-image: url('common/28059.jpg');
+  --Placeholder-color-inputs: #0032fc;
+  --Login-background-color: #00f9ff;
 }
