@@ -13,6 +13,7 @@ import CreateTournament from "./components/Tournaments/CreateTournament/createTo
 import Header from "./components/Header/Header";
 import AboutUser from "./components/AboutUser/AboutUser";
 import EditUserData from "./components/AboutUser/EditUserData";
+import Players from "./components/Players/Players";
 function App() {
     const dispatch = useAppDispatch();
     const isAuth = useSelector(selectIsAuth);
@@ -31,7 +32,7 @@ function App() {
             <Route path={'/tournaments/:id?'} element={<FullTournament />}/>
  .           <Route path={'/tournaments/:id?/edit'} element={<CreateTournament />}/>
             <Route path={'/auth/login'} element={<Login />}/>
-            {/*<Route path={'/players'} element={<Players />} />*/}
+            <Route path={'/players'} element={<Players />} />
             <Route path={'/auth/register'} element={<Registration />}/>
             <Route path={'/add-tournament'} element={<CreateTournament />}/>
         </Routes>

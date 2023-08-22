@@ -8,12 +8,14 @@ import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {authReducer} from "./authReducer";
 import {tournamentsAPI} from "./RTKtournaments";
 import {tournamentReducer} from "./TournamentsReducer";
+import {UsersReducer} from "./UsersReducer";
 
 const rootReducer: Reducer = combineReducers({
     // tournaments: tournamentReducer,
     [tournamentsAPI.reducerPath] : tournamentsAPI.reducer,
     auth: authReducer,
-tournaments: tournamentReducer
+tournaments: tournamentReducer,
+    users: UsersReducer
 })
 
 const store = configureStore({

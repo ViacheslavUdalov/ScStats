@@ -1,0 +1,43 @@
+.imageContainer {
+    width: 40px;
+    height: 40px;
+  overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+.fullName {
+    position: relative;
+    top: -4px;
+    left: 5px;
+    text-decoration: none;
+    color: var(--color);
+}
+/*.AllUsers {*/
+/*padding-left: 40%;*/
+/*}*/
+.fullName:hover {
+    text-decoration: underline;
+    color: green;
+}
+.imageContainer .image {
+    width: auto;
+    height:  100%;
+}
+.container {
+    background-color: var(--Main-background-color);
+   padding: 10px 30% 10px 30%;
+
+}
+.main {
+    display: flex;
+    flex-direction: column;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /*width: 600px;*/
+}
+.CreateData {
+    font-size: small;
+}

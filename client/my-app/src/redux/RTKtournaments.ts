@@ -1,12 +1,13 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import {DataTournamentModel, queryParams, TournamentModel} from "../models/tournament-model";
+import {DataTournamentModel, DataUsersModel, queryParams, TournamentModel} from "../models/tournament-model";
 import {AuthModel, RegisterModel} from "../models/auth-model";
+import {UserModel} from "../models/user-model";
 
 export const tournamentsAPI = createApi({
     reducerPath: 'tournamentsAPI',
     baseQuery: fetchBaseQuery(
         {baseUrl: "http://localhost:3000"}),
-    tagTypes: ['TournamentModel', 'UserData'],
+    tagTypes: ['TournamentModel', 'UserData', 'DataUsersModel'],
     endpoints: (builder) => ({
         getAllTournaments: builder.query<DataTournamentModel, queryParams>({
             query: (params) => ({
@@ -67,8 +68,20 @@ export const tournamentsAPI = createApi({
                 url: `/auth/login`
             }),
             invalidatesTags: ['UserData']
-        })
+        }),
+        getUsers:  builder.query<DataUsersModel, void>({
+            query: () => ({
+                url: `/users`
+            }),
+            providesTags: ['DataUsersModel']
+        }),
+        getOneUser:  builder.query<UserModel, string>({
+            query: (id) => ({
+                url: `/user/${id}`
+            }),
+            providesTags: ['UserData']
+        }),
     })
 })
 export const {useGetAllTournamentsQuery, useGetFullTournamentQuery,useDeleteTournamentMutation,
-useCreateTournamentMutation, useUpdateTournamentMutation} = tournamentsAPI
+useCreateTournamentMutation, useUpdateTournamentMutation, useGetUsersQuery, useGetOneUserQuery} = tournamentsAPI

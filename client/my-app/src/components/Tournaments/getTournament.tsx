@@ -82,7 +82,7 @@ const Tournament = ({tournament}: props) => {
                         {tournament.about}
                 </span>
                             :
-                                <span>{tournament.about.slice(0, 40)}...</span>
+                                <span>{tournament.about.slice(0, 40)}</span>
                         }
                         {tournament.about.length >= 40 &&
                             <button className={styles.hideAndShow} onClick={toggleIsExpanded}>{isExpanded ? 'скрыть' : 'Показать'}</button>

@@ -68,10 +68,23 @@ border: 1px solid lightgray;
 .NavLinkName {
     text-decoration: none;
     color: var(--color);
+    position: relative;
 }
 .NavLinkName:hover {
-    text-decoration: underline;
-    color: green;
+    background-image: linear-gradient(to right, red, #f102e5);
+    background-clip: text;
+    color: transparent;
+}
+.NavLinkName:hover::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 2px;
+    background-color: #000;
+    background-image: linear-gradient(to right, red, #f102e5);
+    color: transparent;
 }
 .mainContainer {
     display: flex;

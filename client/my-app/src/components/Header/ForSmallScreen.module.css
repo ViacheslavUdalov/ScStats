@@ -137,3 +137,35 @@
     color: black;
     margin: 5px;
 }
+.aboutClient {
+    display: flex;
+    flex-direction: column;
+}
+.imageAccount {
+    width: auto;
+    height: 100%;
+}
+.imageContainer {
+    width: 30px;
+    margin: -5px 10px 0 0 ;
+    height: 30px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+.currentClient {
+    text-decoration: none;
+    color: var(--Registration-inputs-color);
+    margin-bottom: 10px;
+}
+.currentClient:hover {
+    color: #f6f300;
+    text-decoration: underline;
+    transition: color 0.5s, text-decoration 1s;
+}
+.imgAndName {
+    display: flex;
+    flex-direction: row;
+}

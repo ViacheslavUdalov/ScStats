@@ -2,3 +2,17 @@
     color: var(--color);
     background-color: var(--Main-background-color)
 }
+.UserIcon {
+   width: auto;
+    height: 100%;
+}
+.imageContainer {
+    margin-left: 20px;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}

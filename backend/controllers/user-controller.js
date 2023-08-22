@@ -101,9 +101,39 @@ const editMe = async (req, res) => {
         })
     }
 }
+const getUsers = async (req, res) => {
+    try {
+        const users = await userModel.find().sort({createdAt: -1})
+        const totalUsersCount = await userModel.countDocuments()
+        res.status(200).json({
+            users: users,
+            totalUsersCount: totalUsersCount
+        })
+    }
+     catch (err) {
+         console.log(err);
+         res.status(500).json({
+             message: 'Не возможно получить пользователей.'
+         })
+     }
+}
+const getOneUser = async (req, res) => {
+    try {
+        const client = await userModel.findById(req.params.id)
+        res.status(200).json(client)
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Не возможно получить пользователей.'
+        })
+    }
+}
 module.exports = {
     register,
     login,
     authMe,
-    editMe
+    editMe,
+    getUsers,
+    getOneUser
 }

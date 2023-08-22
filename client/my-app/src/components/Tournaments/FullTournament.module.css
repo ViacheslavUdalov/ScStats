@@ -56,13 +56,18 @@ border: 1px solid black;
     border-radius: 20px;
 }
 .NavLink:hover {
-    background-color: #572883;
+    background-color: #0926e1;
     color: #59de0b;
     transition: background-color 500ms, color 500ms;
     border: 1px solid white;
 }
 .PlayerFullName {
     padding-left: 4px;
+    text-decoration: none;
+    color: var(--Text-color-bright);
+}
+.PlayerFullName:hover {
+    color: #0b16de;
 }
 .UserIcon {
     width: 30px; /* Задайте ширину */
@@ -77,7 +82,7 @@ border: 1px solid black;
     border: 1px solid #fffefe;
     border-radius: 20px;
     padding: 10px;
-    margin: 10px;
+    margin: 10px 0 0 0;
 }
 .Buttons:hover {
     text-decoration: none;
@@ -89,7 +94,10 @@ border: 1px solid black;
     font-size: small;
     position: relative;
     top: 20px;
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    word-wrap: break-word;
+    color: var(--Text-color-bright);
 }
 .AboutTournament {
     word-wrap: break-word;

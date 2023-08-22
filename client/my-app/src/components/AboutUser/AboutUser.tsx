@@ -3,16 +3,24 @@ import {useSelector} from "react-redux";
 import {rootStateType} from "../../redux/store";
 import styles from './AboutUser.module.css'
 import image from '../../common/images.png'
-import {NavLink} from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
+import {useGetOneUserQuery} from "../../redux/RTKtournaments";
 const AboutUser = () => {
-    const userData = useSelector((state: rootStateType) => state.auth.data);
-    console.log(userData)
+    const {id} = useParams()
+    const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
+   // @ts-ignore
+    const {data: UserData} = useGetOneUserQuery(id)
+    console.log(UserData)
     return (
         <div className={styles.container}>
-            {userData && <div>
-                <img src={userData?.avatarURL ? `http://localhost:3000${userData.avatarURL}` : image}/>
-            {userData.fullName}
-            <NavLink to={`/aboutUser/${userData._id}/edit`}>Редактировать</NavLink>
+            {UserData && <div>
+                <div className={styles.imageContainer}>
+                <img src={UserData?.avatarURL ? `http://localhost:3000${UserData.avatarURL}` : image} className={styles.UserIcon}/>
+                </div>
+            {UserData.fullName}
+                {UserData._id === CurrentClient._id &&
+                    <NavLink to={`/aboutUser/${UserData._id}/edit`}>Редактировать</NavLink>}
+
             </div>
             }
         </div>

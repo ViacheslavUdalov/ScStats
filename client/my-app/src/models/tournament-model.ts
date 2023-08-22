@@ -22,6 +22,10 @@ export interface DataTournamentModel {
     tournaments: Array<TournamentModel> | [],
     totalCount: number
 }
+export interface DataUsersModel {
+    users: Array<UserModel> | [],
+    totalUsersCount: number
+}
 export interface queryParams {
     searchTerm: string,
     page: number,

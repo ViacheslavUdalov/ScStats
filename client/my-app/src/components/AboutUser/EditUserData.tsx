@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {useForm} from "react-hook-form";
 import {RegisterModel} from "../../models/auth-model";
 import {fetchEditMe, fetchRegister} from "../../redux/authReducer";
@@ -52,14 +52,20 @@ const EditUserData = () => {
         console.warn(err)
       }
     };
-
+    const hiddenFileInput = useRef(null);
+    const handleClick = () => {
+        // @ts-ignore
+        hiddenFileInput.current.click()
+    }
     console.log(UserData);
     return (
         <div className={styles.container}>
-            <img src={avatarURL ? `http://localhost:3000${avatarURL}` : ''}/>
+            <img src={avatarURL ? `http://localhost:3000${avatarURL}` : ''} className={styles.Image}/>
+            <label className={styles.uploadButton} onClick={handleClick}>
+                {!avatarURL ? 'Выберите файл' : 'Выбрать другой файл'}</label>
+            <input  ref={hiddenFileInput}  className={styles.inputFile} type="file" onChange={handleUploadImage}/>
                 <input value={fullName} className={styles.inputs} onChange={(e) => setUserName(e.target.value)} placeholder={'имя'}/>
             <input value={email} className={styles.inputs} onChange={(e) => setEmail(e.target.value)} placeholder={'email'}/>
-                <input className={styles.inputs} type="file" onChange={handleUploadImage}/>
             <button className={styles.inputs} onClick={onSubmit}>сохранить</button>
         </div>
     );

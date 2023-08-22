@@ -32,8 +32,37 @@
     border-radius: 10%;
     margin-right: 10%;
 }
+.account {
+    display: flex;
+    flex-direction: row;
+    padding: 0 30px 0 10px;
+}
 .logout:hover {
     border: 1px solid white;
+}
+.currentClient {
+    text-decoration: none;
+    color: var(--Registration-inputs-color);
+    margin-right: 20px;
+}
+.imageAccount {
+    width: auto;
+    height: 100%;
+}
+.imageContainer {
+    width: 55px;
+    margin: -5px 10px 0 0 ;
+    height: 30px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+.currentClient:hover {
+    color: #f6f300;
+    text-decoration: underline;
+    transition: color 0.5s, text-decoration 1s;
 }
 .Buttons:hover {
     text-decoration: none;

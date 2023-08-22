@@ -6,6 +6,7 @@ import {useDebounce} from "../../helpers/debounce";
 import PreLoader from "../../helpers/isLoading";
 import {createPages} from "../../helpers/Paginator";
 import styles from './Tournaments.module.css';
+import ScrollToTop from "../../helpers/ScrollToTop";
 
 const Tournaments = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -57,6 +58,7 @@ const Tournaments = () => {
                 )}
             </div>
             </div>
+            <ScrollToTop />
         </div>
     )
 }
