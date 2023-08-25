@@ -34,8 +34,19 @@ const Registration = () => {
         <div className={styles.container}>
             <form  onSubmit={handleSubmit(onSubmit)}>
                 <input className={styles.inputs} {...register('fullName', {required: 'Введите имя'})}placeholder={'имя'}/>
-                <input className={styles.inputs} {...register('email', {required: 'Укажите почту!'})}placeholder={'почта'}/>
-                <input className={styles.inputs} {...register('password', {required: 'Введите пароль!'})}placeholder={'пароль'}/>
+                {errors.fullName && <div className={styles.errors}><span>{errors.fullName.message}</span></div>}
+                <input className={styles.inputs} {...register('email', {required: 'Укажите почту!',
+                    pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                        message: 'Неверный формат email'
+                    }   })}placeholder={'почта'}/>
+                {errors.email && <div className={styles.errors}><span>{errors.email.message}</span></div>}
+                <input className={styles.inputs} {...register('password', {required: 'Введите пароль!',
+                    maxLength: {
+                        value: 15,
+                        message: 'Пароль должен быть не больше 15 символов.',
+                    },})}placeholder={'пароль'}/>
+                {errors.password && <div className={styles.errors}><span>{errors.password.message}</span></div>}
                 <input className={styles.inputs} type={'submit'}/>
             </form>
         </div>

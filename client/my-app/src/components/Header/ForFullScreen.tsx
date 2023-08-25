@@ -32,7 +32,7 @@ const ForFullScreen = () => {
                     <NavLink className={({isActive}) => isActive ? styles.active : styles.NavLinks} to={'/'}>Home</NavLink>
                     <NavLink className={({isActive}) => isActive ? styles.active : styles.NavLinks} to={'/tournaments'}>Tournaments</NavLink>
                     <NavLink className={({isActive}) => isActive ? styles.active : styles.NavLinks} to={'/players'}>Users</NavLink>
-                    <NavLink className={({isActive}) => isActive ? styles.active : styles.NavLinks} to={'/add-tournament'}>Create Tournament</NavLink>
+                    {isAuth && <NavLink className={({isActive}) => isActive ? styles.active : styles.NavLinks} to={'/add-tournament'}>Create Tournament</NavLink>}
                 </div>
                 <div className={styles.rightBox}>
             {isAuth || window.localStorage.getItem('token') ?

@@ -13,7 +13,7 @@ const registerValidation = [
 ]
 const loginValidation = [
     body('email', 'Неверный формат email').isEmail(),
-    body('password', 'Пароль должен быть не менее 5 символов').isLength({min: 5}),
+    body('password', 'Неверный пароль').isLength({min: 5}),
 ]
 const editValidation = [
     body('fullName', 'Имя должно содержать не менее 2-х символов').isLength({min: 2}),

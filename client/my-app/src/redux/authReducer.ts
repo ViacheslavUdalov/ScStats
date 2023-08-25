@@ -4,13 +4,20 @@ import {AuthModel, RegisterModel} from "../models/auth-model";
 import {rootStateType} from "./store";
 import {UserModel} from "../models/user-model";
 
-export const fetchAuth = createAsyncThunk('auth/fetchUserData', async (params: AuthModel, thunkAPI) => {
+export const fetchAuth = createAsyncThunk('auth/fetchAuth', async (params: AuthModel, thunkAPI) => {
     const response = await instance.post('auth/login', params);
-    return response.data;
-})
+    if (response.status === 200) {
+        return response.data;
+}})
 export const fetchAuthMe = createAsyncThunk('auth/fetchAuthMe', async () => {
     const response = await instance.get('auth/me');
-    return response.data;
+    if (response.status === 200) {
+        return response.data;
+    }
+     else if (response.status === 403) {
+         return response
+    }
+
 })
 export const fetchRegister = createAsyncThunk('auth/fetchRegister', async (params: RegisterModel) => {
     const response = await instance.post('auth/register', params);
@@ -24,7 +31,6 @@ const initialState = {
     data: null as AuthModel | null,
     status: 'loading'
 }
-// @ts-ignore
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -48,9 +54,10 @@ const authSlice = createSlice({
                 state.status = 'error'
                 state.data = null
             })
-            .addCase(fetchRegister.pending, (state) => {
+            .addCase(fetchRegister.pending, (state, action: rootStateType) => {
                 state.status = 'loading'
                 state.data = null
+
             })
             .addCase(fetchRegister.fulfilled, (state, action: rootStateType) => {
                 state.status = 'loaded'

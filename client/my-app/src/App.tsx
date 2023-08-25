@@ -18,7 +18,7 @@ function App() {
     const dispatch = useAppDispatch();
     const isAuth = useSelector(selectIsAuth);
     useEffect(() => {
-        dispatch(fetchAuthMe())
+        dispatch(fetchAuthMe());
     }, [])
     // console.log(`registration is Auth ${isAuth}`);
   return (

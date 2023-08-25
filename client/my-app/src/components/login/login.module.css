@@ -34,3 +34,14 @@
     background-size: cover;
     background-attachment: fixed;
 }
+.errors {
+    width: 300px;
+    background-color: var(--CreateTournament-inputs-background-color);
+    color: var(--Text-color-bright);
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    padding: 5px;
+    margin-bottom: 5px;
+}
