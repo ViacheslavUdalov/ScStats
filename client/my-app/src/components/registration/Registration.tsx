@@ -42,12 +42,12 @@ const Registration = () => {
                     }   })}placeholder={'почта'}/>
                 {errors.email && <div className={styles.errors}><span>{errors.email.message}</span></div>}
                 <input className={styles.inputs} {...register('password', {required: 'Введите пароль!',
-                    maxLength: {
-                        value: 15,
-                        message: 'Пароль должен быть не больше 15 символов.',
-                    },})}placeholder={'пароль'}/>
+                    minLength: {
+                        value: 5,
+                        message: 'Пароль должен содержать как минимум 5 символов.'
+                    }})}placeholder={'пароль'}/>
                 {errors.password && <div className={styles.errors}><span>{errors.password.message}</span></div>}
-                <input className={styles.inputs} type={'submit'}/>
+                <input className={styles.inputs} disabled={!isValid} type={'submit'}/>
             </form>
         </div>
     )

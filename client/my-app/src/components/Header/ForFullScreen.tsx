@@ -5,16 +5,23 @@ import useTheme from "../../helpers/useTheme";
 import styles from './ForFullScreen.module.css'
 import {useSelector} from "react-redux";
 import {NavLink, useNavigate} from "react-router-dom";
+import ModalComponent from "../../helpers/Modal";
+import React, {useState} from "react";
+import Modal from "../../helpers/Modal";
 const ForFullScreen = () => {
     const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
     const dispatch = useAppDispatch();
     const isAuth = useSelector(selectIsAuth);
     const navigate = useNavigate();
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
+
     const Logout = () => {
-        if (window.confirm('Вы действительно хотите выйти?')) {
-            dispatch(logout());
+                dispatch(logout());
             window.localStorage.removeItem('token');
-        }
+        setModalIsOpen(false);
         navigate('/');
     }
     const {theme, setTheme} = useTheme();
@@ -45,7 +52,7 @@ const ForFullScreen = () => {
                     </div>
                 <NavLink to={`/aboutUser/${CurrentClient?._id}`}
                          className={styles.currentClient}>{CurrentClient?.fullName}</NavLink>
-                <button className={styles.logout} onClick={Logout}>Выйти</button>
+                <button className={styles.logout} onClick={() => setModalIsOpen(true)}>Выйти</button>
                 </div>
                 :
                 <div>
@@ -56,6 +63,12 @@ const ForFullScreen = () => {
                 <div className={styles.Themes} onClick={handleDark}>темная</div>
                 <div className={styles.Themes} onClick={handleLight}>светлая</div>
                 </div>
+            <Modal isOpen={modalIsOpen} onClose={closeModal}>
+                <div className={styles.inSideModal}>
+               <span className={styles.LogoutFromAcc}>Вы уверены что вы хотите выйти из аккаунта?</span>
+                <button onClick={Logout} className={styles.ModalButton}>Выйти из аккаунта</button>
+                </div>
+            </Modal>
         </div>
     )
 };

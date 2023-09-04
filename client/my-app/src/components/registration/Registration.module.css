@@ -44,7 +44,7 @@
     display: flex;
     justify-content: center;
     align-self: center;
-    padding: 5px;
+    padding: 5px 10px;
     margin-bottom: 5px;
 }
 .inputs[type='submit'] {
@@ -59,7 +59,11 @@ padding: 10px 30px;
     color: var(--Placeholder-color-inputs);
     font-weight: bold;
 }
-.inputs[type='submit']:hover {
+.inputs:not([type='submit']):hover {
     color: white;
     outline: 2px solid black;
+}
+.inputs[type='submit']:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }

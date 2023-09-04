@@ -40,6 +40,29 @@
 .logout:hover {
     border: 1px solid white;
 }
+.LogoutFromAcc {
+    color: #020202;
+    font-weight: bold;
+}
+.inSideModal {
+    display: flex;
+    flex-direction: column;
+}
+.ModalButton {
+    background-color: #1d3ace;
+    color: black;
+    border: 1px solid #fffefe;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 10px auto;
+}
+
+.ModalButton:hover {
+    text-decoration: none;
+    background-color: #1d3ace;
+    color: black;
+   box-shadow: inset 0px 0px 15px black;
+}
 .currentClient {
     text-decoration: none;
     color: var(--Registration-inputs-color);

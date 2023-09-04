@@ -11,7 +11,7 @@
 .inputs::placeholder {
     color: var(--Placeholder-color-inputs);
 }
-.inputs:hover {
+.inputs:not([type='submit']):hover {
     border: 1px solid black;
     background-color: #ee38d5;
     color: black;
@@ -24,9 +24,13 @@
     margin-left: 75px;
     border-radius: 40px;
 }
-.inputs[type='submit']:hover {
+.inputs[type='submit']:not(:disabled):hover {
     color: #41f606;
     border: 2px solid black;
+}
+.inputs[type='submit']:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 .container {
     padding: 15% 40%;
@@ -42,6 +46,6 @@
     display: flex;
     justify-content: center;
     align-self: center;
-    padding: 5px;
+    padding: 5px 10px;
     margin-bottom: 5px;
 }

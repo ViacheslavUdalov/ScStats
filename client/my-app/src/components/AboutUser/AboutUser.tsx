@@ -22,10 +22,10 @@ const AboutUser = () => {
         <div className={styles.container}>
             {UserData && <div>
                 <div className={styles.imageContainer}>
-                <img src={UserData?.avatarURL ? `http://localhost:3000${UserData.avatarURL}` : image} className={styles.UserIcon}/>
+                <img src={UserData?.avatarURL ? `http://localhost:3000${UserData?.avatarURL}` : image} className={styles.UserIcon}/>
                 </div>
             {UserData.fullName}
-                {UserData._id === CurrentClient._id &&
+                {UserData?._id === CurrentClient?._id &&
                     <NavLink to={`/aboutUser/${UserData._id}/edit`} className={styles.NavLinkName}>Редактировать</NavLink>}
 
             </div>

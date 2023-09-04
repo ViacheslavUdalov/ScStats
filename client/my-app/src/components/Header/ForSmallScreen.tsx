@@ -36,7 +36,7 @@ const ForSmallScreen = () => {
                 <NavLink className={styles.NavLinks} to={'/'}>Home</NavLink>
                 <NavLink className={styles.NavLinks} to={'/tournaments'}>Tournaments</NavLink>
                 <NavLink className={styles.NavLinks} to={'/players'}>Users</NavLink>
-                <NavLink className={styles.NavLinks} to={'/add-tournament'}>Create Tournament</NavLink>
+                    {isAuth && <NavLink className={styles.NavLinks} to={'/add-tournament'}>Create Tournament</NavLink>}
             <div className={styles.rightBox}>
                 {isAuth ?
                     <div className={styles.aboutClient}>
