@@ -73,11 +73,24 @@ const CreateTournament = () => {
         // @ts-ignore
         hiddenFileInput.current.click()
     }
-    const handleBlur = () => {
-        if (about.trim().length < 3 && Name.trim().length < 3) {
+    const handleNameChange = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
+        setName(e.target.value);
+        if (e.target.value.trim().length >= 3 && about.trim().length >= 3) {
+            setSubmitButtonDisabled(false);
+        } else {
             setSubmitButtonDisabled(true);
         }
     };
+
+    const handleAboutChange = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
+        setAbout(e.target.value);
+        if (Name.trim().length >= 3 && e.target.value.trim().length >= 3) {
+            setSubmitButtonDisabled(false);
+        } else {
+            setSubmitButtonDisabled(true);
+        }
+    };
+
     console.log(imageUrl)
     return (
         <div className={styles.container}>
@@ -91,11 +104,13 @@ const CreateTournament = () => {
                              src={`http://localhost:3000${imageUrl}`}/>}
                 </div>
                 <div className={styles.textAreas}>
-          <textarea onBlur={handleBlur} placeholder={'Имя турнира (Обязательно Для заполнения).'} className={styles.inputs}
-                    value={Name} onChange={(e) =>  setName(e.target.value)}/>
-                    <textarea onBlur={handleBlur} placeholder={'о турнире (Обязательно Для заполнения).'} className={styles.inputs}
-                              value={about} onChange={(e) =>  setAbout(e.target.value)} />
-                    <button onClick={onSubmit} disabled={Name.length < 3 && about.length < 3} className={styles.Buttons}>
+          <textarea  placeholder={'Имя турнира (Обязательно Для заполнения).'}
+                     className={styles.inputs}
+                    value={Name} onChange={handleNameChange}/>
+                    <textarea placeholder={'о турнире (Обязательно Для заполнения).'}
+                              className={styles.inputs}
+                              value={about} onChange={handleAboutChange} />
+                    <button onClick={onSubmit} disabled={submitButtonDisabled} className={styles.Buttons}>
                         {isEditing ? 'Сохранить' : 'Создать'}</button>
                 </div>
             </div>

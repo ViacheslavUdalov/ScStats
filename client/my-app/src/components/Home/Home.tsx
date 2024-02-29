@@ -6,9 +6,6 @@ import styles from './home.module.css'
 import {NavLink} from "react-router-dom";
 import React from "react";
 import image from '../../common/4151292-1.jpg';
-import ImbaCar from '../../common/mid_251196_780665.jpg';
-import ImbaCar2 from '../../common/1682536912_turizm-pibig-info-p-mashina-na-plyazhe-turizm-oboi-4.jpg';
-
 const Home = React.memo(() => {
     const dispatch = useAppDispatch();
     // const {tournaments} = useSelector((state: rootStateType) => state.tournaments);
@@ -46,12 +43,6 @@ const Home = React.memo(() => {
                                 fontSize: 'small',
                                 color: "yellow"
                             }}>Турнир создан: {modifiedString.slice(0, 16)}</span>
-                            {/*{obj.players.map((player: any, index ) => {*/}
-                            {/*    return <div key={index}>*/}
-                            {/*        {player.rank}*/}
-                            {/*        {player.nickname}*/}
-                            {/*    </div>*/}
-                            {/*})} */}
                         </div>
                     })}
                 </div>
@@ -59,10 +50,10 @@ const Home = React.memo(() => {
             </div>
             <div>
             </div>
-            <div className={styles.TwoCars}>
-                <img src={ImbaCar} className={styles.ImbaCar}/>
-                <img src={ImbaCar2} className={styles.ImbaCar}/>
-            </div>
+            {/*<div className={styles.TwoCars}>*/}
+            {/*    <img src={ImbaCar} className={styles.ImbaCar}/>*/}
+            {/*    <img src={ImbaCar2} className={styles.ImbaCar}/>*/}
+            {/*</div>*/}
         </div>
     )
 }

@@ -6,7 +6,6 @@ import {NavLink} from "react-router-dom";
 import styles from './Tournaments.module.css';
 import instance from "../../api/MainAPI";
 import image from '../../common/StormGateLogo_BlackandWhite_Flat.png';
-import {useDeleteTournamentMutation} from "../../redux/RTKtournaments";
 import {UserModel} from "../../models/user-model";
 import {fetchAuthMe, selectIsAuth} from "../../redux/authReducer";
 
@@ -56,6 +55,8 @@ const Tournament = React.memo(({tournament}: props) => {
         }, [])
         const players = UpdatePlayers ? UpdatePlayers : tournament?.players
         console.log(userData);
+
+
         return (
             <div className={styles.mainContainer}>
                 <div className={styles.imgAndName}>
