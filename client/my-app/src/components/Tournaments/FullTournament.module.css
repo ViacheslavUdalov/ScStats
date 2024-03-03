@@ -1,3 +1,102 @@
+.main {
+    background-color: var(--Main-background-color);
+}
+.allColumns {
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+    background-color: rgba(5, 35, 161, 0.78);
+}
+.allPairs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding:0 30px;
+}
+.parentbracket {
+    width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.pair {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    background-color: rgba(63, 236, 51, 0.72);
+    padding: 5px;
+    margin: 20px 20px;
+    width: 90px;
+    height: 50px;
+    overflow: hidden;
+}
+.user:not(:last-child) {
+    border-bottom: 1px solid #beaeae;
+}
+.lineUp
+{
+    position: relative;
+    left: 245px;
+    top: -70px;
+    content: "";
+    width: 3px;
+    height: 20px;
+    background-color: #b9123a;
+}
+.lineDown
+{
+    position: relative;
+    left: 245px;
+    top: -53px;
+    content: "";
+    width: 3px;
+    height: 20px;
+    background-color: #b9123a;
+}
+.lineRight
+{
+    position: relative;
+    left: 145px;
+    top: -50px;
+    content: "";
+    height: 3px;
+    width: 100px;
+    background-color: #b9123a;
+}
+.user {
+    padding: 5px 10px;
+    margin: 0 10px;
+}
+.parentformodal {
+    position: relative;
+}
+.hidemodal {
+    display: none;
+}
+
+.seemodal {
+    display: block;
+    position: absolute;
+    z-index: 10000;
+    top: 52px;
+    left: 140px;
+    width: 100px;
+    height: 50px;
+    background-color: #f39d03;
+    border: 1px solid white;
+}
+
+.click {
+    position: relative;
+    top: 65px;
+    left: 110px;
+    background-color: red;
+border-radius: 50%;
+    cursor: pointer;
+    scale: 0.8;
+}
 .image {
     width: 300px;
     height: 200px;
@@ -6,7 +105,7 @@
     object-fit: cover;
 }
 .container {
-    background-color: var(--Main-background-color);
+    /*background-color: var(--Main-background-color);*/
     display: flex;
     justify-content: space-between;
     padding-top: 30px;
@@ -152,7 +251,6 @@ border: 1px solid black;
     color: transparent;
 }
 .LeaveFromTournament {
-    /*padding-left: 60px;*/
     display: flex;
     flex-direction: column;
 }

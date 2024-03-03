@@ -4,21 +4,19 @@ const jwt = require("jsonwebtoken");
 const register = async (req, res) => {
     try {
         const password = req.body.password;
-        // алгоритм шифрования пароля
+
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
         const doc = new userModel({
             email: req.body.email,
             fullName: req.body.fullName,
             avatarURL: req.body.avatarURL,
-            passwordHash: hash
-        })
-        // сохраняем юзера в базе данных с помощью метода save
+            passwordHash: hash,
+            rank: 1200,
+            country: '',
+            race: ''
+        });
         const user = await doc.save();
-        // шифруем токен с помощью jwt.sign* и шифруем _id, который хранится в монго дб
-        // именно поэтому с нижним подчёркиванием
-        // вторым парамметром указывается ключ, с помощью которого шифруется токе - 'secret123'
-        // третьим парамметром указывается сколько будет храниться токен - {expiresIn: '30d'}
         const token = jwt.sign({
                 _id: user._id
             },
@@ -26,10 +24,7 @@ const register = async (req, res) => {
             {
                 expiresIn: '30d'
             })
-        // разделяем данные, с помощью деструктуризации и отдельно берём захешированный пароль и остальные данные юзера
-        // с помощью _doc берём только нужную информацию о юзере, Без _doc будет очень много дополнительных полей об инфромации запроса.
         const {passwordHash, ...userData } = user._doc;
-        // возращаем информацию о пользователе, без пароля и сам токен
         res.json({
             ...userData,
             token

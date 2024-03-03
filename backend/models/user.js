@@ -13,7 +13,19 @@ const UserSchema = new mongoose.Schema({
             type: String,
             required: true
         },
-        avatarURL: String
+        avatarURL: String,
+        rank: {
+            type: Number,
+            required: false
+        },
+        country: {
+            type: String,
+            required: false
+        },
+        race: {
+            type: String,
+            required: false
+        }
     },
     {
     timestamps: true

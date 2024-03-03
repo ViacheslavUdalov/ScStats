@@ -10,17 +10,27 @@ import image from '../../common/StormGateLogo_BlackandWhite_Flat.png';
 import PreLoader from "../../helpers/isLoading";
 import UserIcon from '../../common/images.png'
 import {selectIsAuth} from "../../redux/authReducer";
+import {generateBracket, simulateMatches} from "../../helpers/createMatches";
+import Click from "../../common/Click.png"
 
 const FullTournament = React.memo(() => {
         const {id} = useParams();
-        // @ts-ignore
-        const {data: tournament, isLoading, refetch} = useGetFullTournamentQuery(id)
+        // const pathname = window.location.pathname;
+        //        const id = pathname.split('/').pop();
+        const {data: tournament, isLoading} = useGetFullTournamentQuery(id || '');
+        type OpenIndexState = Record<number, number>;
         const userData = useSelector((state: rootStateType) => state.auth.data);
         const isAuth = useSelector(selectIsAuth);
         const navigate = useNavigate();
         const [isParticipating, setParticipating] = useState(false)
         const [isFetching, setIsFetching] = useState(false)
-        const [UpdatePlayers, setUpdatePlayers] = useState(tournament?.players)
+        const [UpdatePlayers, setUpdatePlayers] = useState(tournament?.players);
+        const [bracket, setBracket] = useState<UserModel[][][]>([[[]]]);
+        const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
+
+        // console.log(UpdatePlayers);
+        // console.log(bracket)
+
         const RemoveTournament = async () => {
             if (window.confirm('Вы действительно хотите удалить турнир?')) {
                 if (tournament && tournament._id != null) {
@@ -70,6 +80,7 @@ const FullTournament = React.memo(() => {
                 // setParticipating(true)
             }
         }
+
         const players = UpdatePlayers ? UpdatePlayers : tournament?.players
         useEffect(() => {
             tournament && tournament.players.map((player: UserModel) => {
@@ -78,16 +89,29 @@ const FullTournament = React.memo(() => {
                     }
                 }
             )
-            refetch()
-        }, [players, tournament])
+            if (players && players.length > 3) {
+                let insideBracket = [simulateMatches(players)];
+                console.log(insideBracket)
+                setBracket(generateBracket(insideBracket, insideBracket[0].length));
+            }
+        }, [players])
         // console.log(userData)
-        // console.log(data);
+        // console.log(tournament);
+        const openModal = (columnIndex: number, pairIndex: number) => {
+            if (openIndex[columnIndex] === pairIndex) {
+                const {[columnIndex]: removedIndex, ...rest} = openIndex;
+                setOpenIndex(rest);
+            } else {
+                setOpenIndex({...openIndex, [columnIndex]: pairIndex});
+            }
+        }
 
         const charactersToRemove = ["T", "Z"];
         const modifiedString = tournament?.createdAt
             .replace(new RegExp(`[${charactersToRemove.join('')}]`, 'g'), ' ');
         return (
-            <div>
+
+            <div className={styles.main}>
                 {isLoading && <PreLoader/>}
                 {tournament &&
                     <div className={styles.container}>
@@ -171,6 +195,56 @@ const FullTournament = React.memo(() => {
 
                     </div>
                 }
+                <div>
+                    {bracket ?
+                        <div className={styles.parentbracket}>
+
+                            <div className={styles.allColumns}>
+                                <span>Сетка</span>
+                                {bracket.map((column, columnIndex: number) => {
+                                    return (
+                                        <div key={columnIndex} className={styles.allPairs}>
+                                            <div>
+                                                {column.map((pair, pairIndex: number) => {
+                                                    return (
+                                                        <div className={styles.parentformodal}>
+                                                            <div
+                                                                className={`${styles.modal} ${openIndex[columnIndex] === pairIndex ? styles.seemodal : styles.hidemodal}`}>Сообщить
+                                                                результат
+                                                            </div>
+                                                            <img src={Click} alt="click" className={styles.click}
+                                                                 onClick={() => openModal(columnIndex, pairIndex)}/>
+                                                            <div key={pairIndex} className={styles.pair}>
+                                                                {pair.map((user, index) => {
+                                                                    return (
+                                                                        <div key={index} className={styles.user}>
+                                                                            {user.fullName}
+                                                                        </div>
+                                                                    )
+                                                                })}
+                                                            </div>
+                                                            {(column.length > 1 && pairIndex !== column.length) && (
+                                                            <div className={styles.lineRight}></div>
+                                                            )}
+                                                            {(pairIndex % 2 === 0 && pairIndex !== column.length - 1) &&
+                                                            <div className={styles.lineDown}></div>
+                                                            }
+                                                            {(pairIndex % 2 !== 0) && (
+                                                            <div className={styles.lineUp}></div>
+                                                            )}
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        :
+                        <span>Ничего нет</span>
+                    }
+                </div>
             </div>
         )
     }

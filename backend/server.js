@@ -5,7 +5,6 @@ const PORT = 3000;
 const cors = require('cors');
 const {
     tournamentApiRoutes,
-    PlayersRoutes,
     UserRoutes,
     uploadRouter
 } = require('./routes/index');
@@ -24,7 +23,6 @@ app.use(express.json());
 // разрешает делать запросы на backend с других доменов
 app.use(cors());
 // Через mongoose model Все модели подключаются к базе данных
-app.use(PlayersRoutes);
 app.use(tournamentApiRoutes);
 app.use(UserRoutes);
 app.use(uploadRouter);

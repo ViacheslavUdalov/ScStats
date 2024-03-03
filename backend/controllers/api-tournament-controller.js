@@ -16,6 +16,7 @@ const getTournaments = async (req, res) => {
             .sort({createdAt: -1})
             .populate('Owner')
             .populate('players')
+
         const totalCount = await Tournament.countDocuments(filter);
         res.status(200).json({
             tournaments: tournaments,
@@ -27,8 +28,12 @@ const getTournaments = async (req, res) => {
 };
 const getTournament = async (req, res) => {
     try {
-        const tournament = await Tournament.findById(req.params.id).populate('Owner').populate('players');
-        res.status(200).json(tournament);
+        const tournament = await Tournament.findById(req.params.id)
+            .populate('Owner')
+            .populate('players')
+        res.status(200)
+            .json(tournament);
+
     } catch (err) {
         handleError(res, err)
     }
@@ -43,13 +48,13 @@ const deleteTournament = async (req, res) => {
 }
 const addTournament = async (req, res) => {
     try {
-        // const doc = new Tournament(req.body)
         const doc = new Tournament({
             Name: req.body.Name,
             players: req.body.players,
             Owner: req.userId,
             about: req.body.about,
-            imageUrl: req.body.imageUrl
+            imageUrl: req.body.imageUrl,
+            matches: []
         });
         const tournament = await doc.save();
         res.status(200).json(tournament)
@@ -60,11 +65,11 @@ const addTournament = async (req, res) => {
 const editTournament = async (req, res) => {
     try {
     //вытаскиваем все данные из запроса и передаём их в метод update по определённому _id
-    const {Name, players, Owner, about, imageUrl} = req.body;
+    const {Name, players, Owner, about, imageUrl, matches} = req.body;
     const {id} = req.params;
     const tournament = await Tournament
-        .findByIdAndUpdate(id, {Name, players, Owner, about, imageUrl}, {new: true})
-        .populate('Owner') // Загрузка данных об авторе турнира
+        .findByIdAndUpdate(id, {Name, players, Owner, about, imageUrl, matches}, {new: true})
+        .populate('Owner')
         .populate('players')
         res.status(200).json(tournament)
 }

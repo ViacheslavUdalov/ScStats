@@ -30,6 +30,8 @@ const Tournaments = React.memo(() => {
         if (isLoading) {
             return <PreLoader/>
         }
+
+
         return (
             <div className={styles.mainPage}>
                 <div className={styles.mainPageContainer}>

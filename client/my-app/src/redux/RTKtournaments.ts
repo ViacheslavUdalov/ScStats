@@ -36,7 +36,7 @@ export const tournamentsAPI = createApi({
             }),
             invalidatesTags: ['TournamentModel']
         }),
-        updateTournament: builder.mutation<TournamentModel,  { _id: string| undefined; data: Partial<TournamentModel> }>({
+        updateTournament: builder.mutation<TournamentModel,  { _id: string | undefined; data: Partial<TournamentModel> }>({
             query: ({_id, data}) => ({
                 url: `/tournaments/${_id}`,
                 method: 'PATCH',

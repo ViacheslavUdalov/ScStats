@@ -1,4 +1,5 @@
 import {UserModel} from "./user-model";
+import {Match} from "./match";
 
     export interface TournamentModel {
         Name: string,
@@ -16,7 +17,7 @@ import {UserModel} from "./user-model";
 
         updatedAt: string
 
-
+        matches: [Match]
     }
 export interface DataTournamentModel {
     tournaments: Array<TournamentModel> | [],
