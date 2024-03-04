@@ -8,7 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(8px); /* Добавляем размытие заднего фона */
+    backdrop-filter: blur(8px);
     z-index: 10;
 }
 
@@ -19,7 +19,6 @@
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
     display: block;
     z-index: 5000;
-    /*box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);*/
     z-index: 20;
 }
 .closeModal {

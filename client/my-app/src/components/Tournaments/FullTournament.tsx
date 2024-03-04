@@ -11,9 +11,10 @@ import PreLoader from "../../helpers/isLoading";
 import UserIcon from '../../common/images.png'
 import {selectIsAuth} from "../../redux/authReducer";
 import {generateBracket, simulateMatches} from "../../helpers/createMatches";
-import Click from "../../common/Click.png"
-import {TournamentModel} from "../../models/tournament-model";
-import {set} from "react-hook-form";
+import Click from "../../common/Click.png";
+import {log} from "util";
+import Modal from "../../helpers/Modal";
+
 
 const FullTournament = React.memo(() => {
         const {id} = useParams();
@@ -31,10 +32,12 @@ const FullTournament = React.memo(() => {
         let initialBracket = tournament && tournament.bracket ?  tournament.bracket : [[[]]];
         console.log(initialBracket)
         const [bracket, setBracket] = useState(initialBracket);
-        // console.log(bracket)
         const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
-
-
+        const [modalIsOpen, setModalOpen] = useState(false);
+const [messageError, setMessageError] = useState('');
+const closeModal = () => {
+    setModalOpen(false)
+}
         const RemoveTournament = async () => {
             if (window.confirm('Вы действительно хотите удалить турнир?')) {
                 if (tournament && tournament._id != null) {
@@ -121,17 +124,29 @@ const  createBracket = async () => {
     }
 }
         // console.log(bracket)
-const setWinner = async (player: UserModel, colIndex: number, pairIndex: number, userIndex: number) => {
-           if (pairIndex % 2 === 0) {
-               userIndex = 0;
-           } else {
-               userIndex = 1
-           }
-    let localBracket = initialBracket;
-    localBracket[colIndex + 1][Math.floor(pairIndex / 2)][userIndex] = player;
-          // await setBracket(localBracket);
-    initialBracket = localBracket;
-    await instance.patch(`/tournaments/${tournament?._id}`, {...tournament, bracket: localBracket})
+const setWinner = async (player: UserModel, colIndex: number, pairIndex: number) => {
+if (colIndex === bracket.length - 1) {
+    setModalOpen(true)
+    setMessageError('следующего раунда не будет')
+    return;
+}
+    let nextPairIndex = Math.floor(pairIndex / 2);
+    const updatedBracket = [...initialBracket];
+    updatedBracket[colIndex + 1] = [...updatedBracket[colIndex + 1]];
+    updatedBracket[colIndex + 1][nextPairIndex] = [...updatedBracket[colIndex + 1][nextPairIndex]];
+
+    if (updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextPairIndex]) {
+        const nextPair = updatedBracket[colIndex + 1][nextPairIndex];
+        if (nextPair.includes(player) || nextPair.length === 2) {
+            setModalOpen(true)
+            setMessageError('игрок уже есть в следующем раунде')
+            return;
+        }
+    }
+    updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].push(player);
+          await setBracket(updatedBracket);
+    initialBracket = updatedBracket;
+    await instance.patch(`/tournaments/${tournament?._id}`, {...tournament, bracket: updatedBracket})
 }
         const charactersToRemove = ["T", "Z"];
         const modifiedString = tournament?.createdAt
@@ -231,27 +246,33 @@ const setWinner = async (player: UserModel, colIndex: number, pairIndex: number,
                 <div>
                     {bracket ?
                         <div className={styles.parentbracket}>
-
+                            <span>Сетка (Если сетка не появилась, обновите страницу)</span>
                             <div className={styles.allColumns}>
-                                <span>Сетка (Если сетка не появилась, обновите страницу)</span>
+
                                 {bracket.map((column, columnIndex: number) => {
                                     return (
                                         <div key={columnIndex} className={styles.allPairs}>
+
                                             <div>
                                                 {column.map((pair, pairIndex: number) => {
                                                     console.log(pair)
                                                     return (
                                                         <div className={styles.parentformodal}>
+                                                            <Modal isOpen={modalIsOpen} onClose={closeModal}>
+                                                                <div className={styles.inSideModal}>
+                                                                    <span className={styles.LogoutFromAcc}>{messageError}</span>
+                                                                </div>
+                                                            </Modal>
                                                             <div
-                                                                className={`${styles.modal} ${openIndex[columnIndex] === pairIndex ? styles.seemodal : styles.hidemodal}`}>Сообщить
-                                                                результат
+                                                                className={`${styles.modal} ${openIndex[columnIndex] === pairIndex ? styles.seemodal : styles.hidemodal}`}>Что ты Сообщить
+                                                                результат дважды кликните на игрока.
                                                             </div>
                                                             <img src={Click} alt="click" className={styles.click}
                                                                  onClick={() => openModal(columnIndex, pairIndex)}/>
                                                             <div key={pairIndex} className={styles.pair}>
                                                                 {pair.map((user, index) => {
                                                                     return (
-                                                                        <div key={index} className={styles.user} onDoubleClick={() => setWinner(user, columnIndex, pairIndex, index)}>
+                                                                        <div key={index} className={styles.user} onDoubleClick={() => setWinner(user, columnIndex, pairIndex)}>
                                                                             {user.fullName}
                                                                         </div>
                                                                     )

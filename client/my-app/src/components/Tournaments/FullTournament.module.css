@@ -5,7 +5,7 @@
     display: flex;
     flex-direction: row;
     margin: 20px;
-    background-color: rgba(5, 35, 161, 0.78);
+
 }
 .allPairs {
     display: flex;
@@ -14,10 +14,14 @@
     padding:0 30px;
 }
 .parentbracket {
+    border: 2px solid #98f882;
+    margin-top: 30px;
     width: 500px;
     display: flex;
     justify-content: center;
+    flex-direction: column;
     align-items: center;
+    background-color: rgba(5, 35, 161, 0.78);
 }
 .pair {
     display: flex;
@@ -68,6 +72,7 @@
 .user {
     padding: 5px 10px;
     margin: 0 10px;
+    cursor: pointer;
 }
 .parentformodal {
     position: relative;
@@ -75,15 +80,22 @@
 .hidemodal {
     display: none;
 }
-
+.inSideModal {
+    display: flex;
+    flex-direction: column;
+}
+.LogoutFromAcc {
+    color: #020202;
+    font-weight: bold;
+}
 .seemodal {
     display: block;
     position: absolute;
     z-index: 10000;
-    top: 52px;
+    top: 10px;
     left: 140px;
     width: 100px;
-    height: 50px;
+    height: auto;
     background-color: #f39d03;
     border: 1px solid white;
 }
