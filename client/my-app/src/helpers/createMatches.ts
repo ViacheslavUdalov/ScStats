@@ -17,18 +17,7 @@ export const simulateMatches = (players: UserModel[]) => {
     }
     return uniqpairs;
 }
-// return(
-//     (existingPair[0]._id === pair[0]._id && existingPair[1]._id === pair[1]._id) ||
-//     (existingPair[0]._id === pair[1]._id && existingPair[1]._id === pair[0]._id)
-// );
-// let matches = [];
-// while (uniqpairs.length > 0) {
-//     let randomIndex = Math.floor(Math.random() * uniqpairs.length);
-//     let [player1, player2] = uniqpairs[randomIndex];
-// matches.push(createMatch(player1, player2));
-// uniqpairs.splice(randomIndex, 1)
-// }
-// return matches;
+
 export const generateBracket = (result: any, arrayOfPlayersLength: number): any[][][] => {
     let outPutResult: [][] = [];
     if (arrayOfPlayersLength <= 1) {
@@ -42,7 +31,7 @@ export const generateBracket = (result: any, arrayOfPlayersLength: number): any[
     return generateBracket(result, Math.ceil(arrayOfPlayersLength / 2));
 
 }
-const createMatch = (player1: UserModel, player2: UserModel) => {
+const createMatchResult = (player1: UserModel, player2: UserModel) => {
     let winner, loser;
     let index = Math.random();
     if (index < 0.5) {
@@ -54,20 +43,8 @@ const createMatch = (player1: UserModel, player2: UserModel) => {
     }
     let match = {
 
-
         matchDate: Date.now(),
-        matchResult: [{
-            output: 'win',
-            gamesWin: 1,
-            gamesLost: 0,
-            player: winner
-        },
-            {
-                output: 'loss',
-                gamesWin: 0,
-                gamesLost: 1,
-                player: loser
-            }]
+        matchResult: []
     }
     return match;
 }

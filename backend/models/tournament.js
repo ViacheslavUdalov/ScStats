@@ -24,7 +24,7 @@ const Schema = mongoose.Schema;
             required: true
         },
         imageUrl: String,
-        matches: [Match.schema]
+        bracket: [[[Match.schema]]]
     }, { timestamps: true });
 const Tournament = mongoose.model('Tournament', TournamentSchema);
 module.exports = Tournament;

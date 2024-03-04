@@ -17,7 +17,7 @@ import {Match} from "./match";
 
         updatedAt: string
 
-        matches: [Match]
+        bracket: Match[]
     }
 export interface DataTournamentModel {
     tournaments: Array<TournamentModel> | [],

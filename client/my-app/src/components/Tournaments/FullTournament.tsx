@@ -12,12 +12,12 @@ import UserIcon from '../../common/images.png'
 import {selectIsAuth} from "../../redux/authReducer";
 import {generateBracket, simulateMatches} from "../../helpers/createMatches";
 import Click from "../../common/Click.png"
+import {TournamentModel} from "../../models/tournament-model";
 
 const FullTournament = React.memo(() => {
         const {id} = useParams();
-        // const pathname = window.location.pathname;
-        //        const id = pathname.split('/').pop();
         const {data: tournament, isLoading} = useGetFullTournamentQuery(id || '');
+    const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
         type OpenIndexState = Record<number, number>;
         const userData = useSelector((state: rootStateType) => state.auth.data);
         const isAuth = useSelector(selectIsAuth);
@@ -28,8 +28,6 @@ const FullTournament = React.memo(() => {
         const [bracket, setBracket] = useState<UserModel[][][]>([[[]]]);
         const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
 
-        // console.log(UpdatePlayers);
-        // console.log(bracket)
 
         const RemoveTournament = async () => {
             if (window.confirm('Вы действительно хотите удалить турнир?')) {
@@ -70,14 +68,11 @@ const FullTournament = React.memo(() => {
                     ...tournament,
                     players: updatePlayers
                 }
-                const response = await instance.patch(`/tournaments/${tournament._id}`, updateTournament)
-                // console.log(updateTournament)
-                // setUpdatePlayers(updatePlayers)
+                await instance.patch(`/tournaments/${tournament._id}`, updateTournament)
                 setParticipating(true)
                 setIsFetching(false);
             } else {
                 console.log('вы уже участвуете в этом турнире')
-                // setParticipating(true)
             }
         }
 
@@ -89,14 +84,8 @@ const FullTournament = React.memo(() => {
                     }
                 }
             )
-            if (players && players.length > 3) {
-                let insideBracket = [simulateMatches(players)];
-                console.log(insideBracket)
-                setBracket(generateBracket(insideBracket, insideBracket[0].length));
-            }
+
         }, [players])
-        // console.log(userData)
-        // console.log(tournament);
         const openModal = (columnIndex: number, pairIndex: number) => {
             if (openIndex[columnIndex] === pairIndex) {
                 const {[columnIndex]: removedIndex, ...rest} = openIndex;
@@ -105,12 +94,25 @@ const FullTournament = React.memo(() => {
                 setOpenIndex({...openIndex, [columnIndex]: pairIndex});
             }
         }
+const  createBracket = async () => {
+    if (tournament) {
+    var updatedTournament: TournamentModel;
+    if (players && players.length > 3) {
+        let insideBracket = [simulateMatches(players)];
+        console.log(insideBracket)
+        setBracket(generateBracket(insideBracket, insideBracket[0].length));
 
+         updatedTournament = {...tournament, bracket: bracket}
+
+        await instance.patch(`/tournaments/${tournament._id}`, updatedTournament)
+    }
+
+    }
+}
         const charactersToRemove = ["T", "Z"];
         const modifiedString = tournament?.createdAt
             .replace(new RegExp(`[${charactersToRemove.join('')}]`, 'g'), ' ');
         return (
-
             <div className={styles.main}>
                 {isLoading && <PreLoader/>}
                 {tournament &&
@@ -190,6 +192,9 @@ const FullTournament = React.memo(() => {
                             </div>
                             <span className={styles.time}>
                    <span style={{color: "white"}}>Дата создания: </span>{modifiedString?.slice(0, 16)}
+                                {CurrentClient._id === tournament.Owner._id &&
+                                <button onClick={createBracket}>Создать сетку</button>
+                                }
                         </span>
                         </div>
 
@@ -224,13 +229,13 @@ const FullTournament = React.memo(() => {
                                                                 })}
                                                             </div>
                                                             {(column.length > 1 && pairIndex !== column.length) && (
-                                                            <div className={styles.lineRight}></div>
+                                                                <div className={styles.lineRight}></div>
                                                             )}
                                                             {(pairIndex % 2 === 0 && pairIndex !== column.length - 1) &&
-                                                            <div className={styles.lineDown}></div>
+                                                                <div className={styles.lineDown}></div>
                                                             }
                                                             {(pairIndex % 2 !== 0) && (
-                                                            <div className={styles.lineUp}></div>
+                                                                <div className={styles.lineUp}></div>
                                                             )}
                                                         </div>
                                                     )

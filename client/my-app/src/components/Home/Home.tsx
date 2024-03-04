@@ -4,11 +4,10 @@ import {useAppDispatch} from "../../redux/store";
 import {useGetAllTournamentsQuery, useGetUsersQuery} from "../../redux/RTKtournaments";
 import styles from './home.module.css'
 import {NavLink} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useLayoutEffect, useState} from "react";
 import image from '../../common/4151292-1.jpg';
 
 const Home = React.memo(() => {
-        const dispatch = useAppDispatch();
         const [visibleBlocks, setVisibleBlocks] = useState<string[]>([]);
     const {data: usersData, isFetching} = useGetUsersQuery()
         const {data: dataTournaments, isLoading} = useGetAllTournamentsQuery({
@@ -16,9 +15,11 @@ const Home = React.memo(() => {
             searchTerm: '',
             perPage: 10
         });
-
+useLayoutEffect(() => {
+    window.scrollTo(0, 1)
+}, [])
         useEffect(() => {
-            window.scrollTo(0, 1)
+
             function handleScroll() {
                 const blocks = document.querySelectorAll(`.${styles.block}`);
                 const newVisibleBlocks = Array.from(blocks).filter(block => {
