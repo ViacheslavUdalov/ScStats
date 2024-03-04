@@ -22,7 +22,6 @@ const Tournament = React.memo(({tournament}: props) => {
         const toggleIsExpanded = () => {
             setIsExpanded(!isExpanded)
         }
-        // console.log(tournament);
         const followForTournament = async () => {
             if (!isParticipating && tournament) {
                 const updatePlayers = [...tournament.players, userData]
@@ -31,12 +30,11 @@ const Tournament = React.memo(({tournament}: props) => {
                     ...tournament,
                     players: updatePlayers
                 }
-                const response = await instance.patch(`/tournaments/${tournament._id}`, updateTournament)
+               await instance.patch(`/tournaments/${tournament._id}`, updateTournament)
                 console.log(updateTournament)
                 setParticipating(true)
             } else {
                 console.log('вы уже участвуете в этом турнире')
-                // setParticipating(true)
             }
         }
         useEffect(() => {
@@ -62,7 +60,7 @@ const Tournament = React.memo(({tournament}: props) => {
                 <div className={styles.imgAndName}>
                     <img className={styles.image}
                          src={tournament.imageUrl ?
-                             `http://localhost:3000${tournament.imageUrl}` : image}/>
+                             `http://localhost:3000${tournament.imageUrl}` : image} alt={'image'}/>
                     <div className={styles.NameAndAbout}>
                         <h2>
                             <NavLink to={`/tournaments/` + tournament._id} className={styles.NavLinkName}>

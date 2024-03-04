@@ -16,7 +16,7 @@ code {
 }
 html[data-theme='dark'] {
   --button-text-color: #c5c5c5;
-  --Main-background-color: #3f3f3f;
+  --Main-background-color: rgba(63, 63, 63, 0.49);
   --SideMenu-background-color: #4a004f;
   --color: white;
   --NavLink-color: white;
@@ -37,7 +37,7 @@ html[data-theme='dark'] {
 }
 html[data-theme='light'] {
   --button-text-color: #84e3ff;
-  --Main-background-color: #9a9a9a;
+  --Main-background-color: rgba(154, 154, 154, 0.5);
   --SideMenu-background-color: #9703a1;
   --color: black;
   --NavLink-color: black;
