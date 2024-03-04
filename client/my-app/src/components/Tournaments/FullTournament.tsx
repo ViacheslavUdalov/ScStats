@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {MouseEventHandler, useEffect, useState} from "react";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
 import styles from './FullTournament.module.css';
 import {useGetFullTournamentQuery} from "../../redux/RTKtournaments";
@@ -13,11 +13,14 @@ import {selectIsAuth} from "../../redux/authReducer";
 import {generateBracket, simulateMatches} from "../../helpers/createMatches";
 import Click from "../../common/Click.png"
 import {TournamentModel} from "../../models/tournament-model";
+import {set} from "react-hook-form";
 
 const FullTournament = React.memo(() => {
         const {id} = useParams();
-        const {data: tournament, isLoading} = useGetFullTournamentQuery(id || '');
-    const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
+        // @ts-ignore
+        const {data: tournament, isLoading} = useGetFullTournamentQuery(id);
+
+        const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
         type OpenIndexState = Record<number, number>;
         const userData = useSelector((state: rootStateType) => state.auth.data);
         const isAuth = useSelector(selectIsAuth);
@@ -25,7 +28,10 @@ const FullTournament = React.memo(() => {
         const [isParticipating, setParticipating] = useState(false)
         const [isFetching, setIsFetching] = useState(false)
         const [UpdatePlayers, setUpdatePlayers] = useState(tournament?.players);
-        const [bracket, setBracket] = useState<UserModel[][][]>([[[]]]);
+        let initialBracket = tournament && tournament.bracket ?  tournament.bracket : [[[]]];
+        console.log(initialBracket)
+        const [bracket, setBracket] = useState(initialBracket);
+        // console.log(bracket)
         const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
 
 
@@ -76,6 +82,12 @@ const FullTournament = React.memo(() => {
             }
         }
 
+        useEffect(() => {
+            setBracket(initialBracket)
+
+        }, [initialBracket, bracket]);
+
+
         const players = UpdatePlayers ? UpdatePlayers : tournament?.players
         useEffect(() => {
             tournament && tournament.players.map((player: UserModel) => {
@@ -84,7 +96,6 @@ const FullTournament = React.memo(() => {
                     }
                 }
             )
-
         }, [players])
         const openModal = (columnIndex: number, pairIndex: number) => {
             if (openIndex[columnIndex] === pairIndex) {
@@ -96,18 +107,31 @@ const FullTournament = React.memo(() => {
         }
 const  createBracket = async () => {
     if (tournament) {
-    var updatedTournament: TournamentModel;
     if (players && players.length > 3) {
         let insideBracket = [simulateMatches(players)];
-        console.log(insideBracket)
-        setBracket(generateBracket(insideBracket, insideBracket[0].length));
-
-         updatedTournament = {...tournament, bracket: bracket}
-
-        await instance.patch(`/tournaments/${tournament._id}`, updatedTournament)
+        // console.log(insideBracket)
+        let bracketForServer = generateBracket(insideBracket, insideBracket[0].length)
+        // console.log(bracketForServer)
+      setBracket(bracketForServer);
+        initialBracket = bracketForServer;
+        console.log(initialBracket)
+        await instance.patch(`/tournaments/${tournament?._id}`, {...tournament, bracket: bracketForServer})
+    }} else {
+        console.log('Нельзя создать сетку, если меньше трёх игороков')
     }
-
-    }
+}
+        // console.log(bracket)
+const setWinner = async (player: UserModel, colIndex: number, pairIndex: number, userIndex: number) => {
+           if (pairIndex % 2 === 0) {
+               userIndex = 0;
+           } else {
+               userIndex = 1
+           }
+    let localBracket = initialBracket;
+    localBracket[colIndex + 1][Math.floor(pairIndex / 2)][userIndex] = player;
+          // await setBracket(localBracket);
+    initialBracket = localBracket;
+    await instance.patch(`/tournaments/${tournament?._id}`, {...tournament, bracket: localBracket})
 }
         const charactersToRemove = ["T", "Z"];
         const modifiedString = tournament?.createdAt
@@ -192,8 +216,12 @@ const  createBracket = async () => {
                             </div>
                             <span className={styles.time}>
                    <span style={{color: "white"}}>Дата создания: </span>{modifiedString?.slice(0, 16)}
-                                {CurrentClient._id === tournament.Owner._id &&
-                                <button onClick={createBracket}>Создать сетку</button>
+                                {CurrentClient._id === tournament.Owner._id && tournament.bracket.length === 0 &&
+                                    <div>
+                                        <button onClick={createBracket}>Создать сетку</button>
+                                        {/*<button onClick={saveBracket}>Создать сетку</button>*/}
+                                    </div>
+
                                 }
                         </span>
                         </div>
@@ -205,12 +233,13 @@ const  createBracket = async () => {
                         <div className={styles.parentbracket}>
 
                             <div className={styles.allColumns}>
-                                <span>Сетка</span>
+                                <span>Сетка (Если сетка не появилась, обновите страницу)</span>
                                 {bracket.map((column, columnIndex: number) => {
                                     return (
                                         <div key={columnIndex} className={styles.allPairs}>
                                             <div>
                                                 {column.map((pair, pairIndex: number) => {
+                                                    console.log(pair)
                                                     return (
                                                         <div className={styles.parentformodal}>
                                                             <div
@@ -222,7 +251,7 @@ const  createBracket = async () => {
                                                             <div key={pairIndex} className={styles.pair}>
                                                                 {pair.map((user, index) => {
                                                                     return (
-                                                                        <div key={index} className={styles.user}>
+                                                                        <div key={index} className={styles.user} onDoubleClick={() => setWinner(user, columnIndex, pairIndex, index)}>
                                                                             {user.fullName}
                                                                         </div>
                                                                     )

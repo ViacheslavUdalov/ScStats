@@ -54,7 +54,7 @@ const addTournament = async (req, res) => {
             Owner: req.userId,
             about: req.body.about,
             imageUrl: req.body.imageUrl,
-            matches: []
+            bracket: []
         });
         const tournament = await doc.save();
         res.status(200).json(tournament)
@@ -65,10 +65,10 @@ const addTournament = async (req, res) => {
 const editTournament = async (req, res) => {
     try {
     //вытаскиваем все данные из запроса и передаём их в метод update по определённому _id
-    const {Name, players, Owner, about, imageUrl, matches} = req.body;
+    const {Name, players, Owner, about, imageUrl, bracket} = req.body;
     const {id} = req.params;
     const tournament = await Tournament
-        .findByIdAndUpdate(id, {Name, players, Owner, about, imageUrl, matches}, {new: true})
+        .findByIdAndUpdate(id, {Name, players, Owner, about, imageUrl, bracket}, {new: true})
         .populate('Owner')
         .populate('players')
         res.status(200).json(tournament)

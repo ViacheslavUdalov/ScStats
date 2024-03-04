@@ -24,7 +24,34 @@ const Schema = mongoose.Schema;
             required: true
         },
         imageUrl: String,
-        bracket: [[[Match.schema]]]
+        bracket: [[[{
+            fullName: {
+                type: String,
+                required: true
+            },
+            email: {
+                type: String,
+                required: true,
+                unique: true
+            },
+            passwordHash: {
+                type: String,
+                required: true
+            },
+            avatarURL: String,
+            rank: {
+                type: Number,
+                required: false
+            },
+            country: {
+                type: String,
+                required: false
+            },
+            race: {
+                type: String,
+                required: false
+            }
+        }]]]
     }, { timestamps: true });
 const Tournament = mongoose.model('Tournament', TournamentSchema);
 module.exports = Tournament;
