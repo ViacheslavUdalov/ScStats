@@ -87,9 +87,9 @@ useLayoutEffect(() => {
                         <div className={`${styles.block} ${styles.parentusers} ${visibleBlocks.includes('block3') ? styles.show : ''}`} id='block3'>
                             <h3>Смотрите рейтинг лучших игроков</h3>
                             <div>
-                                {usersData?.users.map(user => {
+                                {usersData?.users.map((user, index) => {
                                     return (
-                                        <div>
+                                        <div key={index}>
                                            <span>{user.fullName}</span>
                                             <span>{user.rank}</span>
                                         </div>

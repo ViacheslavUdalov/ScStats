@@ -1,24 +1,33 @@
 import {UserModel} from "../models/user-model";
 import {Simulate} from "react-dom/test-utils";
-import play = Simulate.play;
+import {Match} from "../models/match";
 
 export const simulateMatches = (players: UserModel[]) => {
-    const playedPlayers = new Set<UserModel>();
-    const uniqpairs: UserModel[][] = [];
-    for (const player of players) {
-        if (!playedPlayers.has(player)) {
-            let randomIndex = Math.floor(Math.random() * players.length)
-            while (playedPlayers.has(players[randomIndex]) || randomIndex === players.indexOf(player)) randomIndex = Math.floor(Math.random() * players.length);
-            const pair = [player, players[randomIndex]].sort((a, b) => a._id.localeCompare(b._id));
-            uniqpairs.push(pair);
-            playedPlayers.add(player);
-            playedPlayers.add(players[randomIndex]);
+    const usedPlayers = new Set<string>();
+    const matches: Match[] = [];
+    for (let i = 0; i < players.length - 1; i++) {
+        for (let j = i + 1; j < players.length; j++) {
+            const playerId1 = players[i]._id
+            const playerId2 = players[j]._id;
+            const pair = [players[i], players[j]].sort();
+            const isPlayedAlready = pair.some(player => usedPlayers.has(player._id));
+            if (!isPlayedAlready) {
+                matches.push({
+                    matchDate: new Date(),
+                    players: [
+                        {_id: playerId1, fullName: players[i].fullName, score: 0},
+                        {_id: playerId2, fullName: players[j].fullName, score: 0}
+                    ],
+                    winner: null
+                })
+                pair.forEach(player => usedPlayers.add(player._id));
+            }
         }
     }
-    return uniqpairs;
+    return matches;
 }
 
-export const generateBracket = (result: any, arrayOfPlayersLength: number): any[][][] => {
+export const generateBracket = (result: any, arrayOfPlayersLength: number): any[][] => {
     let outPutResult: [][] = [];
     if (arrayOfPlayersLength <= 1) {
         return result;

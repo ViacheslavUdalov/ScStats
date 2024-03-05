@@ -22,7 +22,8 @@ const Registration = () => {
         if (!data.payload) {
             alert('Не удалось зарегистрироваться!');
         }
-        if (data.payload?.token) {
+        if (data.payload) {
+            window.localStorage.setItem('currentUser', data.payload);
             window.localStorage.setItem('token', data.payload.token);
         };
     };

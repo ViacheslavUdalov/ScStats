@@ -6,6 +6,7 @@ import {fetchAuthMe, selectIsAuth} from "../../../redux/authReducer";
 import instance from "../../../api/MainAPI";
 import {useSelector} from "react-redux";
 import {fetchTournament} from "../../../redux/TournamentsReducer";
+import {TournamentOwner} from "../../../models/PlayerBracket";
 
 const CreateTournament = () => {
     const navigate = useNavigate();
@@ -17,7 +18,11 @@ const CreateTournament = () => {
     const [imageUrl, setImageUrl] = useState('');
     const hiddenFileInput = useRef(null);
     const [submitButtonDisabled, setSubmitButtonDisabled] = useState(true);
-
+    let currentAuthUser: TournamentOwner | null = null;
+    const currentUserString = localStorage.getItem('currentUser');
+    if (currentUserString !== null) {
+         currentAuthUser = JSON.parse(currentUserString);
+    }
     useEffect(() => {
         id &&
         dispatch(fetchTournament(id))
@@ -55,7 +60,8 @@ const CreateTournament = () => {
             const fields = {
                 Name,
                 about,
-                imageUrl
+                imageUrl,
+                Owner: currentAuthUser
             }
             const {data} = isEditing ? await instance.patch(`/tournaments/${id}`, fields)
                 : await instance.post('/tournaments', fields);

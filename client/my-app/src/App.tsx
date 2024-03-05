@@ -16,11 +16,9 @@ import EditUserData from "./components/AboutUser/EditUserData";
 import Players from "./components/Players/Players";
 function App() {
     const dispatch = useAppDispatch();
-    const isAuth = useSelector(selectIsAuth);
     useEffect(() => {
         dispatch(fetchAuthMe());
     }, [])
-    // console.log(`registration is Auth ${isAuth}`);
   return (
       <div className={styles.App}>
           <Header />
@@ -30,7 +28,7 @@ function App() {
             <Route path={'/aboutUser/:id?/edit'} element={<EditUserData />}/>
             <Route path={'/tournaments'} element={<Tournaments />}/>
             <Route path={'/tournaments/:id?'} element={<FullTournament />}/>
- .           <Route path={'/tournaments/:id?/edit'} element={<CreateTournament />}/>
+ .          <Route path={'/tournaments/:id?/edit'} element={<CreateTournament />}/>
             <Route path={'/auth/login'} element={<Login />}/>
             <Route path={'/players'} element={<Players />} />
             <Route path={'/auth/register'} element={<Registration />}/>

@@ -15,6 +15,7 @@ const ForSmallScreen = () => {
     const Logout = () => {
         if (window.confirm('Вы действительно хотите выйти?')) {
             dispatch(logout());
+            window.localStorage.removeItem('currentUser');
             window.localStorage.removeItem('token');
         }
         navigate('/');

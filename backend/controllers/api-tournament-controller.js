@@ -51,7 +51,7 @@ const addTournament = async (req, res) => {
         const doc = new Tournament({
             Name: req.body.Name,
             players: req.body.players,
-            Owner: req.userId,
+            Owner: req.body.Owner,
             about: req.body.about,
             imageUrl: req.body.imageUrl,
             bracket: []

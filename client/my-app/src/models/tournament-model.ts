@@ -5,11 +5,7 @@ import {Match} from "./match";
         Name: string,
         _id: string,
         players: UserModel[],
-        Owner: {
-            fullName: string,
-            avatarURL: string,
-            _id: string
-        }
+        Owner: UserModel,
         about: string,
         imageUrl: string,
 
@@ -17,7 +13,7 @@ import {Match} from "./match";
 
         updatedAt: string
 
-        bracket: UserModel[][][]
+        bracket: Match[][]
     }
 export interface DataTournamentModel {
     tournaments: Array<TournamentModel> | [],

@@ -1,10 +1,6 @@
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
-import {useForm} from "react-hook-form";
-import {RegisterModel} from "../../models/auth-model";
-import {fetchEditMe, fetchRegister} from "../../redux/authReducer";
 import styles from "../registration/Registration.module.css";
-import {rootStateType, useAppDispatch, useAppSelector} from "../../redux/store";
-import {UserModel} from "../../models/user-model";
+import {rootStateType, useAppSelector} from "../../redux/store";
 import instance from "../../api/MainAPI";
 import {useNavigate, useParams} from "react-router-dom";
 const EditUserData = () => {

@@ -5,7 +5,6 @@ import useTheme from "../../helpers/useTheme";
 import styles from './ForFullScreen.module.css'
 import {useSelector} from "react-redux";
 import {NavLink, useNavigate} from "react-router-dom";
-import ModalComponent from "../../helpers/Modal";
 import React, {useState} from "react";
 import Modal from "../../helpers/Modal";
 const ForFullScreen = () => {
@@ -20,7 +19,8 @@ const ForFullScreen = () => {
 
     const Logout = () => {
                 dispatch(logout());
-            window.localStorage.removeItem('token');
+            window.localStorage.removeItem('currentUser');
+        window.localStorage.removeItem('token');
         setModalIsOpen(false);
         navigate('/');
     }

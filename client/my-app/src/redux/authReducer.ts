@@ -10,7 +10,7 @@ export const fetchAuth = createAsyncThunk('auth/fetchAuth', async (params: AuthM
         return response.data;
 }})
 export const fetchAuthMe = createAsyncThunk('auth/fetchAuthMe', async () => {
-    const response = await instance.get('auth/me');
+    let response = await instance.get('auth/me');
     if (response.status === 200) {
         return response.data;
     }
@@ -97,6 +97,5 @@ const authSlice = createSlice({
     }
 });
 export const selectIsAuth = (state: rootStateType) => Boolean(state.auth.data)
-// @ts-ignore
 export const authReducer = authSlice.reducer;
 export const {logout} = authSlice.actions;

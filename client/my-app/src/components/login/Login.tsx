@@ -26,7 +26,8 @@ const Login = () => {
             if (!response.payload) {
                 setServerErrorMessage(true)
             }
-            if (response.payload?.token) {
+            if (response.payload) {
+                window.localStorage.setItem('currentUser', JSON.stringify(response.payload));
                 window.localStorage.setItem('token', response.payload.token);
             }
         } catch (err) {

@@ -24,7 +24,7 @@ const Schema = mongoose.Schema;
             required: true
         },
         imageUrl: String,
-        bracket: [[[{
+        bracket: [[{
             fullName: {
                 type: String,
                 required: true
@@ -51,7 +51,7 @@ const Schema = mongoose.Schema;
                 type: String,
                 required: false
             }
-        }]]]
+        }]]
     }, { timestamps: true });
 const Tournament = mongoose.model('Tournament', TournamentSchema);
 module.exports = Tournament;

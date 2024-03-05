@@ -46,7 +46,6 @@ const login = async (req, res) => {
         }
         const isValidPass = await bcrypt.compare(req.body.password, user._doc.passwordHash);
         if (!isValidPass) {
-            // return нужен, чтобы дальнейший нижений код не выполнялся и сразу выдавало сообщение об ошибке
             return res.status(403).json({
                 message: 'Неверный логин или пароль!'
             })
@@ -124,11 +123,24 @@ const getOneUser = async (req, res) => {
         })
     }
 }
+// const getOneUserByUserName = async (req, res) => {
+//     try {
+//         const client = await userModel.findById=(req.params.username);
+//         res.status(200).json(client)
+//     }
+//     catch (err) {
+//         console.log(err);
+//         res.status(500).json({
+//             message: 'Невозможно получить пользователей.'
+//         })
+//     }
+// }
 module.exports = {
     register,
     login,
     authMe,
     editMe,
     getUsers,
-    getOneUser
+    getOneUser,
+    // getOneUserByUserName
 }

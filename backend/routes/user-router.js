@@ -7,7 +7,8 @@ const {
     register,
     editMe,
     getUsers,
-    getOneUser
+    getOneUser,
+    getOneUserByUserName
 } = require('../controllers/user-controller');
 const checkAuth  = require("../utilits/checkAuth");
 const {registerValidation, loginValidation, editValidation} = require("../validations/auth");
@@ -20,4 +21,5 @@ router.patch('/auth/:id', handleValidationErrors, editMe);
 router.get('/auth/me',  checkAuth, authMe);
 router.get('/users', getUsers);
 router.get('/user/:id', getOneUser);
+// router.get('/user/:username', getOneUserByUserName);
 module.exports = router;

@@ -9,6 +9,7 @@ import {authReducer} from "./authReducer";
 import {tournamentsAPI} from "./RTKtournaments";
 import {tournamentReducer} from "./TournamentsReducer";
 import {UsersReducer} from "./UsersReducer";
+import {authAPI} from "./RTKauth";
 
 const rootReducer: Reducer = combineReducers({
     // tournaments: tournamentReducer,
