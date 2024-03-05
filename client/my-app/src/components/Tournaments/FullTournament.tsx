@@ -282,7 +282,7 @@ if (colIndex === bracket.length - 1) {
                                                 {column.map((pair, pairIndex: number) => {
                                                     console.log(pair)
                                                     return (
-                                                        <div className={styles.parentformodal}>
+                                                        <div className={styles.parentformodal} key={pairIndex}>
                                                             <Modal isOpen={modalIsOpen} onClose={closeModal}>
                                                                 <div className={styles.inSideModal}>
                                                                     <span className={styles.LogoutFromAcc}>{messageError}</span>
