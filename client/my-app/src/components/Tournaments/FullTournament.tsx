@@ -101,7 +101,7 @@ const FullTournament = React.memo(() => {
         }, [tournament?.bracket]);
 
 
-        const players = UpdatePlayers ? UpdatePlayers : tournament?.players
+        // const players = UpdatePlayers ? UpdatePlayers : tournament?.players
         useEffect(() => {
             tournament && tournament.players.map((player: UserModel) => {
                     if (player?._id === userData?._id) {
@@ -109,7 +109,7 @@ const FullTournament = React.memo(() => {
                     }
                 }
             )
-        }, [players])
+        }, [tournament?.players])
         const openModal = (columnIndex: number, pairIndex: number) => {
             if (openIndex[columnIndex] === pairIndex) {
                 const {[columnIndex]: removedIndex, ...rest} = openIndex;
@@ -120,8 +120,8 @@ const FullTournament = React.memo(() => {
         }
         const createBracket = async () => {
             if (tournament) {
-                if (players && players.length > 3) {
-                    let insideBracket = [simulateMatches(players)];
+                if (UpdatePlayers && UpdatePlayers.length > 3) {
+                    let insideBracket = [simulateMatches(UpdatePlayers)];
                     console.log(insideBracket)
                     let bracketForServer = generateBracket(insideBracket, insideBracket[0].length)
                     console.log(bracketForServer)
@@ -206,14 +206,14 @@ const FullTournament = React.memo(() => {
                                     <span style={{fontSize: 'small'}}>О турнире:</span>
                                     <div className={styles.AboutTournament}>{tournament?.about}</div>
                                 </div>
-                                <span style={{fontSize: 'small'}}>Всего участников: {players?.length}</span>
+                                <span style={{fontSize: 'small'}}>Всего участников: {UpdatePlayers?.length}</span>
                                 <div className={styles.player}>
-                                    {players?.length ?
-                                        players?.slice(0, 7).map((player: UserModel, index: number) => {
+                                    {UpdatePlayers?.length ?
+                                        UpdatePlayers?.slice(0, 7).map((player: UserModel, index: number) => {
                                             return <NavLink to={`/AboutUser/${player?._id}`}
                                                             className={styles.PlayerFullName} key={index}>
                                                 {player?.fullName}
-                                                {index < 6 && index < players.length - 1 && ','}
+                                                {index < 6 && index < UpdatePlayers.length - 1 && ','}
                                                 {index === 6 && tournament.players.length > 7 && '...'}
                                             </NavLink>
                                         }) : <span style={{paddingLeft: '20px'}}>Здесь пока ещё нет учатсников</span>
