@@ -31,7 +31,7 @@ const FullTournament = React.memo(() => {
         const [isParticipating, setParticipating] = useState(false)
         const [isFetching, setIsFetching] = useState(false)
         const [UpdatePlayers, setUpdatePlayers] = useState(tournament?.players);
-        let initialBracket = tournament && tournament.bracket ?  tournament.bracket : [[]];
+        let initialBracket = tournament && tournament.bracket ? tournament.bracket : [[]];
         // console.log(initialBracket)
         const [bracket, setBracket] = useState(initialBracket);
         const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
@@ -39,14 +39,15 @@ const FullTournament = React.memo(() => {
         const [messageError, setMessageError] = useState('');
         const [scoreP1, setScoreP1] = useState(0);
         const [scoreP2, setScoreP2] = useState(0);
-const closeModal = () => {
-    setModalOpen(false)
-}
-        const handleScoreP1 = (e: any) => {
-            setScoreP1(e.target.value);
+        console.log(scoreP1, scoreP2)
+        const handleScoreP1 = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setScoreP1(Number(e.target.value));
         }
-        const handleScoreP2 = (e: any) => {
-            setScoreP2(e.target.value);
+        const handleScoreP2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setScoreP2(Number(e.target.value));
+        }
+        const closeModal = () => {
+            setModalOpen(false)
         }
         const RemoveTournament = async () => {
             if (window.confirm('Вы действительно хотите удалить турнир?')) {
@@ -118,63 +119,76 @@ const closeModal = () => {
                 setOpenIndex({...openIndex, [columnIndex]: pairIndex});
             }
         }
-const  createBracket = async () => {
-    if (tournament) {
-    if (players && players.length > 3) {
-        let insideBracket = [simulateMatches(players)];
-        console.log(insideBracket)
-        let bracketForServer = generateBracket(insideBracket, insideBracket[0].length)
-        console.log(bracketForServer)
-      setBracket(bracketForServer);
-        initialBracket = bracketForServer;
-        console.log(initialBracket)
-        await instance.patch(`/tournaments/${tournament?._id}`, {...tournament, bracket: bracketForServer})
-    }} else {
-        console.log('Нельзя создать сетку, если меньше трёх игороков')
-    }
-}
-        // console.log(bracket)
-const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number, scoreForPlayer2: number, colIndex: number, pairIndex: number) => {
-
-if (colIndex === bracket.length - 1) {
-    setModalOpen(true)
-    setMessageError('следующего раунда не будет')
-    return;
-}
-    let nextMatchIndex = Math.floor(pairIndex / 2);
-    const updatedBracket = [...initialBracket];
-    updatedBracket[colIndex + 1] = [...updatedBracket[colIndex + 1]];
-    // updatedBracket[colIndex + 1][nextMatchIndex] = [...updatedBracket[colIndex + 1][nextMatchIndex]];
-
-    let currMatch = updatedBracket[colIndex][pairIndex];
-    currMatch.players[0].score = scoreForPlayer1;
-    let playerData1 = {
-        _id: currMatch.players[0]._id,
-        fullName: currMatch.players[0].fullName
-    }
-    currMatch.players[1].score = scoreForPlayer2;
-    let playerData2 = {
-        _id: currMatch.players[1]._id,
-        fullName: currMatch.players[1].fullName
-    }
-    let winner: PlayerBracketWithoutScore;
-    scoreForPlayer1 > scoreForPlayer2 ? winner = playerData1 : winner = playerData2;
-    currMatch.winner = winner;
-    if (updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
-        const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
-            if (nextMatch.players.some((player) => player._id === winner._id) || nextMatch.players.length === 2) {
-                setModalOpen(true)
-                setMessageError('игрок уже есть в следующем раунде')
-                return;
+        const createBracket = async () => {
+            if (tournament) {
+                if (players && players.length > 3) {
+                    let insideBracket = [simulateMatches(players)];
+                    console.log(insideBracket)
+                    let bracketForServer = generateBracket(insideBracket, insideBracket[0].length)
+                    console.log(bracketForServer)
+                    setBracket(bracketForServer);
+                    initialBracket = bracketForServer;
+                    console.log(initialBracket)
+                    await instance.patch(`/tournaments/${tournament?._id}`, {...tournament, bracket: bracketForServer})
+                }
+            } else {
+                console.log('Нельзя создать сетку, если меньше трёх игороков')
+            }
         }
-    }
+        // console.log(bracket)
+        const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number = 0, scoreForPlayer2: number = 0, colIndex: number, pairIndex: number) => {
+            // if (colIndex === bracket.length - 1) {
+            //     setModalOpen(true)
+            //     setMessageError('следующего раунда не будет')
+            //     return;
+            // }
+            let nextMatchIndex = Math.floor(pairIndex / 2);
+            let updatedBracket = JSON.parse(JSON.stringify(initialBracket));
+            let currMatch = updatedBracket[colIndex][pairIndex];
+            const updatedPlayers = currMatch.players.map((player: UserModel, index: number) => {
+                if (index === 0) {
+                    return {...player, score: scoreForPlayer1}
+                } else {
+                    return {...player, score: scoreForPlayer2}
+                }
+            })
+            const winner: PlayerBracketWithoutScore = scoreForPlayer1 > scoreForPlayer2 ? {
+                _id: updatedPlayers[0]._id,
+                fullName: updatedPlayers[0].fullName
+            } : {
+                _id: updatedPlayers[1]._id,
+                fullName: updatedPlayers[1].fullName
+            };
+            currMatch.winner = winner;
+            currMatch.players = updatedPlayers;
+            updatedBracket[colIndex][pairIndex] = currMatch;
 
+            if (colIndex !== bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
+                const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
+                if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
+                    setModalOpen(true)
+                    setMessageError('игрок уже есть в следующем раунде')
+                    return;
+                }
+                updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({ ...currMatch.winner, score: 0 });
+            }
 
-   updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
-          await setBracket(updatedBracket);
-    initialBracket = updatedBracket;
-    await instance.patch(`/tournaments/${tournament?._id}`, {...tournament, bracket: updatedBracket})
-}
+            await setBracket(updatedBracket);
+            initialBracket = updatedBracket;
+            await instance.patch(`/tournaments/${tournament?._id}`, {...tournament, bracket: updatedBracket})
+        }
+
+        const deepCopy = (obj: any): any => {
+            if (typeof obj === 'object' || obj === null) {
+                if (Array.isArray(obj)) {
+                    return obj.map(deepCopy);
+                } else {
+                    return {...obj}
+                }
+            }
+
+            return obj
+        }
         const charactersToRemove = ["T", "Z"];
         const modifiedString = tournament?.createdAt
             .replace(new RegExp(`[${charactersToRemove.join('')}]`, 'g'), ' ');
@@ -260,7 +274,8 @@ if (colIndex === bracket.length - 1) {
                    <span style={{color: "white"}}>Дата создания: </span>{modifiedString?.slice(0, 16)}
                                 {CurrentClient?._id === tournament.Owner._id && tournament.bracket.length === 0 &&
                                     <div>
-                                        <button onClick={createBracket} className={styles.RemoveTournament}>Создать сетку</button>
+                                        <button onClick={createBracket} className={styles.RemoveTournament}>Создать сетку
+                                        </button>
                                     </div>
 
                                 }
@@ -279,32 +294,49 @@ if (colIndex === bracket.length - 1) {
                                     return (
                                         <div key={columnIndex} className={styles.allPairs}>
                                             <div>
-                                                {column.map((pair, pairIndex: number) => {
-                                                    console.log(pair)
+                                                {column.map((pair: Match, pairIndex: number) => {
                                                     return (
+
                                                         <div className={styles.parentformodal} key={pairIndex}>
+
+
                                                             <Modal isOpen={modalIsOpen} onClose={closeModal}>
                                                                 <div className={styles.inSideModal}>
-                                                                    <span className={styles.LogoutFromAcc}>{messageError}</span>
+                                                                    <span
+                                                                        className={styles.LogoutFromAcc}>{messageError}</span>
                                                                 </div>
                                                             </Modal>
+
                                                             <div
                                                                 className={`${styles.modal} ${openIndex[columnIndex] === pairIndex ? styles.seemodal : styles.hidemodal}`}>
-                                                                первый
-                                                                <input type="text" value={scoreP1} onChange={handleScoreP1}/>
-                                                                второй
-                                                                 <input type="text" value={scoreP2} onChange={handleScoreP2}/>
-                                                                <button onClick={() => setWinner(pair.players, scoreP1, scoreP2, columnIndex, pairIndex)}>Отправить результат</button>
-                                                                Что бы Сообщить
-                                                                результат дважды кликните на игрока.
-                                                            </div>
+                                                                {pair.winner ?
+                                                                    <div className={styles.matchplayed}>Матч сыгран.</div> :
+                                                                <div>
+                                                                Верхний игрок:
+                                                                <input type="text" value={scoreP1}
+                                                                       onChange={handleScoreP1}/>
+                                                                    Нижний игрок:
+                                                                <input type="text" value={scoreP2}
+                                                                       onChange={handleScoreP2}/>
+                                                                <button
+                                                                    onClick={() => setWinner(pair.players, scoreP1, scoreP2, columnIndex, pairIndex)}>Отправить
+                                                                    результат.
+                                                                </button>
+                                                                    </div>
+                                                                    }
+                                                                </div>
+
                                                             <img src={Click} alt="click" className={styles.click}
                                                                  onClick={() => openModal(columnIndex, pairIndex)}/>
                                                             <div key={pairIndex} className={styles.pair}>
-                                                                {pair.players.map((user: PlayerBracket, index) => {
+                                                                {pair.players?.map((user: PlayerBracket, index) => {
+                                                                    const isWinner = pair.winner && user._id === pair.winner._id;
                                                                     return (
-                                                                        <div key={index} className={styles.user}>
-                                                                            {user.fullName}
+                                                                        <div key={index} className={`${styles.user} ${isWinner ? styles.usernameWithChange : ''}`}>
+                                                                            <span className={`${styles.username}`}>{user.fullName}</span>
+                                                                            <span className={styles.score}>
+                                                                                {user.score}
+                                                                            </span>
                                                                         </div>
                                                                     )
                                                                 })}
@@ -318,8 +350,9 @@ if (colIndex === bracket.length - 1) {
                                                             {(pairIndex % 2 !== 0) && (
                                                                 <div className={styles.lineUp}></div>
                                                             )}
-                                                        </div>
-                                                    )
+                                                             </div>
+                                                         )
+
                                                 })}
                                             </div>
                                         </div>

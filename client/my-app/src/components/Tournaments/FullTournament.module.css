@@ -30,14 +30,42 @@
     justify-content: center;
     border: 1px solid #ccc;
     background-color: rgba(63, 236, 51, 0.72);
-    padding: 5px;
+    /*padding: 5px;*/
     margin: 20px 20px;
-    width: 90px;
+    width: 100px;
     height: 50px;
+
+}
+.username {
     overflow: hidden;
 }
+.user {
+    /*padding: 10px;*/
+    /*margin: 0 10px;*/
+    cursor: pointer;
+    width: 100px;
+    height: 25px;
+    display: flex;
+    justify-content: space-between;
+align-items: center;
+}
 .user:not(:last-child) {
-    border-bottom: 1px solid #beaeae;
+    /*border-bottom: 1px solid #beaeae;*/
+}
+.score{
+    background-color: #005207;
+padding: 3px 5px;
+/*    position: relative;*/
+/*    left: 4px;*/
+}
+.score:before{
+    content: "";
+    height: 25px;
+    width: 1px;
+    background-color: white;
+    color: black;
+    position: relative;
+    right: 5px;
 }
 .lineUp
 {
@@ -69,11 +97,7 @@
     width: 100px;
     background-color: #b9123a;
 }
-.user {
-    padding: 5px 10px;
-    margin: 0 10px;
-    cursor: pointer;
-}
+
 .parentformodal {
     position: relative;
 }
@@ -102,12 +126,16 @@
 
 .click {
     position: relative;
-    top: 65px;
+    top: 63px;
     left: 110px;
     background-color: red;
 border-radius: 50%;
     cursor: pointer;
     scale: 0.8;
+    z-index: 1000;
+}
+.usernameWithChange {
+    background-color: #4a004f;
 }
 .image {
     width: 300px;
@@ -117,7 +145,6 @@ border-radius: 50%;
     object-fit: cover;
 }
 .container {
-    /*background-color: var(--Main-background-color);*/
     display: flex;
     justify-content: space-between;
     padding-top: 30px;
@@ -129,6 +156,12 @@ h1 {
     display: flex;
     /*justify-content: center;*/
     padding: 20px;
+}
+.matchplayed {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .about {
     padding-left: 40px;
