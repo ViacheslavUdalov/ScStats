@@ -31,9 +31,8 @@ const FullTournament = React.memo(() => {
         const [isParticipating, setParticipating] = useState(false)
         const [isFetching, setIsFetching] = useState(false)
         const [UpdatePlayers, setUpdatePlayers] = useState(tournament?.players);
-        let initialBracket = tournament && tournament.bracket ? tournament.bracket : [[]];
-        // console.log(initialBracket)
-        const [bracket, setBracket] = useState(initialBracket);
+        // let initialBracket = tournament && tournament.bracket ? tournament.bracket : [[]];
+        const [bracket, setBracket] = useState(tournament?.bracket);
         const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
         const [modalIsOpen, setModalOpen] = useState(false);
         const [messageError, setMessageError] = useState('');
@@ -97,9 +96,9 @@ const FullTournament = React.memo(() => {
         }
 
         useEffect(() => {
-            setBracket(initialBracket)
+            setBracket(tournament?.bracket)
 
-        }, []);
+        }, [tournament?.bracket]);
 
 
         const players = UpdatePlayers ? UpdatePlayers : tournament?.players
@@ -127,8 +126,8 @@ const FullTournament = React.memo(() => {
                     let bracketForServer = generateBracket(insideBracket, insideBracket[0].length)
                     console.log(bracketForServer)
                     setBracket(bracketForServer);
-                    initialBracket = bracketForServer;
-                    console.log(initialBracket)
+                    // initialBracket = bracketForServer;
+                    // console.log(initialBracket)
                     await instance.patch(`/tournaments/${tournament?._id}`, {...tournament, bracket: bracketForServer})
                 }
             } else {
@@ -143,7 +142,7 @@ const FullTournament = React.memo(() => {
             //     return;
             // }
             let nextMatchIndex = Math.floor(pairIndex / 2);
-            let updatedBracket = JSON.parse(JSON.stringify(initialBracket));
+            let updatedBracket = JSON.parse(JSON.stringify(bracket));
             let currMatch = updatedBracket[colIndex][pairIndex];
             const updatedPlayers = currMatch.players.map((player: UserModel, index: number) => {
                 if (index === 0) {
@@ -163,7 +162,7 @@ const FullTournament = React.memo(() => {
             currMatch.players = updatedPlayers;
             updatedBracket[colIndex][pairIndex] = currMatch;
 
-            if (colIndex !== bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
+            if (bracket && colIndex !== bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
                 const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
                 if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
                     setModalOpen(true)
@@ -174,7 +173,7 @@ const FullTournament = React.memo(() => {
             }
 
             await setBracket(updatedBracket);
-            initialBracket = updatedBracket;
+            // initialBracket = updatedBracket;
             await instance.patch(`/tournaments/${tournament?._id}`, {...tournament, bracket: updatedBracket})
         }
 
