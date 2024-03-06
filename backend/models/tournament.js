@@ -10,14 +10,12 @@ const Schema = mongoose.Schema;
         Owner: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-            required: true,
-            unique: true
+            required: true
         },
        players: [{
            type: Schema.Types.ObjectId,
            ref: 'User',
-           required: true,
-           unique: true
+           required: true
        }],
         about: {
             type: String,

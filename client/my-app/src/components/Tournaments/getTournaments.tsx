@@ -34,15 +34,16 @@ const Tournaments = React.memo(() => {
 
         return (
             <div className={styles.mainPage}>
+                <input type={'search'}
+                       className={styles.searchInput}
+                       value={searchTerm}
+                       placeholder={'Введите название турнира'}
+                       onChange={(e) => setSearchTerm(e.target.value)}
+                />
                 <div className={styles.mainPageContainer}>
-                    <input type={'search'}
-                           className={styles.searchInput}
-                           value={searchTerm}
-                           placeholder={'Введите название турнира'}
-                           onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+
                     {DataTournamentModel && DataTournamentModel.tournaments.length == 0 &&
-                        <span style={{marginLeft: '40%'}}>Не найдено турниров</span>}
+                        <span>Не найдено турниров</span>}
                     {DataTournamentModel &&
                         DataTournamentModel.tournaments.map((tournament: TournamentModel, index: number) => {
                             return <div key={index}>
