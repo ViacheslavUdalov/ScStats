@@ -123,18 +123,17 @@ const getOneUser = async (req, res) => {
         })
     }
 }
-// const getOneUserByUserName = async (req, res) => {
-//     try {
-//         const client = await userModel.findById=(req.params.username);
-//         res.status(200).json(client)
-//     }
-//     catch (err) {
-//         console.log(err);
-//         res.status(500).json({
-//             message: 'Невозможно получить пользователей.'
-//         })
-//     }
-// }
+const editUserRank = async (req, res) => {
+    try {
+        const {rank} = await req.body;
+        const {id} = req.params;
+        const user = await userModel.findByIdAndUpdate(id, {rank}, {new: true});
+        res.status(200)
+            .json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+}
 module.exports = {
     register,
     login,
@@ -142,5 +141,5 @@ module.exports = {
     editMe,
     getUsers,
     getOneUser,
-    // getOneUserByUserName
+    editUserRank
 }

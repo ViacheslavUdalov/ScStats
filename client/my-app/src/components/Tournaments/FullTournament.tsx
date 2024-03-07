@@ -1,7 +1,7 @@
 import React, {MouseEventHandler, useEffect, useState} from "react";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
 import styles from './FullTournament.module.css';
-import {useGetFullTournamentQuery} from "../../redux/RTKtournaments";
+import {useGetFullTournamentQuery, useGetOneUserQuery} from "../../redux/RTKtournaments";
 import {useSelector} from "react-redux";
 import {rootStateType} from "../../redux/store";
 import instance from "../../api/MainAPI";
@@ -13,124 +13,125 @@ import {selectIsAuth} from "../../redux/authReducer";
 import {generateBracket, simulateMatches} from "../../helpers/createMatches";
 import Click from "../../common/Click.png";
 import Modal from "../../helpers/Modal";
-import {Simulate} from "react-dom/test-utils";
 import {PlayerBracket, PlayerBracketWithoutScore} from "../../models/PlayerBracket";
 import {Match} from "../../models/match";
-import {TournamentModel} from "../../models/tournament-model";
+import {CalculateRatingChange} from "../../helpers/eloCalculator";
+import usePlayerQuery from "../../hooks/usePlayerQuery";
 
 
 const FullTournament = React.memo(() => {
-        const {id} = useParams();
-        // @ts-ignore
-        const {data: tournament, isLoading} = useGetFullTournamentQuery(id);
+    const {id} = useParams();
+    // @ts-ignore
+    const {data: tournament, isLoading} = useGetFullTournamentQuery(id);
 
-        const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
-        type OpenIndexState = Record<number, number>;
-        const isAuth = useSelector(selectIsAuth);
-        const navigate = useNavigate();
-        const [isParticipating, setParticipating] = useState(false)
-        const [isFetching, setIsFetching] = useState(false)
+    const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
+    type OpenIndexState = Record<number, number>;
+    const isAuth = useSelector(selectIsAuth);
+    const navigate = useNavigate();
+    const [isParticipating, setParticipating] = useState(false)
+    const [isFetching, setIsFetching] = useState(false)
     console.log(tournament);
-        const [localTournament, setTournament] = useState(tournament);
+    const [localTournament, setTournament] = useState(tournament);
     console.log(localTournament)
-        const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
-        const [modalIsOpen, setModalOpen] = useState(false);
-        const [messageError, setMessageError] = useState('');
-        const [scoreP1, setScoreP1] = useState(0);
-        const [scoreP2, setScoreP2] = useState(0);
-        const handleScoreP1 = (e: React.ChangeEvent<HTMLInputElement>) => {
-            setScoreP1(Number(e.target.value));
+    const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
+    const [modalIsOpen, setModalOpen] = useState(false);
+    const [messageError, setMessageError] = useState('');
+    const [scoreP1, setScoreP1] = useState(0);
+    const [scoreP2, setScoreP2] = useState(0);
+    const handleScoreP1 = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setScoreP1(Number(e.target.value));
+    }
+    const handleScoreP2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setScoreP2(Number(e.target.value));
+    }
+    const closeModal = () => {
+        setModalOpen(false)
+    }
+    const RemoveTournament = async () => {
+        if (window.confirm('Вы действительно хотите удалить турнир?')) {
+            if (localTournament && localTournament._id != null) {
+                await instance.delete(`/tournaments/${localTournament._id}`);
+                navigate('/tournaments');
+            }
         }
-        const handleScoreP2 = (e: React.ChangeEvent<HTMLInputElement>) => {
-            setScoreP2(Number(e.target.value));
+    }
+    useEffect(() => {
+        setTournament(tournament)
+    }, [localTournament, tournament])
+    const LeaveFromTournament = async () => {
+        if (!localTournament) {
+            return <PreLoader/>
         }
-        const closeModal = () => {
-            setModalOpen(false)
+        if (isParticipating && localTournament) {
+            setIsFetching(true);
+            const updatePlayers = localTournament.players.filter((player: UserModel) => player._id !== CurrentClient._id)
+            const updateTournament = {
+                ...localTournament,
+                players: updatePlayers
+            }
+            let response = await instance.patch(`/tournaments/${localTournament._id}`, updateTournament)
+            await setTournament(response.data)
+            setParticipating(false)
+            setIsFetching(false)
+        } else {
+            console.log('что-то пошло не так')
         }
-        const RemoveTournament = async () => {
-            if (window.confirm('Вы действительно хотите удалить турнир?')) {
-                if (localTournament && localTournament._id != null) {
-                    await instance.delete(`/tournaments/${localTournament._id}`);
-                    navigate('/tournaments');
+    }
+    const followForTournament = async () => {
+        if (!localTournament) {
+            return <PreLoader/>
+        }
+        if (!isParticipating && localTournament && !localTournament.players.includes(CurrentClient)) {
+            setIsFetching(true);
+            const updatePlayers = [...localTournament.players, CurrentClient]
+            const updateTournament = {
+                ...localTournament,
+                players: updatePlayers
+            }
+            let response = await instance.patch(`/tournaments/${updateTournament._id}`, updateTournament);
+            await setTournament(response.data);
+            setParticipating(true)
+            setIsFetching(false);
+        } else {
+            console.log('вы уже участвуете в этом турнире')
+        }
+    }
+    useEffect(() => {
+        localTournament && localTournament.players.map((player: UserModel) => {
+                if (player?._id === CurrentClient?._id) {
+                    setParticipating(true);
                 }
             }
+        )
+        setTournament(localTournament);
+    }, [localTournament])
+    const openModal = (columnIndex: number, pairIndex: number) => {
+        if (openIndex[columnIndex] === pairIndex) {
+            const {[columnIndex]: removedIndex, ...rest} = openIndex;
+            setOpenIndex(rest);
+        } else {
+            setOpenIndex({...openIndex, [columnIndex]: pairIndex});
         }
-        useEffect(() => {
-            setTournament(tournament)
-        }, [localTournament, tournament])
-        const LeaveFromTournament = async () => {
-            if (!localTournament) {
-                return <PreLoader/>
-            }
-            if (isParticipating && localTournament) {
-                setIsFetching(true);
-                const updatePlayers = localTournament.players.filter((player: UserModel) => player._id !== CurrentClient._id)
-                const updateTournament = {
+    }
+    const createBracket = async () => {
+        console.log(localTournament);
+        if (localTournament) {
+            if (localTournament.players && localTournament.players.length > 3) {
+                let insideBracket = [simulateMatches(localTournament.players)];
+                console.log(insideBracket)
+                let bracketForServer = generateBracket(insideBracket, insideBracket[0].length)
+                console.log(bracketForServer)
+                let response = await instance.patch(`/tournaments/${localTournament?._id}`, {
                     ...localTournament,
-                    players: updatePlayers
-                }
-                let response = await instance.patch(`/tournaments/${localTournament._id}`, updateTournament)
-                await setTournament(response.data)
-                setParticipating(false)
-                setIsFetching(false)
-            } else {
-                console.log('что-то пошло не так')
+                    bracket: bracketForServer
+                });
+                setTournament(response.data);
             }
+        } else {
+            console.log('Нельзя создать сетку, если меньше трёх игороков')
         }
-        const followForTournament = async () => {
-            if (!localTournament) {
-                return <PreLoader/>
-            }
-            if (!isParticipating && localTournament && !localTournament.players.includes(CurrentClient)) {
-                setIsFetching(true);
-                const updatePlayers = [...localTournament.players, CurrentClient]
-                const updateTournament = {
-                    ...localTournament,
-                    players: updatePlayers
-                }
-                let response = await instance.patch(`/tournaments/${updateTournament._id}`, updateTournament);
-                await setTournament(response.data);
-                setParticipating(true)
-                setIsFetching(false);
-            } else {
-                console.log('вы уже участвуете в этом турнире')
-            }
-        }
-        useEffect(() => {
-            localTournament && localTournament.players.map((player: UserModel) => {
-                    if (player?._id === CurrentClient?._id) {
-                        setParticipating(true);
-                    }
-                }
-            )
-            setTournament(localTournament);
-        }, [localTournament])
-        const openModal = (columnIndex: number, pairIndex: number) => {
-            if (openIndex[columnIndex] === pairIndex) {
-                const {[columnIndex]: removedIndex, ...rest} = openIndex;
-                setOpenIndex(rest);
-            } else {
-                setOpenIndex({...openIndex, [columnIndex]: pairIndex});
-            }
-        }
-        const createBracket = async () => {
-            if (localTournament) {
-                if (localTournament.players && localTournament.players.length > 3) {
-                    let insideBracket = [simulateMatches(localTournament.players)];
-                    console.log(insideBracket)
-                    let bracketForServer = generateBracket(insideBracket, insideBracket[0].length)
-                    console.log(bracketForServer)
-                    let response = await instance.patch(`/tournaments/${localTournament?._id}`, {
-                        ...localTournament,
-                        bracket: bracketForServer
-                    });
-                    setTournament(response.data);
-                }
-            } else {
-                console.log('Нельзя создать сетку, если меньше трёх игороков')
-            }
-        }
-        const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number = 0, scoreForPlayer2: number = 0, colIndex: number, pairIndex: number) => {
+    }
+           const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number = 0, scoreForPlayer2: number = 0, colIndex: number, pairIndex: number) => {
             let nextMatchIndex = Math.floor(pairIndex / 2);
             let updatedBracket = JSON.parse(JSON.stringify(localTournament?.bracket));
             let currMatch = updatedBracket[colIndex][pairIndex];
@@ -141,6 +142,40 @@ const FullTournament = React.memo(() => {
                     return {...player, score: scoreForPlayer2}
                 }
             })
+
+            let playerOne: UserModel, playerTwo: UserModel;
+              const data =  await instance.get(`/user/${updatedPlayers[0]._id}`);
+            console.log(data)
+               const data2 =  await instance.get(`/user/${updatedPlayers[1]._id}`);
+               console.log(data2)
+            if (scoreForPlayer1 > scoreForPlayer2) {
+                if (data && data2) {
+                    console.log(`ранк игрока один ${data.data.rank}`)
+                    data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
+                    const {data: responseForPlayerOne} =  await instance.patch(`/user/editrank/${data.data._id}`, data.data)
+                    console.log(`ранк игрока один ${data.data.rank}`)
+                    console.log(responseForPlayerOne)
+                    console.log(`ранк игрока один ${data2.data.rank}`)
+                    data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
+                    console.log(`ранк игрока один ${data2.data.rank}`)
+                    const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrank/${data2.data._id}`, data2.data)
+                    console.log(responseForPlayerTwo)
+                }
+            } else if (scoreForPlayer1 < scoreForPlayer2) {
+                    if (data && data2) {
+                        console.log(`ранк игрока один ${data.data.rank}`)
+                        data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
+                        console.log(`ранк игрока один ${data.data.rank}`)
+                        const {data: responseForPlayerOne} =  await instance.patch(`/user/editrank/${data.data._id}`, data.data)
+                        console.log(responseForPlayerOne)
+                        console.log(`ранк игрока два ${data2.data.rank}`)
+                        data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
+                        console.log(`ранк игрока два ${data2.data.rank}`)
+                        const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrank/${data2.data._id}`, data2.data);
+                        console.log(responseForPlayerTwo)
+
+                    }
+            }
             const winner: PlayerBracketWithoutScore = scoreForPlayer1 > scoreForPlayer2 ? {
                 _id: updatedPlayers[0]._id,
                 fullName: updatedPlayers[0].fullName
@@ -151,7 +186,6 @@ const FullTournament = React.memo(() => {
             currMatch.winner = winner;
             currMatch.players = updatedPlayers;
             updatedBracket[colIndex][pairIndex] = currMatch;
-
             if (localTournament?.bracket && colIndex !== localTournament?.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
                 const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
                 if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
@@ -166,17 +200,6 @@ const FullTournament = React.memo(() => {
                 bracket: updatedBracket
             })
             setTournament(response.data);
-        }
-
-        const deepCopy = (obj: any): any => {
-            if (typeof obj === 'object' || obj === null) {
-                if (Array.isArray(obj)) {
-                    return obj.map(deepCopy);
-                } else {
-                    return {...obj}
-                }
-            }
-            return obj
         }
         const charactersToRemove = ["T", "Z"];
         const modifiedString = localTournament?.createdAt
