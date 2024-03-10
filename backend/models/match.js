@@ -5,13 +5,15 @@ const MatchSchema = new Schema({
     match: {
         matchDate: Date,
         players: [{
-            name: String,
+            fullName: String,
             _id: String,
-            score: Number
+            score: Number,
+            rank: Number
         }],
         winner: {
-            name: String,
-            _id: String
+            fullName: String,
+            _id: String,
+            rank: Number
         }
     }
 })

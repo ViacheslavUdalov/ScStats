@@ -18,8 +18,8 @@ export const simulateMatches = (players: UserModel[]) => {
                 matches.push({
                     matchDate: new Date(),
                     players: [
-                        {_id: playerId1, fullName: player.fullName, score: 0},
-                        {_id: playerId2, fullName: players[randomIndex].fullName, score: 0}
+                        {_id: playerId1, fullName: player.fullName, score: 0, rank: player.rank},
+                        {_id: playerId2, fullName: players[randomIndex].fullName, score: 0, rank: player.rank}
                     ],
                     winner: null
                 })

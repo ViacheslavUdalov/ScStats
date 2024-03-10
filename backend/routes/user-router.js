@@ -8,7 +8,7 @@ const {
     editMe,
     getUsers,
     getOneUser,
-    editUserRank
+    editUserRankAndMatchHistory
 } = require('../controllers/user-controller');
 const checkAuth  = require("../utilits/checkAuth");
 const {registerValidation, loginValidation, editValidation} = require("../validations/auth");
@@ -21,5 +21,5 @@ router.patch('/auth/:id', handleValidationErrors, editMe);
 router.get('/auth/me',  checkAuth, authMe);
 router.get('/users', getUsers);
 router.get('/user/:id', getOneUser);
-router.patch('/user/editrank/:id', editUserRank);
+router.patch('/user/editrankandmatchhistory/:id', editUserRankAndMatchHistory);
 module.exports = router;

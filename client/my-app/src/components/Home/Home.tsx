@@ -90,16 +90,19 @@ useLayoutEffect(() => {
                     <div className={styles.thirdfraction} >
                         <div className={`${styles.block} ${styles.parentusers} ${visibleBlocks.includes('block3') ? styles.show : ''}`} id='block3'>
                             <h3>Смотрите рейтинг лучших игроков</h3>
-                            <div>
+                            <div style={{width: '30%', margin: 'auto'}}>
                                 {usersData?.users.map((user, index) => {
                                     return (
-                                        <div key={index}>
+                                        <div key={index} className={styles.oneuserdata}>
                                            <span>{user.fullName}</span>
                                             <span>{user.rank}</span>
                                         </div>
                                     )
                                 })}
+
                             </div>
+                            <NavLink to={`/players`}
+                                     className={styles.NavLinkName}>Перейти с списку игроков.</NavLink>
                         </div>
                     </div>
                 </div>

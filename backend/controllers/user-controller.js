@@ -130,11 +130,11 @@ const getOneUser = async (req, res) => {
         })
     }
 }
-const editUserRank = async (req, res) => {
+const editUserRankAndMatchHistory = async (req, res) => {
     try {
-        const {rank} = await req.body;
+        const {rank, matches} = await req.body;
         const {id} = req.params;
-        const user = await userModel.findByIdAndUpdate(id, {rank}, {new: true});
+        const user = await userModel.findByIdAndUpdate(id, {rank, matches}, {new: true});
         res.status(200)
             .json(user);
     } catch (err) {
@@ -148,5 +148,5 @@ module.exports = {
     editMe,
     getUsers,
     getOneUser,
-    editUserRank
+    editUserRankAndMatchHistory
 }

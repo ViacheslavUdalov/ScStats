@@ -5,7 +5,7 @@ import {useGetFullTournamentQuery} from "../../redux/RTKtournaments";
 import {useSelector} from "react-redux";
 import {rootStateType} from "../../redux/store";
 import instance from "../../api/MainAPI";
-import {UserModel} from "../../models/user-model";
+import {UserModel, UserModelForTournament} from "../../models/user-model";
 import image from '../../common/StormGateLogo_BlackandWhite_Flat.png';
 import PreLoader from "../../helpers/isLoading";
 import UserIcon from '../../common/images.png'
@@ -138,7 +138,7 @@ const FullTournament = React.memo(() => {
             let currMatch = updatedBracket[colIndex][pairIndex];
 
 
-            const updatedPlayers = currMatch.players.map((player: UserModel, index: number) => {
+            const updatedPlayers = currMatch.players.map((player: UserModelForTournament, index: number) => {
                 if (index === 0) {
                     return {...player, score: scoreForPlayer1}
                 } else {
@@ -153,47 +153,56 @@ const FullTournament = React.memo(() => {
                console.log(data2)
 
 
-            if (scoreForPlayer1 > scoreForPlayer2) {
-                if (data && data2) {
-                    console.log(`ранк игрока один ${data.data.rank}`)
-                    data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
-                    const {data: responseForPlayerOne} =  await instance.patch(`/user/editrank/${data.data._id}`, data.data)
-                    console.log(`ранк игрока один ${data.data.rank}`)
-                    console.log(responseForPlayerOne)
-                    console.log(`ранк игрока один ${data2.data.rank}`)
-                    data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
-                    console.log(`ранк игрока один ${data2.data.rank}`)
-                    const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrank/${data2.data._id}`, data2.data)
-                    console.log(responseForPlayerTwo)
-                }
-            } else if (scoreForPlayer1 < scoreForPlayer2) {
-                    if (data && data2) {
-                        console.log(`ранк игрока один ${data.data.rank}`)
-                        data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
-                        console.log(`ранк игрока один ${data.data.rank}`)
-                        const {data: responseForPlayerOne} =  await instance.patch(`/user/editrank/${data.data._id}`, data.data)
-                        console.log(responseForPlayerOne)
-                        console.log(`ранк игрока два ${data2.data.rank}`)
-                        data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
-                        console.log(`ранк игрока два ${data2.data.rank}`)
-                        const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrank/${data2.data._id}`, data2.data);
-                        console.log(responseForPlayerTwo)
-
-                    }
-            }
-
 
             const winner: PlayerBracketWithoutScore = scoreForPlayer1 > scoreForPlayer2 ? {
                 _id: updatedPlayers[0]._id,
-                fullName: updatedPlayers[0].fullName
+                fullName: updatedPlayers[0].fullName,
+                rank: updatedBracket[0].rank
             } : {
                 _id: updatedPlayers[1]._id,
-                fullName: updatedPlayers[1].fullName
+                fullName: updatedPlayers[1].fullName,
+                rank: updatedBracket[1].rank
             };
 
 
             currMatch.winner = winner;
             currMatch.players = updatedPlayers;
+
+               if (scoreForPlayer1 > scoreForPlayer2) {
+                   if (data && data2) {
+                       console.log(`ранк игрока один ${data.data.rank}`)
+                       data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
+                       data.data.matches = [...data.data.matches, currMatch]
+                       const {data: responseForPlayerOne} =  await instance.patch(`/user/editrankandmatchhistory/${data.data._id}`, data.data)
+                       console.log(`ранк игрока один ${data.data.rank}`)
+                       console.log(responseForPlayerOne)
+                       console.log(`ранк игрока один ${data2.data.rank}`)
+                       data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
+                       data2.data.matches = [...data2.data.matches, currMatch]
+                       console.log(`ранк игрока один ${data2.data.rank}`)
+
+                       const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrankandmatchhistory/${data2.data._id}`, data2.data)
+                       console.log(responseForPlayerTwo)
+                   }
+               } else if (scoreForPlayer1 < scoreForPlayer2) {
+                   if (data && data2) {
+                       console.log(`ранк игрока один ${data.data.rank}`)
+                       data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
+                       data.data.matches = [...data.data.matches, currMatch]
+                       console.log(`ранк игрока один ${data.data.rank}`)
+                       const {data: responseForPlayerOne} =  await instance.patch(`/user/editrankandmatchhistory/${data.data._id}`, data.data)
+                       console.log(responseForPlayerOne)
+                       console.log(`ранк игрока два ${data2.data.rank}`)
+                       data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
+                       data2.data.matches = [...data2.data.matches, currMatch]
+                       console.log(`ранк игрока два ${data2.data.rank}`)
+                       const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrankandmatchhistory/${data2.data._id}`, data2.data);
+                       console.log(responseForPlayerTwo)
+
+                   }
+               }
+
+
             updatedBracket[colIndex][pairIndex] = currMatch;
 
             

@@ -30,6 +30,7 @@
     border: 2px solid black;
     padding: 30px;
     border-radius: 10px;
+    width: 50%;
 }
 .thirdfraction {
     float: left;
@@ -45,6 +46,26 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.oneuserdata {
+    display: flex;
+    justify-content: space-between;
+}
+.NavLinkName {
+    position: relative;
+    top: 20px;
+    padding: 7px;
+    background-color: rgba(151, 3, 161, 0.63);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--color);
+    transition: background-color 0.7s ease, border 0.7s ease, color 0.7s ease, text-decoration 0.7s ease;
+}
+.NavLinkName:hover {
+    text-decoration: underline;
+    color: green;
+    background-color: rgba(204, 4, 217, 0.77);
+    border: 1px solid white;
 }
 .usershome {
 

@@ -25,7 +25,21 @@ const UserSchema = new mongoose.Schema({
         race: {
             type: String,
             required: false
-        }
+        },
+    matches: [{
+            matchDate: Date,
+            players: [{
+                fullName: String,
+                _id: String,
+                score: Number,
+                rank: Number
+            }],
+            winner: {
+                fullName: String,
+                _id: String,
+                rank: Number
+            }
+    }]
     },
     {
     timestamps: true

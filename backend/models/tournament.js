@@ -28,11 +28,13 @@ const Schema = mongoose.Schema;
                 players: [{
                     fullName: String,
                     _id: String,
-                    score: Number
+                    score: Number,
+                    rank: Number
                 }],
                 winner: {
                     fullName: String,
-                    _id: String
+                    _id: String,
+                    rank: Number
                 }
             }
         ]]

@@ -1,11 +1,13 @@
 export interface PlayerBracket {
     _id: string,
     fullName: string,
-    score: number
+    score: number,
+    rank: number
 }
 export interface PlayerBracketWithoutScore {
     _id: string,
-    fullName: string
+    fullName: string,
+    rank: number
 }
 export interface TournamentOwner {
     _id?: string,

@@ -5,10 +5,12 @@ export interface Match {
     players: {
         _id: string,
         fullName: string,
-        score: number
+        score: number,
+        rank: number
         }[]
         winner: {
             _id: string,
-            fullName: string
+            fullName: string,
+            rank: number
         } | null
 }
