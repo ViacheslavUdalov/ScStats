@@ -1,13 +1,28 @@
-import React from "react";
+import React, {useState} from "react";
 import {UserModel} from "../../models/user-model";
 import {useGetUsersQuery} from "../../redux/RTKtournaments";
 import styles from './Players.module.css';
 import PreLoader from "../../helpers/isLoading";
 import IconUser from "../../common/images.png";
 import {NavLink} from "react-router-dom";
+import {useDebounce} from "../../helpers/debounce";
+import {createPages} from "../../helpers/Paginator";
+import ScrollToTop from "../../helpers/ScrollToTop";
 
 const Players = () => {
-    const {data, isLoading} = useGetUsersQuery()
+    const [search, setSearch] = useState('');
+    const [perPage, setPerPage] = useState(100);
+    const [pageIndex, setPageIndex] = useState(1);
+    const debounce = useDebounce(search);
+    const {data, isLoading} = useGetUsersQuery({
+        searchTerm: debounce,
+        perPage: perPage,
+        page: pageIndex
+    })
+    const totalUsersCount = data?.totalUsersCount;
+    const totalPages = totalUsersCount ?  Math.ceil(totalUsersCount / perPage) : 0;
+    const pages : Array<number>= [];
+    createPages(pages, totalPages, pageIndex);
     if (isLoading) {
         return <PreLoader/>
     }
@@ -45,10 +60,17 @@ const Players = () => {
                     })}
                     </tbody>
 
-
                 </table>
-
+                <div className={styles.pagination}>
+                    {pages.map((page, index) => {
+                        return <span key={index}
+                                     className={pageIndex == page ? styles.currentPage : styles.page}
+                                     onClick={() => setPageIndex(page)}
+                        >{page}</span>
+                    })}
+                </div>
             </div>
+            <ScrollToTop/>
         </div>
 
     )

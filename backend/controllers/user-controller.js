@@ -97,7 +97,14 @@ const editMe = async (req, res) => {
 }
 const getUsers = async (req, res) => {
     try {
-        const users = await userModel.find().sort({createdAt: -1})
+        const {search, pageIndex, perPage} = req.query;
+        const searchTerm = new RegExp(search, 'i');
+        const filter = search ? {Name : {$regex: searchTerm}} : {};
+        const users = await userModel.find(filter)
+            .skip((pageIndex - 1) * perPage)
+            .limit(perPage)
+            .sort({rank: -1});
+
         const totalUsersCount = await userModel.countDocuments()
         res.status(200).json({
             users: users,

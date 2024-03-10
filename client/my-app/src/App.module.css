@@ -1,5 +1,5 @@
 .App {
- background-color: var(--background-color);
+ background-color: var(--Main-background-color);
   color: var(--color);
   height: 100%;
 }

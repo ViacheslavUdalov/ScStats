@@ -1,7 +1,7 @@
 import React, {MouseEventHandler, useEffect, useState} from "react";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
 import styles from './FullTournament.module.css';
-import {useGetFullTournamentQuery, useGetOneUserQuery} from "../../redux/RTKtournaments";
+import {useGetFullTournamentQuery} from "../../redux/RTKtournaments";
 import {useSelector} from "react-redux";
 import {rootStateType} from "../../redux/store";
 import instance from "../../api/MainAPI";
@@ -16,7 +16,6 @@ import Modal from "../../helpers/Modal";
 import {PlayerBracket, PlayerBracketWithoutScore} from "../../models/PlayerBracket";
 import {Match} from "../../models/match";
 import {CalculateRatingChange} from "../../helpers/eloCalculator";
-import usePlayerQuery from "../../hooks/usePlayerQuery";
 
 
 const FullTournament = React.memo(() => {
@@ -132,9 +131,13 @@ const FullTournament = React.memo(() => {
         }
     }
            const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number = 0, scoreForPlayer2: number = 0, colIndex: number, pairIndex: number) => {
+
+
             let nextMatchIndex = Math.floor(pairIndex / 2);
             let updatedBracket = JSON.parse(JSON.stringify(localTournament?.bracket));
             let currMatch = updatedBracket[colIndex][pairIndex];
+
+
             const updatedPlayers = currMatch.players.map((player: UserModel, index: number) => {
                 if (index === 0) {
                     return {...player, score: scoreForPlayer1}
@@ -148,6 +151,8 @@ const FullTournament = React.memo(() => {
             console.log(data)
                const data2 =  await instance.get(`/user/${updatedPlayers[1]._id}`);
                console.log(data2)
+
+
             if (scoreForPlayer1 > scoreForPlayer2) {
                 if (data && data2) {
                     console.log(`ранк игрока один ${data.data.rank}`)
@@ -176,6 +181,8 @@ const FullTournament = React.memo(() => {
 
                     }
             }
+
+
             const winner: PlayerBracketWithoutScore = scoreForPlayer1 > scoreForPlayer2 ? {
                 _id: updatedPlayers[0]._id,
                 fullName: updatedPlayers[0].fullName
@@ -183,9 +190,13 @@ const FullTournament = React.memo(() => {
                 _id: updatedPlayers[1]._id,
                 fullName: updatedPlayers[1].fullName
             };
+
+
             currMatch.winner = winner;
             currMatch.players = updatedPlayers;
             updatedBracket[colIndex][pairIndex] = currMatch;
+
+            
             if (localTournament?.bracket && colIndex !== localTournament?.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
                 const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
                 if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
@@ -195,12 +206,17 @@ const FullTournament = React.memo(() => {
                 }
                 updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
             }
+
             let response = await instance.patch(`/tournaments/${localTournament?._id}`, {
                 ...localTournament,
                 bracket: updatedBracket
+
             })
+
             setTournament(response.data);
         }
+
+
         const charactersToRemove = ["T", "Z"];
         const modifiedString = localTournament?.createdAt
             .replace(new RegExp(`[${charactersToRemove.join('')}]`, 'g'), ' ');

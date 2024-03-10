@@ -9,6 +9,29 @@
     position: relative;
    left: 35px;
 }
+.pages{
+    margin: 20px 0;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+    align-items: center;
+}
+.page {
+    border: 1px solid lightgray;
+    border-radius: 100%;
+    padding: 5px 10px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+.currentPage {
+    border: 3px solid lightgray;
+    border-radius: 100%;
+    padding: 5px 10px;
+    margin: 0 10px;
+    cursor: pointer;
+}
 .fullName {
     position: relative;
     top: -4px;

@@ -69,9 +69,14 @@ export const tournamentsAPI = createApi({
             }),
             invalidatesTags: ['UserData']
         }),
-        getUsers:  builder.query<DataUsersModel, void>({
-            query: () => ({
-                url: `/users`
+        getUsers:  builder.query<DataUsersModel, queryParams>({
+            query: (params) => ({
+                url: `/users`,
+                params: {
+                    searchTerm: params.searchTerm,
+                    pageIndex: params.page,
+                    perPage: params.perPage
+                }
             }),
             providesTags: ['DataUsersModel']
         }),

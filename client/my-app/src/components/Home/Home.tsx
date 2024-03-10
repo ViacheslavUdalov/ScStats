@@ -9,7 +9,11 @@ import image from '../../common/4151292-1.jpg';
 
 const Home = React.memo(() => {
         const [visibleBlocks, setVisibleBlocks] = useState<string[]>([]);
-    const {data: usersData, isFetching} = useGetUsersQuery()
+    const {data: usersData, isFetching} = useGetUsersQuery({
+        searchTerm: '',
+        perPage: 10,
+        page: 1
+    })
         const {data: dataTournaments, isLoading} = useGetAllTournamentsQuery({
             page: 1,
             searchTerm: '',
