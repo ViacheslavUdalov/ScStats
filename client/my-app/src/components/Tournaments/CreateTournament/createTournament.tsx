@@ -28,7 +28,7 @@ const CreateTournament = () => {
         dispatch(fetchTournament(id))
         dispatch(fetchAuthMe())
     }, [])
-    const tournament = useSelector((state: rootStateType) => state.tournaments.tournament);
+    const tournament = useSelector((state: rootStateType) => state.tournament.data);
     console.log(tournament)
     useEffect(() => {
         if (tournament) {

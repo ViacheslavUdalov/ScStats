@@ -1,7 +1,6 @@
 import React, {MouseEventHandler, useEffect, useState} from "react";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
 import styles from './FullTournament.module.css';
-import {useGetFullTournamentQuery} from "../../redux/RTKtournaments";
 import {useSelector} from "react-redux";
 import {rootStateType, useAppDispatch, useAppSelector} from "../../redux/store";
 import instance from "../../api/MainAPI";
@@ -9,32 +8,30 @@ import {UserModel, UserModelForTournament} from "../../models/user-model";
 import image from '../../common/StormGateLogo_BlackandWhite_Flat.png';
 import PreLoader from "../../helpers/isLoading";
 import UserIcon from '../../common/images.png'
-import {selectIsAuth} from "../../redux/authReducer";
 import {generateBracket, simulateMatches} from "../../helpers/createMatches";
 import Click from "../../common/Click.png";
 import Modal from "../../helpers/Modal";
 import {PlayerBracket, PlayerBracketWithoutScore} from "../../models/PlayerBracket";
 import {Match} from "../../models/match";
 import {CalculateRatingChange} from "../../helpers/eloCalculator";
-import {leaveFromTournament} from "../../redux/TournamentReducer";
+import {deleteTournament, fetchTournament, followTournament, leaveFromTournament} from "../../redux/TournamentReducer";
 
 
 const FullTournament = React.memo(() => {
     const {id} = useParams();
-    // @ts-ignore
-    const tournament = useAppSelector(state => state.tournament.data)
     const dispatch = useAppDispatch();
+    const tournament = useAppSelector(state => state.tournament.data);
+    useEffect(() => {
+        id && dispatch(fetchTournament(id));
+    }, [])
+
     const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
     type OpenIndexState = Record<number, number>;
-    // const isAuth = useSelector(selectIsAuth);
     const navigate = useNavigate();
-    // const [isParticipating, setParticipating] = useState(false)
-    // const [isFetching, setIsFetching] = useState(false)
     console.log(tournament);
     const isParticipating = useAppSelector(state => state.tournament.isParticipating);
+    console.log(isParticipating);
     const isLoading = useAppSelector(state => state.tournament.isLoading);
-    // const [localTournament, setTournament] = useState(tournament);
-    // console.log(localTournament)
     const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
     const [modalIsOpen, setModalOpen] = useState(false);
     const [messageError, setMessageError] = useState('');
@@ -52,62 +49,31 @@ const FullTournament = React.memo(() => {
     const RemoveTournament = async () => {
         if (window.confirm('Вы действительно хотите удалить турнир?')) {
             if (tournament && tournament._id != null) {
-                await instance.delete(`/tournaments/${tournament._id}`);
+                id && dispatch(deleteTournament(id));
                 navigate('/tournaments');
             }
         }
     }
-    // useEffect(() => {
-    //     setTournament(tournament)
-    // }, [tournament])
     const LeaveFromTournament = async () => {
         if (!tournament) {
             return <PreLoader/>
         }
         if (isParticipating && tournament) {
-            // setIsFetching(true);
             dispatch(leaveFromTournament({localTournament: tournament, currentClient: CurrentClient}))
-            // const updatePlayers = localTournament.players.filter((player: UserModel) => player._id !== CurrentClient._id)
-            // const updateTournament = {
-            //     ...localTournament,
-            //     players: updatePlayers
-            // }
-            // let response = await instance.patch(`/tournaments/${localTournament._id}`, updateTournament)
-            // await setTournament(response.data)
-            // setParticipating(false)
-            // setIsFetching(false)
         } else {
             console.log('что-то пошло не так')
         }
     }
     const followForTournament = async () => {
-        if (!localTournament) {
+        if (!tournament) {
             return <PreLoader/>
         }
-        if (!isParticipating && localTournament && !localTournament.players.includes(CurrentClient)) {
-            setIsFetching(true);
-            const updatePlayers = [...localTournament.players, CurrentClient]
-            const updateTournament = {
-                ...localTournament,
-                players: updatePlayers
-            }
-            let response = await instance.patch(`/tournaments/${updateTournament._id}`, updateTournament);
-            await setTournament(response.data);
-            setParticipating(true)
-            setIsFetching(false);
+        if (!isParticipating && tournament && !tournament.players.includes(CurrentClient)) {
+            dispatch(followTournament({localTournament: tournament, currentClient: CurrentClient}));
         } else {
             console.log('вы уже участвуете в этом турнире')
         }
     }
-    useEffect(() => {
-        localTournament && localTournament.players.map((player: UserModel) => {
-                if (player?._id === CurrentClient?._id) {
-                    setParticipating(true);
-                }
-            }
-        )
-        setTournament(localTournament);
-    }, [localTournament])
     const openModal = (columnIndex: number, pairIndex: number) => {
         if (openIndex[columnIndex] === pairIndex) {
             const {[columnIndex]: removedIndex, ...rest} = openIndex;
@@ -117,18 +83,18 @@ const FullTournament = React.memo(() => {
         }
     }
     const createBracket = async () => {
-        console.log(localTournament);
-        if (localTournament) {
-            if (localTournament.players && localTournament.players.length > 3) {
-                let insideBracket = [simulateMatches(localTournament.players)];
+        console.log(tournament);
+        if (tournament) {
+            if (tournament.players && tournament.players.length > 3) {
+                let insideBracket = [simulateMatches(tournament.players)];
                 console.log(insideBracket)
                 let bracketForServer = generateBracket(insideBracket, insideBracket[0].length)
                 console.log(bracketForServer)
-                let response = await instance.patch(`/tournaments/${localTournament?._id}`, {
-                    ...localTournament,
+                let response = await instance.patch(`/tournaments/${tournament?._id}`, {
+                    ...tournament,
                     bracket: bracketForServer
                 });
-                setTournament(response.data);
+                // setTournament(response.data);
             }
         } else {
             console.log('Нельзя создать сетку, если меньше трёх игороков')
@@ -138,7 +104,7 @@ const FullTournament = React.memo(() => {
 
 
             let nextMatchIndex = Math.floor(pairIndex / 2);
-            let updatedBracket = JSON.parse(JSON.stringify(localTournament?.bracket));
+            let updatedBracket = JSON.parse(JSON.stringify(tournament.bracket));
             let currMatch = updatedBracket[colIndex][pairIndex];
 
 
@@ -210,7 +176,7 @@ const FullTournament = React.memo(() => {
             updatedBracket[colIndex][pairIndex] = currMatch;
 
             
-            if (localTournament?.bracket && colIndex !== localTournament?.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
+            if (tournament.bracket && colIndex !== tournament.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
                 const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
                 if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
                     setModalOpen(true)
@@ -220,43 +186,43 @@ const FullTournament = React.memo(() => {
                 updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
             }
 
-            let response = await instance.patch(`/tournaments/${localTournament?._id}`, {
-                ...localTournament,
+            let response = await instance.patch(`/tournaments/${tournament?._id}`, {
+                ...tournament,
                 bracket: updatedBracket
 
             })
 
-            setTournament(response.data);
+            // setTournament(response.data);
         }
 
 
         const charactersToRemove = ["T", "Z"];
-        const modifiedString = localTournament?.createdAt
+        const modifiedString = tournament?.createdAt
             .replace(new RegExp(`[${charactersToRemove.join('')}]`, 'g'), ' ');
         return (
             <div className={styles.main}>
                 {isLoading && <PreLoader/>}
-                {localTournament &&
+                {tournament &&
                     <div className={styles.container}>
                         <div className={styles.MainInfo}>
                             <img className={styles.image}
-                                 src={localTournament?.imageUrl ? `http://localhost:3000${localTournament?.imageUrl}`
+                                 src={tournament?.imageUrl ? `http://localhost:3000${tournament?.imageUrl}`
                                      : image}/>
                             <div className={styles.about}>
-                                <h1 className={styles.NameOfTournament}>{localTournament?.Name}</h1>
+                                <h1 className={styles.NameOfTournament}>{tournament?.Name}</h1>
                                 <div>
                                     <span style={{fontSize: 'small'}}>О турнире:</span>
-                                    <div className={styles.AboutTournament}>{localTournament?.about}</div>
+                                    <div className={styles.AboutTournament}>{tournament?.about}</div>
                                 </div>
-                                <span style={{fontSize: 'small'}}>Всего участников: {localTournament?.players.length}</span>
+                                <span style={{fontSize: 'small'}}>Всего участников: {tournament?.players.length}</span>
                                 <div className={styles.player}>
-                                    {localTournament?.players.length ?
-                                        localTournament?.players?.slice(0, 7).map((player: UserModel, index: number) => {
+                                    {tournament?.players.length ?
+                                        tournament.players?.slice(0, 7).map((player: UserModel, index: number) => {
                                             return <NavLink to={`/AboutUser/${player?._id}`}
                                                             className={styles.PlayerFullName} key={index}>
                                                 {player?.fullName}
-                                                {index < 6 && index < localTournament?.players?.length - 1 && ','}
-                                                {index === 6 && localTournament?.players.length > 7 && '...'}
+                                                {index < 6 && index < tournament.players?.length - 1 && ','}
+                                                {index === 6 && tournament.players.length > 7 && '...'}
                                             </NavLink>
                                         }) : <span style={{paddingLeft: '20px'}}>Здесь пока ещё нет учатсников</span>
                                     }
@@ -264,13 +230,13 @@ const FullTournament = React.memo(() => {
                             </div>
                         </div>
                         <div className={styles.buttons}>
-                            {isAuth || window.localStorage.getItem('token') ?
+                            {CurrentClient || window.localStorage.getItem('token') ?
                                 <div>
-                                    {localTournament?.bracket.length === 0 &&
+                                    {tournament?.bracket.length === 0 &&
                                         <div>
-                                            {(isParticipating) ?
+                                            {isParticipating ?
                                                 <div className={styles.LeaveFromTournament}>
-                                                    {isFetching ? <span>Loading...</span> :
+                                                    {isLoading ? <span>Loading...</span> :
                                                         <div className={styles.LeaveFromTournament}>
                                                             <span>Вы участвуете в этом турнире</span>
                                                             <button onClick={LeaveFromTournament}
@@ -280,7 +246,7 @@ const FullTournament = React.memo(() => {
                                                     }
                                                 </div>
                                                 :
-                                                <div> {isFetching ? <span>Loading...</span> :
+                                                <div> {isLoading ? <span>Loading...</span> :
                                                     <div>
                                                         <button onClick={followForTournament}
                                                                 className={styles.Buttons}>Участвовать
@@ -298,7 +264,7 @@ const FullTournament = React.memo(() => {
                     </span>
                             }
                             <div>
-                                {CurrentClient?._id === localTournament?.Owner._id &&
+                                {CurrentClient?._id === tournament?.Owner._id &&
                                     <div className={styles.updateAndDelete}>
                                         <NavLink className={styles.NavLink}
                                                  to={`/tournaments/${id}/edit`}>Редактировать</NavLink>
@@ -313,15 +279,15 @@ const FullTournament = React.memo(() => {
                             <div className={styles.OwnerAndTime}>
                                 <div className={styles.IconContainer}>
                                     <img className={styles.UserIcon}
-                                         src={localTournament.Owner.avatarURL ?
-                                             `http://localhost:3000${localTournament.Owner.avatarURL}` : UserIcon}/>
+                                         src={tournament.Owner.avatarURL ?
+                                             `http://localhost:3000${tournament.Owner.avatarURL}` : UserIcon}/>
                                 </div>
-                                <NavLink to={`/aboutUser/${localTournament.Owner._id}`}
-                                         className={styles.NavLinkName}>{localTournament.Owner.fullName}</NavLink>
+                                <NavLink to={`/aboutUser/${tournament.Owner._id}`}
+                                         className={styles.NavLinkName}>{tournament.Owner.fullName}</NavLink>
                             </div>
                             <span className={styles.time}>
                    <span style={{color: "white"}}>Дата создания: </span>{modifiedString?.slice(0, 16)}
-                                {CurrentClient?._id === localTournament.Owner._id && localTournament.bracket.length === 0 &&
+                                {CurrentClient?._id === tournament.Owner._id && tournament.bracket.length === 0 &&
                                     <div>
                                         <button onClick={createBracket} className={styles.RemoveTournament}>Создать сетку
                                         </button>
@@ -334,12 +300,12 @@ const FullTournament = React.memo(() => {
                     </div>
                 }
                 <div>
-                    {localTournament?.bracket ?
+                    {tournament?.bracket ?
                         <div className={styles.parentbracket}>
                             <span>Сетка (Если сетка не появилась, обновите страницу)</span>
                             <div className={styles.allColumns}>
 
-                                {localTournament?.bracket.map((column, columnIndex: number) => {
+                                {tournament?.bracket.map((column : Match[], columnIndex: number) => {
                                     return (
                                         <div key={columnIndex} className={styles.allPairs}>
                                             <div>
