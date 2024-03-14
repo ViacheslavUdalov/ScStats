@@ -30,7 +30,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest --watch *.ts",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -52,6 +52,7 @@
     ]
   },
   "devDependencies": {
-    "@types/react-modal": "^3.16.0"
+    "@types/react-modal": "^3.16.0",
+    "jest": "^27.5.1"
   }
 }

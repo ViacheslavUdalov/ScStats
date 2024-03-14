@@ -3,7 +3,7 @@ import {NavLink, useNavigate, useParams} from "react-router-dom";
 import styles from './FullTournament.module.css';
 import {useGetFullTournamentQuery} from "../../redux/RTKtournaments";
 import {useSelector} from "react-redux";
-import {rootStateType} from "../../redux/store";
+import {rootStateType, useAppDispatch, useAppSelector} from "../../redux/store";
 import instance from "../../api/MainAPI";
 import {UserModel, UserModelForTournament} from "../../models/user-model";
 import image from '../../common/StormGateLogo_BlackandWhite_Flat.png';
@@ -16,22 +16,25 @@ import Modal from "../../helpers/Modal";
 import {PlayerBracket, PlayerBracketWithoutScore} from "../../models/PlayerBracket";
 import {Match} from "../../models/match";
 import {CalculateRatingChange} from "../../helpers/eloCalculator";
+import {leaveFromTournament} from "../../redux/TournamentReducer";
 
 
 const FullTournament = React.memo(() => {
     const {id} = useParams();
     // @ts-ignore
-    const {data: tournament, isLoading} = useGetFullTournamentQuery(id);
-
+    const tournament = useAppSelector(state => state.tournament.data)
+    const dispatch = useAppDispatch();
     const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
     type OpenIndexState = Record<number, number>;
-    const isAuth = useSelector(selectIsAuth);
+    // const isAuth = useSelector(selectIsAuth);
     const navigate = useNavigate();
-    const [isParticipating, setParticipating] = useState(false)
-    const [isFetching, setIsFetching] = useState(false)
+    // const [isParticipating, setParticipating] = useState(false)
+    // const [isFetching, setIsFetching] = useState(false)
     console.log(tournament);
-    const [localTournament, setTournament] = useState(tournament);
-    console.log(localTournament)
+    const isParticipating = useAppSelector(state => state.tournament.isParticipating);
+    const isLoading = useAppSelector(state => state.tournament.isLoading);
+    // const [localTournament, setTournament] = useState(tournament);
+    // console.log(localTournament)
     const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
     const [modalIsOpen, setModalOpen] = useState(false);
     const [messageError, setMessageError] = useState('');
@@ -48,30 +51,31 @@ const FullTournament = React.memo(() => {
     }
     const RemoveTournament = async () => {
         if (window.confirm('Вы действительно хотите удалить турнир?')) {
-            if (localTournament && localTournament._id != null) {
-                await instance.delete(`/tournaments/${localTournament._id}`);
+            if (tournament && tournament._id != null) {
+                await instance.delete(`/tournaments/${tournament._id}`);
                 navigate('/tournaments');
             }
         }
     }
-    useEffect(() => {
-        setTournament(tournament)
-    }, [localTournament, tournament])
+    // useEffect(() => {
+    //     setTournament(tournament)
+    // }, [tournament])
     const LeaveFromTournament = async () => {
-        if (!localTournament) {
+        if (!tournament) {
             return <PreLoader/>
         }
-        if (isParticipating && localTournament) {
-            setIsFetching(true);
-            const updatePlayers = localTournament.players.filter((player: UserModel) => player._id !== CurrentClient._id)
-            const updateTournament = {
-                ...localTournament,
-                players: updatePlayers
-            }
-            let response = await instance.patch(`/tournaments/${localTournament._id}`, updateTournament)
-            await setTournament(response.data)
-            setParticipating(false)
-            setIsFetching(false)
+        if (isParticipating && tournament) {
+            // setIsFetching(true);
+            dispatch(leaveFromTournament({localTournament: tournament, currentClient: CurrentClient}))
+            // const updatePlayers = localTournament.players.filter((player: UserModel) => player._id !== CurrentClient._id)
+            // const updateTournament = {
+            //     ...localTournament,
+            //     players: updatePlayers
+            // }
+            // let response = await instance.patch(`/tournaments/${localTournament._id}`, updateTournament)
+            // await setTournament(response.data)
+            // setParticipating(false)
+            // setIsFetching(false)
         } else {
             console.log('что-то пошло не так')
         }

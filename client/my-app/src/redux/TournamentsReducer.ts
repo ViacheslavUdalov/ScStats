@@ -26,6 +26,9 @@ const initialState = {
 };
 
 const tournamentSlice = createSlice({
+    initialState,
+    name: 'tournaments',
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchTournament.pending, (state) => {
@@ -41,9 +44,7 @@ const tournamentSlice = createSlice({
                 state.status = 'error'
             })
     },
-    initialState,
-    name: 'tournaments',
-    reducers: {}
+
 });
 
-export const tournamentReducer = tournamentSlice.reducer;
+export const tournamentsReducer = tournamentSlice.reducer;
