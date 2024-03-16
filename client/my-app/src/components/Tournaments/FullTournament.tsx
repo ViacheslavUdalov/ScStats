@@ -39,7 +39,7 @@ const FullTournament = React.memo(() => {
     type OpenIndexState = Record<number, number>;
     const navigate = useNavigate();
     const isParticipating = useAppSelector(state => state.tournament.isParticipating);
-    const isLoading = useAppSelector(state => state.tournament.isLoading);
+    const isLoading: boolean = useAppSelector(state => state.tournament.isLoading);
     const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
     const [modalIsOpen, setModalOpen] = useState(false);
     const [messageError, setMessageError] = useState('');
@@ -63,24 +63,10 @@ const FullTournament = React.memo(() => {
         }
     }
     const LeaveFromTournament = async () => {
-        if (!tournament) {
-            return <PreLoader/>
-        }
-        if (isParticipating && tournament) {
             dispatch(leaveFromTournament({localTournament: tournament, currentClient: CurrentClient}))
-        } else {
-            console.log('что-то пошло не так')
-        }
     }
     const followForTournament = async () => {
-        if (!tournament) {
-            return <PreLoader/>
-        }
-        if (!isParticipating && tournament && !tournament.players.includes(CurrentClient)) {
             dispatch(followTournament({localTournament: tournament, currentClient: CurrentClient}));
-        } else {
-            console.log('вы уже участвуете в этом турнире')
-        }
     }
     const openModal = (columnIndex: number, pairIndex: number) => {
         if (openIndex[columnIndex] === pairIndex) {
@@ -231,12 +217,12 @@ const FullTournament = React.memo(() => {
 
 
         if (tournament.bracket && colIndex !== tournament.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
-            const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
-            if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
-                setModalOpen(true)
-                setMessageError('игрок уже есть в следующем раунде')
-                return;
-            }
+            // const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
+            // if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
+            //     setModalOpen(true)
+            //     setMessageError('игрок уже есть в следующем раунде')
+            //     return;
+            // }
             updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
         }
 
@@ -252,7 +238,7 @@ const FullTournament = React.memo(() => {
             .replace(new RegExp(`[${charactersToRemove.join('')}]`, 'g'), ' ');
         return (
             <div className={styles.main}>
-                {isLoading && <PreLoader/>}
+                <PreLoader isLoading={isLoading}/>
                 {tournament &&
                     <div className={styles.container}>
                         <div className={styles.MainInfo}>

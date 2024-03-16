@@ -84,14 +84,19 @@ export const updateTournamentData = createAsyncThunk('tournaments/updateTourname
     }
 
 })
-
+interface TournamentState {
+    data: TournamentModel | null,
+    isParticipating: boolean,
+    isLoading: boolean
+}
+const initialState : TournamentState= {
+    data: null as TournamentModel | null,
+    isParticipating: false,
+    isLoading: false,
+}
 export const tournamentSlice = createSlice({
     name: 'tournament',
-    initialState: {
-        data: null as TournamentModel | null,
-        isParticipating: false,
-        isLoading: false,
-    },
+    initialState: initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder

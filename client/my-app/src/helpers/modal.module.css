@@ -4,7 +4,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.55);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,7 +19,6 @@
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
     display: block;
     z-index: 5000;
-    z-index: 20;
 }
 .closeModal {
     background-color: #03f80f;
@@ -28,4 +27,28 @@
     border-radius: 20px;
     padding: 5px;
     margin: 10px 40%;
+}
+.loaderOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.43);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2px);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.5s ease, backdrop-filter 0.5s ease;
+}
+.loaderOverlay.active {
+    transition-delay: 0.2s;
+    opacity: 1;
+    backdrop-filter: blur(8px);
+}
+.loaderContent {
+    border-radius: 50%;
+
 }

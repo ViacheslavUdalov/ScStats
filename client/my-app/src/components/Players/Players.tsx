@@ -23,10 +23,9 @@ const Players = () => {
     const totalPages = totalUsersCount ?  Math.ceil(totalUsersCount / perPage) : 0;
     const pages : Array<number>= [];
     createPages(pages, totalPages, pageIndex);
-    if (isLoading) {
-        return <PreLoader/>
-    }
     return (
+        <React.Fragment>
+            <PreLoader isLoading={isLoading} />
         <div className={styles.containerForUsers}>
             <div>
 
@@ -72,7 +71,7 @@ const Players = () => {
             </div>
             <ScrollToTop/>
         </div>
-
+        </React.Fragment>
     )
 }
 export default Players;

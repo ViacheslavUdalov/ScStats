@@ -6,6 +6,7 @@ import styles from './home.module.css'
 import {NavLink} from "react-router-dom";
 import React, {useEffect, useLayoutEffect, useState} from "react";
 import image from '../../common/4151292-1.jpg';
+import PreLoader from "../../helpers/isLoading";
 
 const Home = React.memo(() => {
         const [visibleBlocks, setVisibleBlocks] = useState<string[]>([]);
@@ -43,12 +44,9 @@ useLayoutEffect(() => {
                 window.removeEventListener('scroll', handleScroll);
             }
         }, [])
-        if (isLoading) {
-            return <IsLoading/>
-        }
-
-        // console.log(data)
         return (
+            <React.Fragment>
+                <PreLoader isLoading={isLoading} />
             <div className={styles.global}>
                 <div className={styles.container}>
                     <div className={`${styles.main} ${styles.block} ${visibleBlocks.includes('block1') ? styles.show : ''}`}
@@ -107,6 +105,7 @@ useLayoutEffect(() => {
                     </div>
                 </div>
             </div>
+            </React.Fragment>
         )
     }
 )

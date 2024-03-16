@@ -27,12 +27,9 @@ const Tournaments = React.memo(() => {
         const pages: Array<number> = [];
         createPages(pages, pagesCount, currentPage)
         console.log(DataTournamentModel);
-        if (isLoading) {
-            return <PreLoader/>
-        }
-
-
         return (
+            <React.Fragment>
+                <PreLoader isLoading={isLoading} />
             <div className={styles.mainPage}>
                 <input type={'search'}
                        className={styles.searchInput}
@@ -64,6 +61,7 @@ const Tournaments = React.memo(() => {
                 </div>
                 <ScrollToTop/>
             </div>
+                </React.Fragment>
         )
     }
 )
