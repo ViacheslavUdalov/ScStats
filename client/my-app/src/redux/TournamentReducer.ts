@@ -6,6 +6,9 @@ import {rootStateType} from "./store";
 import players from "../components/Players/Players";
 import {Simulate} from "react-dom/test-utils";
 import play = Simulate.play;
+import {PlayerBracket} from "../models/PlayerBracket";
+import {Match} from "../models/match";
+import {generateBracket, simulateMatches} from "../helpers/createMatches";
 
 
 export const fetchTournament = createAsyncThunk('tournaments/fetchTournament', async (id: string) => {
@@ -48,17 +51,34 @@ export const followTournament = createAsyncThunk('tournaments/followTournament',
         }
     }
     else {
-
+return 'Уже учатсвуете в турнире'
     }
     })
-export const createBracket = createAsyncThunk('tournaments/createBracket', async ({localTournament, currentClient} : {localTournament: TournamentModel, currentClient: UserModel}) => {
-
-    const updatePlayers = [...localTournament.players, currentClient]
-    const updateTournament = {
-        ...localTournament,
-        players: updatePlayers
+export const createBracketAsync = createAsyncThunk('tournaments/createBracket', async (tournament: TournamentModel) => {
+    if (tournament.players && tournament.players.length > 3) {
+        let insideBracket = [simulateMatches(tournament.players)];
+        console.log(insideBracket)
+        let bracketForServer = generateBracket(insideBracket, insideBracket[0].length)
+        console.log(bracketForServer)
+        let response = await instance.patch(`/tournaments/${tournament?._id}`, {
+            ...tournament,
+            bracket: bracketForServer
+        });
+        if (response.status == 200) {
+            return response.data;
+        } else {
+            return response.status
+        }
+    } else {
+        return 'количество игроков недостаточно'
     }
-    const data =  await instance.patch(`/tournaments/${updateTournament._id}`, updateTournament);
+})
+export const updateTournamentData = createAsyncThunk('tournaments/updateTournamentData', async ({tournament, updatedBracket} : {tournament: TournamentModel, updatedBracket: Match[][]}) => {
+
+    const data =  await instance.patch(`/tournaments/${tournament._id}`, {
+        ...tournament,
+        bracket: updatedBracket
+    });
     if (data.status === 200) {
         return data.data;
     }
@@ -127,6 +147,30 @@ export const tournamentSlice = createSlice({
             .addCase(followTournament.rejected, (state) => {
                 state.isLoading = false;
                 state.isParticipating = false;
+                state.data = null;
+            })
+            .addCase(createBracketAsync.pending, (state) => {
+                state.isLoading = true;
+                state.data = null;
+            })
+            .addCase(createBracketAsync.fulfilled, (state) => {
+                state.isLoading = false;
+                state.data = null;
+            })
+            .addCase(createBracketAsync.rejected, (state) => {
+                state.isLoading = false;
+                state.data = null;
+            })
+            .addCase(updateTournamentData.pending, (state) => {
+                state.isLoading = true;
+                state.data = null;
+            })
+            .addCase(updateTournamentData.fulfilled, (state, action: rootStateType) => {
+                state.isLoading = false;
+                state.data = action.payload;
+            })
+            .addCase(updateTournamentData.rejected, (state) => {
+                state.isLoading = false;
                 state.data = null;
             })
     },

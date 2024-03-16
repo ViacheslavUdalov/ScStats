@@ -1,36 +1,44 @@
-import React, {MouseEventHandler, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
 import styles from './FullTournament.module.css';
 import {useSelector} from "react-redux";
 import {rootStateType, useAppDispatch, useAppSelector} from "../../redux/store";
-import instance from "../../api/MainAPI";
 import {UserModel, UserModelForTournament} from "../../models/user-model";
 import image from '../../common/StormGateLogo_BlackandWhite_Flat.png';
 import PreLoader from "../../helpers/isLoading";
 import UserIcon from '../../common/images.png'
-import {generateBracket, simulateMatches} from "../../helpers/createMatches";
 import Click from "../../common/Click.png";
 import Modal from "../../helpers/Modal";
 import {PlayerBracket, PlayerBracketWithoutScore} from "../../models/PlayerBracket";
 import {Match} from "../../models/match";
-import {CalculateRatingChange} from "../../helpers/eloCalculator";
-import {deleteTournament, fetchTournament, followTournament, leaveFromTournament} from "../../redux/TournamentReducer";
+import {
+    createBracketAsync,
+    deleteTournament,
+    fetchTournament,
+    followTournament,
+    leaveFromTournament,
+    updateTournamentData
+} from "../../redux/TournamentReducer";
+import {getOneUser, updateUserRank} from "../../redux/userReducer";
 
 
 const FullTournament = React.memo(() => {
     const {id} = useParams();
     const dispatch = useAppDispatch();
+
     const tournament = useAppSelector(state => state.tournament.data);
+
     useEffect(() => {
-        id && dispatch(fetchTournament(id));
-    }, [])
+        if (!tournament) {
+            id && dispatch(fetchTournament(id));
+            console.log(tournament)
+        }
+    }, [tournament])
 
     const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
     type OpenIndexState = Record<number, number>;
     const navigate = useNavigate();
-    console.log(tournament);
     const isParticipating = useAppSelector(state => state.tournament.isParticipating);
-    console.log(isParticipating);
     const isLoading = useAppSelector(state => state.tournament.isLoading);
     const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
     const [modalIsOpen, setModalOpen] = useState(false);
@@ -83,118 +91,161 @@ const FullTournament = React.memo(() => {
         }
     }
     const createBracket = async () => {
-        console.log(tournament);
-        if (tournament) {
-            if (tournament.players && tournament.players.length > 3) {
-                let insideBracket = [simulateMatches(tournament.players)];
-                console.log(insideBracket)
-                let bracketForServer = generateBracket(insideBracket, insideBracket[0].length)
-                console.log(bracketForServer)
-                let response = await instance.patch(`/tournaments/${tournament?._id}`, {
-                    ...tournament,
-                    bracket: bracketForServer
-                });
-                // setTournament(response.data);
-            }
-        } else {
-            console.log('Нельзя создать сетку, если меньше трёх игороков')
-        }
+             await dispatch(createBracketAsync(tournament));
     }
-           const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number = 0, scoreForPlayer2: number = 0, colIndex: number, pairIndex: number) => {
+     //       const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number = 0, scoreForPlayer2: number = 0, colIndex: number, pairIndex: number) => {
+     //
+     //
+     //        let nextMatchIndex = Math.floor(pairIndex / 2);
+     //        let updatedBracket = JSON.parse(JSON.stringify(tournament.bracket));
+     //        let currMatch = updatedBracket[colIndex][pairIndex];
+     //
+     //
+     //        const updatedPlayers = currMatch.players.map((player: UserModelForTournament, index: number) => {
+     //            if (index === 0) {
+     //                return {...player, score: scoreForPlayer1}
+     //            } else {
+     //                return {...player, score: scoreForPlayer2}
+     //            }
+     //        })
+     //
+     //        let playerOne: UserModel, playerTwo: UserModel;
+     //          const data =  await instance.get(`/user/${updatedPlayers[0]._id}`);
+     //        console.log(data)
+     //           const data2 =  await instance.get(`/user/${updatedPlayers[1]._id}`);
+     //           console.log(data2)
+     //
+     //
+     //
+     //        const winner: PlayerBracketWithoutScore = scoreForPlayer1 > scoreForPlayer2 ? {
+     //            _id: updatedPlayers[0]._id,
+     //            fullName: updatedPlayers[0].fullName,
+     //            rank: updatedBracket[0].rank
+     //        } : {
+     //            _id: updatedPlayers[1]._id,
+     //            fullName: updatedPlayers[1].fullName,
+     //            rank: updatedBracket[1].rank
+     //        };
+     //
+     //
+     //        currMatch.winner = winner;
+     //        currMatch.players = updatedPlayers;
+     //
+     //           if (scoreForPlayer1 > scoreForPlayer2) {
+     //               if (data && data2) {
+     //                   console.log(`ранк игрока один ${data.data.rank}`)
+     //                   data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
+     //                   data.data.matches = [...data.data.matches, currMatch]
+     //                   const {data: responseForPlayerOne} =  await instance.patch(`/user/editrankandmatchhistory/${data.data._id}`, data.data)
+     //                   console.log(`ранк игрока один ${data.data.rank}`)
+     //                   console.log(responseForPlayerOne)
+     //                   console.log(`ранк игрока один ${data2.data.rank}`)
+     //                   data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
+     //                   data2.data.matches = [...data2.data.matches, currMatch]
+     //                   console.log(`ранк игрока один ${data2.data.rank}`)
+     //
+     //                   const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrankandmatchhistory/${data2.data._id}`, data2.data)
+     //                   console.log(responseForPlayerTwo)
+     //               }
+     //           } else if (scoreForPlayer1 < scoreForPlayer2) {
+     //               if (data && data2) {
+     //                   console.log(`ранк игрока один ${data.data.rank}`)
+     //                   data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
+     //                   data.data.matches = [...data.data.matches, currMatch]
+     //                   console.log(`ранк игрока один ${data.data.rank}`)
+     //                   const {data: responseForPlayerOne} =  await instance.patch(`/user/editrankandmatchhistory/${data.data._id}`, data.data)
+     //                   console.log(responseForPlayerOne)
+     //                   console.log(`ранк игрока два ${data2.data.rank}`)
+     //                   data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
+     //                   data2.data.matches = [...data2.data.matches, currMatch]
+     //                   console.log(`ранк игрока два ${data2.data.rank}`)
+     //                   const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrankandmatchhistory/${data2.data._id}`, data2.data);
+     //                   console.log(responseForPlayerTwo)
+     //
+     //               }
+     //           }
+     //        updatedBracket[colIndex][pairIndex] = currMatch;
+     //
+     //
+     //        if (tournament.bracket && colIndex !== tournament.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
+     //            const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
+     //            if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
+     //                setModalOpen(true)
+     //                setMessageError('игрок уже есть в следующем раунде')
+     //                return;
+     //            }
+     //            updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
+     //        }
+     //
+     //        let response = await instance.patch(`/tournaments/${tournament?._id}`, {
+     //            ...tournament,
+     //            bracket: updatedBracket
+     //        })
+     // }
+    const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number = 0, scoreForPlayer2: number = 0, colIndex: number, pairIndex: number) => {
 
 
-            let nextMatchIndex = Math.floor(pairIndex / 2);
-            let updatedBracket = JSON.parse(JSON.stringify(tournament.bracket));
-            let currMatch = updatedBracket[colIndex][pairIndex];
+        let nextMatchIndex = Math.floor(pairIndex / 2);
+        let updatedBracket = JSON.parse(JSON.stringify(tournament.bracket));
+        let currMatch = updatedBracket[colIndex][pairIndex];
 
 
-            const updatedPlayers = currMatch.players.map((player: UserModelForTournament, index: number) => {
-                if (index === 0) {
-                    return {...player, score: scoreForPlayer1}
-                } else {
-                    return {...player, score: scoreForPlayer2}
-                }
-            })
-
-            let playerOne: UserModel, playerTwo: UserModel;
-              const data =  await instance.get(`/user/${updatedPlayers[0]._id}`);
-            console.log(data)
-               const data2 =  await instance.get(`/user/${updatedPlayers[1]._id}`);
-               console.log(data2)
-
-
-
-            const winner: PlayerBracketWithoutScore = scoreForPlayer1 > scoreForPlayer2 ? {
-                _id: updatedPlayers[0]._id,
-                fullName: updatedPlayers[0].fullName,
-                rank: updatedBracket[0].rank
-            } : {
-                _id: updatedPlayers[1]._id,
-                fullName: updatedPlayers[1].fullName,
-                rank: updatedBracket[1].rank
-            };
-
-
-            currMatch.winner = winner;
-            currMatch.players = updatedPlayers;
-
-               if (scoreForPlayer1 > scoreForPlayer2) {
-                   if (data && data2) {
-                       console.log(`ранк игрока один ${data.data.rank}`)
-                       data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
-                       data.data.matches = [...data.data.matches, currMatch]
-                       const {data: responseForPlayerOne} =  await instance.patch(`/user/editrankandmatchhistory/${data.data._id}`, data.data)
-                       console.log(`ранк игрока один ${data.data.rank}`)
-                       console.log(responseForPlayerOne)
-                       console.log(`ранк игрока один ${data2.data.rank}`)
-                       data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
-                       data2.data.matches = [...data2.data.matches, currMatch]
-                       console.log(`ранк игрока один ${data2.data.rank}`)
-
-                       const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrankandmatchhistory/${data2.data._id}`, data2.data)
-                       console.log(responseForPlayerTwo)
-                   }
-               } else if (scoreForPlayer1 < scoreForPlayer2) {
-                   if (data && data2) {
-                       console.log(`ранк игрока один ${data.data.rank}`)
-                       data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
-                       data.data.matches = [...data.data.matches, currMatch]
-                       console.log(`ранк игрока один ${data.data.rank}`)
-                       const {data: responseForPlayerOne} =  await instance.patch(`/user/editrankandmatchhistory/${data.data._id}`, data.data)
-                       console.log(responseForPlayerOne)
-                       console.log(`ранк игрока два ${data2.data.rank}`)
-                       data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
-                       data2.data.matches = [...data2.data.matches, currMatch]
-                       console.log(`ранк игрока два ${data2.data.rank}`)
-                       const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrankandmatchhistory/${data2.data._id}`, data2.data);
-                       console.log(responseForPlayerTwo)
-
-                   }
-               }
-
-
-            updatedBracket[colIndex][pairIndex] = currMatch;
-
-            
-            if (tournament.bracket && colIndex !== tournament.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
-                const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
-                if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
-                    setModalOpen(true)
-                    setMessageError('игрок уже есть в следующем раунде')
-                    return;
-                }
-                updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
+        const updatedPlayers = currMatch.players.map((player: UserModelForTournament, index: number) => {
+            if (index === 0) {
+                return {...player, score: scoreForPlayer1}
+            } else {
+                return {...player, score: scoreForPlayer2}
             }
+        })
 
-            let response = await instance.patch(`/tournaments/${tournament?._id}`, {
-                ...tournament,
-                bracket: updatedBracket
+        const [userOneResponse, userTwoResponse] = await Promise.all([
+          await dispatch(getOneUser(updatedPlayers[0]._id)),
+          await dispatch(getOneUser(updatedPlayers[1]._id))
+        ]);
+        const playerOne = userOneResponse.payload;
+        const playerTwo = userTwoResponse.payload;
 
-            })
 
-            // setTournament(response.data);
+        const winner: PlayerBracketWithoutScore = scoreForPlayer1 > scoreForPlayer2 ? {
+            _id: updatedPlayers[0]._id,
+            fullName: updatedPlayers[0].fullName,
+            rank: updatedBracket[0].rank
+        } : {
+            _id: updatedPlayers[1]._id,
+            fullName: updatedPlayers[1].fullName,
+            rank: updatedBracket[1].rank
+        };
+
+
+        currMatch.winner = winner;
+        currMatch.players = updatedPlayers;
+
+        if (scoreForPlayer1 > scoreForPlayer2) {
+            await dispatch(updateUserRank({playerOne, playerTwo, result: 1, currMatch}))
+            await dispatch(updateUserRank({playerTwo, playerOne, result: 0, currMatch}))
+        } else if (scoreForPlayer1 < scoreForPlayer2) {
+            await dispatch(updateUserRank({playerOne, playerTwo, result: 1, currMatch}))
+            await dispatch(updateUserRank({playerTwo, playerOne, result: 0, currMatch}))
+        }
+        updatedBracket[colIndex][pairIndex] = currMatch;
+
+
+        if (tournament.bracket && colIndex !== tournament.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
+            const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
+            if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
+                setModalOpen(true)
+                setMessageError('игрок уже есть в следующем раунде')
+                return;
+            }
+            updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
         }
 
+        // let response = await instance.patch(`/tournaments/${tournament?._id}`, {
+        //     ...tournament,
+        //     bracket: updatedBracket
+        // })
+        await dispatch(updateTournamentData({tournament, updatedBracket}))
+    }
 
         const charactersToRemove = ["T", "Z"];
         const modifiedString = tournament?.createdAt

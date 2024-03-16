@@ -10,13 +10,14 @@ import {tournamentsAPI} from "./RTKtournaments";
 import {tournamentsReducer} from "./TournamentsReducer";
 import {UsersReducer} from "./UsersReducer";
 import {tournamentReducer} from "./TournamentReducer";
+import {UserReducer} from "./userReducer";
 
 const rootReducer: Reducer = combineReducers({
-    // tournaments: tournamentReducer,
-    [tournamentsAPI.reducerPath] : tournamentsAPI.reducer,
+    [tournamentsAPI.reducerPath]: tournamentsAPI.reducer,
     auth: authReducer,
-tournaments: tournamentsReducer,
+    tournaments: tournamentsReducer,
     users: UsersReducer,
+    user: UserReducer,
     tournament: tournamentReducer
 })
 
