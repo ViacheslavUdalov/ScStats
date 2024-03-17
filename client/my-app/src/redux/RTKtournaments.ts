@@ -88,5 +88,4 @@ export const tournamentsAPI = createApi({
         }),
     })
 })
-export const {useGetAllTournamentsQuery, useGetFullTournamentQuery,useDeleteTournamentMutation,
-useCreateTournamentMutation, useUpdateTournamentMutation, useGetUsersQuery, useGetOneUserQuery} = tournamentsAPI
+export const {useGetAllTournamentsQuery, useGetUsersQuery, useGetOneUserQuery} = tournamentsAPI

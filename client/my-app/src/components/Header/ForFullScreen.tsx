@@ -31,7 +31,7 @@ const ForFullScreen = () => {
     const handleDark = () => {
         setTheme('dark')
     }
-    console.log(isAuth)
+    // console.log(isAuth)
 
     return (
         <div className={styles.flexBox}>
@@ -63,7 +63,7 @@ const ForFullScreen = () => {
                 <div className={styles.Themes} onClick={handleDark}>темная</div>
                 <div className={styles.Themes} onClick={handleLight}>светлая</div>
                 </div>
-            <Modal isOpen={modalIsOpen} onClose={closeModal}>
+            <Modal isOpen={modalIsOpen} onClose={closeModal} ButtonTitle={'закрыть'}>
                 <div className={styles.inSideModal}>
                <span className={styles.LogoutFromAcc}>Вы уверены что вы хотите выйти из аккаунта?</span>
                 <button onClick={Logout} className={styles.ModalButton}>Выйти из аккаунта</button>

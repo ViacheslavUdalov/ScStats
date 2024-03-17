@@ -11,11 +11,16 @@ import {Match} from "../models/match";
 import {generateBracket, simulateMatches} from "../helpers/createMatches";
 
 
-export const fetchTournament = createAsyncThunk('tournaments/fetchTournament', async (id: string) => {
+export const fetchTournament = createAsyncThunk('tournaments/fetchTournament', async ({id, currentClientId} : {id: string, currentClientId: string}, {dispatch}) => {
     const data = await instance.get(`tournaments/${id}`)
     if (data.status === 200) {
-    return data.data;
+        if (data.data.players.some((player: UserModel) => player._id === currentClientId)) {
+            dispatch(setIsParticipatingTrue());
+        } else {
+            dispatch(setIsParticipatingFalse());
         }
+        return data.data;
+    }
 })
 export const deleteTournament = createAsyncThunk('tournaments/deleteTournament', async (id: string) => {
     const data = await instance.delete(`tournaments/${id}`)
@@ -23,36 +28,40 @@ export const deleteTournament = createAsyncThunk('tournaments/deleteTournament',
         return data.data;
     }
 })
-export const leaveFromTournament = createAsyncThunk('tournaments/leaveFromTournament', async ({localTournament, currentClient} : {localTournament: TournamentModel, currentClient: UserModel}) => {
+export const leaveFromTournament = createAsyncThunk('tournaments/leaveFromTournament', async ({
+                                                                                                  localTournament,
+                                                                                                  currentClient
+                                                                                              }: { localTournament: TournamentModel, currentClient: UserModel }) => {
     const isParticipant = localTournament.players.some((player: UserModel) => player._id === currentClient._id)
-   if (isParticipant) {
-       const updatePlayers = localTournament.players.filter((player: UserModel) => player._id !== currentClient._id)
-       const updateTournament = {
-           ...localTournament,
-           players: updatePlayers
-       }
-       const data = await instance.patch(`/tournaments/${localTournament._id}`, updateTournament);
-       if (data.status === 200) {
-           return data.data;
-       }
-   }
-})
-export const followTournament = createAsyncThunk('tournaments/followTournament', async ({localTournament, currentClient} : {localTournament: TournamentModel, currentClient: UserModel}) => {
-   const isParticipant = localTournament.players.some((player: UserModel) => player._id === currentClient._id)
-    if (!isParticipant) {
-        const updatePlayers = [...localTournament.players, currentClient]
+    if (isParticipant) {
+        const updatePlayers = localTournament.players.filter((player: UserModel) => player._id !== currentClient._id)
         const updateTournament = {
             ...localTournament,
             players: updatePlayers
         }
-        const data = await instance.patch(`/tournaments/${updateTournament._id}`, updateTournament);
+        const data = await instance.patch(`/tournaments/${localTournament._id}`, updateTournament);
         if (data.status === 200) {
             return data.data;
         }
     }
-    else {
-return 'Уже учатсвуете в турнире'
-    }
+})
+export const followTournament = createAsyncThunk('tournaments/followTournament',
+    async ({localTournament, currentClient}:
+               { localTournament: TournamentModel, currentClient: UserModel }) => {
+        const isParticipant = localTournament.players.some((player: UserModel) => player._id === currentClient._id)
+        if (!isParticipant) {
+            const updatePlayers = [...localTournament.players, currentClient]
+            const updateTournament = {
+                ...localTournament,
+                players: updatePlayers
+            }
+            const data = await instance.patch(`/tournaments/${updateTournament._id}`, updateTournament);
+            if (data.status === 200) {
+                return data.data;
+            }
+        } else {
+            return 'Уже учатсвуете в турнире'
+        }
     })
 export const createBracketAsync = createAsyncThunk('tournaments/createBracket', async (tournament: TournamentModel) => {
     if (tournament.players && tournament.players.length > 3) {
@@ -73,37 +82,59 @@ export const createBracketAsync = createAsyncThunk('tournaments/createBracket', 
         return 'количество игроков недостаточно'
     }
 })
-export const updateTournamentData = createAsyncThunk('tournaments/updateTournamentData', async ({tournament, updatedBracket} : {tournament: TournamentModel, updatedBracket: Match[][]}) => {
+export const updateTournamentData =
+    createAsyncThunk('tournaments/updateTournamentData',
+        async ({
+                   tournament,
+                   updatedBracket
+               }: { tournament: TournamentModel, updatedBracket: Match[][] }) => {
 
-    const data =  await instance.patch(`/tournaments/${tournament._id}`, {
-        ...tournament,
-        bracket: updatedBracket
-    });
-    if (data.status === 200) {
-        return data.data;
-    }
+            const data = await instance.patch(`/tournaments/${tournament._id}`, {
+                ...tournament,
+                bracket: updatedBracket
+            });
+            if (data.status === 200) {
+                return data.data;
+            }
 
-})
+        })
+
 interface TournamentState {
     data: TournamentModel | null,
     isParticipating: boolean,
     isLoading: boolean
 }
-const initialState : TournamentState= {
+
+const initialState: TournamentState = {
     data: null as TournamentModel | null,
     isParticipating: false,
     isLoading: false,
 }
+const startLoading = (state: rootStateType) => {
+    state.isLoading = true;
+    state.data = null;
+}
+const finishLoadingSuccess = (state: rootStateType, action: rootStateType) => {
+    state.isLoading = false;
+    state.data = action.payload;
+}
 export const tournamentSlice = createSlice({
     name: 'tournament',
     initialState: initialState,
-    reducers: {},
+    reducers: {
+        clearTournamentData: (state) => {
+            state.data = null;
+        },
+        setIsParticipatingTrue: (state) => {
+            state.isParticipating = true;
+        },
+        setIsParticipatingFalse: (state) => {
+            state.isParticipating = false;
+        }
+    },
     extraReducers: (builder) => {
         builder
-            .addCase(deleteTournament.pending, (state) => {
-                state.isLoading = true;
-                state.data = null;
-            })
+            .addCase(deleteTournament.pending, startLoading)
             .addCase(deleteTournament.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.data = null;
@@ -112,14 +143,8 @@ export const tournamentSlice = createSlice({
                 state.isLoading = false;
                 state.data = null;
             })
-            .addCase(fetchTournament.pending, (state) => {
-                state.isLoading = true;
-                state.data = null;
-            })
-            .addCase(fetchTournament.fulfilled, (state, action: rootStateType) => {
-                state.isLoading = false;
-                state.data = action.payload;
-            })
+            .addCase(fetchTournament.pending, startLoading)
+            .addCase(fetchTournament.fulfilled, finishLoadingSuccess)
             .addCase(fetchTournament.rejected, (state) => {
                 state.isLoading = false;
                 state.data = null;
@@ -154,31 +179,19 @@ export const tournamentSlice = createSlice({
                 state.isParticipating = false;
                 state.data = null;
             })
-            .addCase(createBracketAsync.pending, (state) => {
-                state.isLoading = true;
-                state.data = null;
-            })
-            .addCase(createBracketAsync.fulfilled, (state) => {
-                state.isLoading = false;
-                state.data = null;
-            })
+            .addCase(createBracketAsync.pending, startLoading)
+            .addCase(createBracketAsync.fulfilled, finishLoadingSuccess)
             .addCase(createBracketAsync.rejected, (state) => {
                 state.isLoading = false;
                 state.data = null;
             })
-            .addCase(updateTournamentData.pending, (state) => {
-                state.isLoading = true;
-                state.data = null;
-            })
-            .addCase(updateTournamentData.fulfilled, (state, action: rootStateType) => {
-                state.isLoading = false;
-                state.data = action.payload;
-            })
+            .addCase(updateTournamentData.pending, startLoading)
+            .addCase(updateTournamentData.fulfilled, finishLoadingSuccess)
             .addCase(updateTournamentData.rejected, (state) => {
                 state.isLoading = false;
                 state.data = null;
             })
     },
 })
-
+export const {clearTournamentData, setIsParticipatingTrue, setIsParticipatingFalse} = tournamentSlice.actions;
 export const tournamentReducer = tournamentSlice.reducer;

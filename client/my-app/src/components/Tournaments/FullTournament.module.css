@@ -1,5 +1,7 @@
 .main {
-    background-color: var(--Main-background-color);
+    background-image: var(--Background-image);
+    background-size: cover;
+    min-height: 100vh;
 }
 .allColumns {
     display: flex;
@@ -14,6 +16,9 @@
     padding:0 30px;
 }
 .parentbracket {
+    position: relative;
+    top: 10%;
+    left: 35%;
     border: 2px solid #98f882;
     margin-top: 30px;
     width: 500px;

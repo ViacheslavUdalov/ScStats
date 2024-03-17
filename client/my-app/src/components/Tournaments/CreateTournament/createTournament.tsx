@@ -24,7 +24,7 @@ const CreateTournament = () => {
          currentAuthUser = JSON.parse(currentUserString);
     }
     useEffect(() => {
-        id &&
+        id && !tournament &&
         dispatch(fetchTournament(id))
         dispatch(fetchAuthMe())
     }, [])

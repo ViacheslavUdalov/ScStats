@@ -4,56 +4,58 @@ import {useSelector} from "react-redux";
 import {rootStateType, useAppDispatch} from "../../redux/store";
 import {NavLink} from "react-router-dom";
 import styles from './Tournaments.module.css';
-import instance from "../../api/MainAPI";
 import image from '../../common/StormGateLogo_BlackandWhite_Flat.png';
 import {UserModel} from "../../models/user-model";
 import {fetchAuthMe, selectIsAuth} from "../../redux/authReducer";
+import {
+    fetchTournament,
+    followTournament,
+    setIsParticipatingFalse,
+    setIsParticipatingTrue, updateTournamentData
+} from "../../redux/TournamentReducer";
 
 type props = {
     tournament: TournamentModel
 }
 const Tournament = React.memo(({tournament}: props) => {
+
         const dispatch = useAppDispatch();
-        const userData = useSelector((state: rootStateType) => state.auth.data);
-        const [isParticipating, setParticipating] = useState(false)
-        const [UpdatePlayers, setUpdatePlayers] = useState(tournament?.players)
+
+     const isAuth = useSelector(selectIsAuth);
+        const userData: UserModel = useSelector((state: rootStateType) => state.auth.data);
+
+        const [players, setPlayers] = useState(tournament.players);
+        const [isParticipating, setIsParticipating] = useState(false);
         const [isExpanded, setIsExpanded] = useState(false);
-        const isAuth = useSelector(selectIsAuth);
+
+        useEffect(() => {
+            if (players.some((player) => player._id === userData._id)) {
+                setIsParticipating(true)
+            }
+
+        }, [tournament])
+
+
         const toggleIsExpanded = () => {
             setIsExpanded(!isExpanded)
         }
-        const followForTournament = async () => {
-            if (!isParticipating && tournament) {
-                const updatePlayers = [...tournament.players, userData]
-                setUpdatePlayers(updatePlayers)
-                const updateTournament = {
-                    ...tournament,
-                    players: updatePlayers
-                }
-               await instance.patch(`/tournaments/${tournament._id}`, updateTournament)
-                console.log(updateTournament)
-                setParticipating(true)
-            } else {
-                console.log('вы уже участвуете в этом турнире')
+        const followForTournament = async (id: string) => {
+            try {
+
+                let tournamentData = await dispatch(fetchTournament({id: id, currentClientId: userData._id}));
+                let tournament = tournamentData.payload;
+                const updatedTournamentData = await dispatch(followTournament({
+                    localTournament: tournament,
+                    currentClient: userData
+                }))
+                const updatedTournament = updatedTournamentData.payload;
+                console.log(updatedTournament);
+                setIsParticipating(true);
+                setPlayers(prevState => [...prevState, userData])
+            } catch (err) {
+                console.log(err);
             }
         }
-        useEffect(() => {
-            dispatch(fetchAuthMe)
-        }, [])
-        useEffect(() => {
-            tournament && tournament.players.map((player: UserModel) => {
-                    if (player?._id === userData?._id) {
-                        setParticipating(true)
-                    }
-                }
-            )
-        }, [tournament])
-        useEffect(() => {
-            setUpdatePlayers(tournament?.players)
-        }, [])
-        const players = UpdatePlayers ? UpdatePlayers : tournament?.players
-        console.log(userData);
-
 
         return (
             <div className={styles.mainContainer}>
@@ -108,7 +110,8 @@ const Tournament = React.memo(({tournament}: props) => {
                             {
                                 isParticipating ? <span className={styles.YouArePlaying}>Вы участвуете в этом турнире</span>
                                     :
-                                    <button onClick={followForTournament} className={styles.Joinbutton}>Join</button>
+                                    <button onClick={() => followForTournament(tournament._id)}
+                                            className={styles.Joinbutton}>Join</button>
                             } </div>
                         :
                         <span className={styles.ForPlaying}>

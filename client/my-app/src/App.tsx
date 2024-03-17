@@ -16,6 +16,7 @@ import EditUserData from "./components/AboutUser/EditUserData";
 import Players from "./components/Players/Players";
 function App() {
     const dispatch = useAppDispatch();
+
     useEffect(() => {
         dispatch(fetchAuthMe());
     }, [])

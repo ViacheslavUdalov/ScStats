@@ -25,12 +25,13 @@ import {getOneUser, updateUserRank} from "../../redux/userReducer";
 const FullTournament = React.memo(() => {
     const {id} = useParams();
     const dispatch = useAppDispatch();
-
+const userData: UserModel = useAppSelector((state) => state.auth.data)
+        console.log(userData);
     const tournament = useAppSelector(state => state.tournament.data);
 
     useEffect(() => {
         if (!tournament) {
-            id && dispatch(fetchTournament(id));
+            id && dispatch(fetchTournament({id: id, currentClientId: userData?._id}));
             console.log(tournament)
         }
     }, [tournament])
@@ -45,6 +46,7 @@ const FullTournament = React.memo(() => {
     const [messageError, setMessageError] = useState('');
     const [scoreP1, setScoreP1] = useState(0);
     const [scoreP2, setScoreP2] = useState(0);
+    const [buttonTitle, setButtonTitle] = useState('');
     const handleScoreP1 = (e: React.ChangeEvent<HTMLInputElement>) => {
         setScoreP1(Number(e.target.value));
     }
@@ -55,12 +57,15 @@ const FullTournament = React.memo(() => {
         setModalOpen(false)
     }
     const RemoveTournament = async () => {
-        if (window.confirm('Вы действительно хотите удалить турнир?')) {
+        // if (window.confirm('Вы действительно хотите удалить турнир?')) {
+        setModalOpen(true);
+        setMessageError('Вы действительно хотите удалить турнир?')
+        setButtonTitle('Удалить');
             if (tournament && tournament._id != null) {
                 id && dispatch(deleteTournament(id));
                 navigate('/tournaments');
             }
-        }
+        // }
     }
     const LeaveFromTournament = async () => {
             dispatch(leaveFromTournament({localTournament: tournament, currentClient: CurrentClient}))
@@ -79,95 +84,6 @@ const FullTournament = React.memo(() => {
     const createBracket = async () => {
              await dispatch(createBracketAsync(tournament));
     }
-     //       const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number = 0, scoreForPlayer2: number = 0, colIndex: number, pairIndex: number) => {
-     //
-     //
-     //        let nextMatchIndex = Math.floor(pairIndex / 2);
-     //        let updatedBracket = JSON.parse(JSON.stringify(tournament.bracket));
-     //        let currMatch = updatedBracket[colIndex][pairIndex];
-     //
-     //
-     //        const updatedPlayers = currMatch.players.map((player: UserModelForTournament, index: number) => {
-     //            if (index === 0) {
-     //                return {...player, score: scoreForPlayer1}
-     //            } else {
-     //                return {...player, score: scoreForPlayer2}
-     //            }
-     //        })
-     //
-     //        let playerOne: UserModel, playerTwo: UserModel;
-     //          const data =  await instance.get(`/user/${updatedPlayers[0]._id}`);
-     //        console.log(data)
-     //           const data2 =  await instance.get(`/user/${updatedPlayers[1]._id}`);
-     //           console.log(data2)
-     //
-     //
-     //
-     //        const winner: PlayerBracketWithoutScore = scoreForPlayer1 > scoreForPlayer2 ? {
-     //            _id: updatedPlayers[0]._id,
-     //            fullName: updatedPlayers[0].fullName,
-     //            rank: updatedBracket[0].rank
-     //        } : {
-     //            _id: updatedPlayers[1]._id,
-     //            fullName: updatedPlayers[1].fullName,
-     //            rank: updatedBracket[1].rank
-     //        };
-     //
-     //
-     //        currMatch.winner = winner;
-     //        currMatch.players = updatedPlayers;
-     //
-     //           if (scoreForPlayer1 > scoreForPlayer2) {
-     //               if (data && data2) {
-     //                   console.log(`ранк игрока один ${data.data.rank}`)
-     //                   data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
-     //                   data.data.matches = [...data.data.matches, currMatch]
-     //                   const {data: responseForPlayerOne} =  await instance.patch(`/user/editrankandmatchhistory/${data.data._id}`, data.data)
-     //                   console.log(`ранк игрока один ${data.data.rank}`)
-     //                   console.log(responseForPlayerOne)
-     //                   console.log(`ранк игрока один ${data2.data.rank}`)
-     //                   data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
-     //                   data2.data.matches = [...data2.data.matches, currMatch]
-     //                   console.log(`ранк игрока один ${data2.data.rank}`)
-     //
-     //                   const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrankandmatchhistory/${data2.data._id}`, data2.data)
-     //                   console.log(responseForPlayerTwo)
-     //               }
-     //           } else if (scoreForPlayer1 < scoreForPlayer2) {
-     //               if (data && data2) {
-     //                   console.log(`ранк игрока один ${data.data.rank}`)
-     //                   data.data.rank = data.data.rank + CalculateRatingChange(data.data.rank, data2.data.rank, 1);
-     //                   data.data.matches = [...data.data.matches, currMatch]
-     //                   console.log(`ранк игрока один ${data.data.rank}`)
-     //                   const {data: responseForPlayerOne} =  await instance.patch(`/user/editrankandmatchhistory/${data.data._id}`, data.data)
-     //                   console.log(responseForPlayerOne)
-     //                   console.log(`ранк игрока два ${data2.data.rank}`)
-     //                   data2.data.rank = data2.data.rank + CalculateRatingChange(data2.data.rank, data.data.rank, 0);
-     //                   data2.data.matches = [...data2.data.matches, currMatch]
-     //                   console.log(`ранк игрока два ${data2.data.rank}`)
-     //                   const {data: responseForPlayerTwo} =  await instance.patch(`/user/editrankandmatchhistory/${data2.data._id}`, data2.data);
-     //                   console.log(responseForPlayerTwo)
-     //
-     //               }
-     //           }
-     //        updatedBracket[colIndex][pairIndex] = currMatch;
-     //
-     //
-     //        if (tournament.bracket && colIndex !== tournament.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
-     //            const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
-     //            if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
-     //                setModalOpen(true)
-     //                setMessageError('игрок уже есть в следующем раунде')
-     //                return;
-     //            }
-     //            updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
-     //        }
-     //
-     //        let response = await instance.patch(`/tournaments/${tournament?._id}`, {
-     //            ...tournament,
-     //            bracket: updatedBracket
-     //        })
-     // }
     const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number = 0, scoreForPlayer2: number = 0, colIndex: number, pairIndex: number) => {
 
 
@@ -217,19 +133,16 @@ const FullTournament = React.memo(() => {
 
 
         if (tournament.bracket && colIndex !== tournament.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
-            // const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
-            // if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
-            //     setModalOpen(true)
-            //     setMessageError('игрок уже есть в следующем раунде')
-            //     return;
-            // }
+            const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
+            if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
+                setModalOpen(true)
+                setMessageError('игрок уже есть в следующем раунде')
+                setButtonTitle('закрыть');
+                return;
+            }
             updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
         }
 
-        // let response = await instance.patch(`/tournaments/${tournament?._id}`, {
-        //     ...tournament,
-        //     bracket: updatedBracket
-        // })
         await dispatch(updateTournamentData({tournament, updatedBracket}))
     }
 
@@ -276,9 +189,11 @@ const FullTournament = React.memo(() => {
                                                     {isLoading ? <span>Loading...</span> :
                                                         <div className={styles.LeaveFromTournament}>
                                                             <span>Вы участвуете в этом турнире</span>
-                                                            <button onClick={LeaveFromTournament}
+                                                            {tournament.bracket.length === 0 &&
+                                                                <button onClick={LeaveFromTournament}
                                                                     className={styles.Buttons}>Покинуть турнир
                                                             </button>
+                                                            }
                                                         </div>
                                                     }
                                                 </div>
@@ -301,7 +216,7 @@ const FullTournament = React.memo(() => {
                     </span>
                             }
                             <div>
-                                {CurrentClient?._id === tournament?.Owner._id &&
+                                {CurrentClient?._id === tournament?.Owner._id && !tournament.bracket &&
                                     <div className={styles.updateAndDelete}>
                                         <NavLink className={styles.NavLink}
                                                  to={`/tournaments/${id}/edit`}>Редактировать</NavLink>
@@ -324,12 +239,18 @@ const FullTournament = React.memo(() => {
                             </div>
                             <span className={styles.time}>
                    <span style={{color: "white"}}>Дата создания: </span>{modifiedString?.slice(0, 16)}
-                                {CurrentClient?._id === tournament.Owner._id && tournament.bracket.length === 0 &&
+                                {CurrentClient?._id === tournament.Owner._id &&
+                                    tournament.bracket.length === 0
+                                    && tournament.players.length > 3 &&
+                                    <div>Вы сможете создать сетку, когда будет более 4 игроков.</div>
+                                }
+                                {CurrentClient?._id === tournament.Owner._id &&
+                                    tournament.bracket.length === 0
+                                    && tournament.players.length > 3 &&
                                     <div>
                                         <button onClick={createBracket} className={styles.RemoveTournament}>Создать сетку
                                         </button>
                                     </div>
-
                                 }
                         </span>
                         </div>
@@ -352,10 +273,11 @@ const FullTournament = React.memo(() => {
                                                         <div className={styles.parentformodal} key={pairIndex}>
 
 
-                                                            <Modal isOpen={modalIsOpen} onClose={closeModal}>
+                                                            <Modal isOpen={modalIsOpen} onClose={closeModal} ButtonTitle={buttonTitle}>
                                                                 <div className={styles.inSideModal}>
                                                                     <span
-                                                                        className={styles.LogoutFromAcc}>{messageError}</span>
+                                                                        className={styles.LogoutFromAcc}>{messageError}
+                                                                    </span>
                                                                 </div>
                                                             </Modal>
 

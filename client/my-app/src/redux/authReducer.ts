@@ -17,7 +17,6 @@ export const fetchAuthMe = createAsyncThunk('auth/fetchAuthMe', async () => {
      else if (response.status === 403) {
          return response
     }
-
 })
 export const fetchRegister = createAsyncThunk('auth/fetchRegister', async (params: RegisterModel) => {
     const response = await instance.post('auth/register', params);
@@ -28,7 +27,7 @@ export const fetchEditMe = createAsyncThunk('auth/fetchEditMe', async (params: U
     return response.data
 })
 const initialState = {
-    data: null as AuthModel | null,
+    data: null as UserModel | null,
     status: 'loading'
 }
 const authSlice = createSlice({

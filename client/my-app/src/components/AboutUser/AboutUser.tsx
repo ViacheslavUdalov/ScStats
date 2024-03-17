@@ -8,6 +8,7 @@ import {useGetOneUserQuery} from "../../redux/RTKtournaments";
 import PreLoader from "../../helpers/isLoading";
 import {UserModel} from "../../models/user-model";
 import {createPages} from "../../helpers/Paginator";
+import {Match} from "../../models/match";
 
 const AboutUser = () => {
     const {id} = useParams()
@@ -24,6 +25,7 @@ const AboutUser = () => {
     const totalMatches = UserData && UserData.matches.length - 1;
     const totalPages = totalMatches && Math.ceil(totalMatches / perPage);
     createPages(pages, totalPages, pageIndex)
+
     return (
         <React.Fragment>
             <PreLoader isLoading={isLoading}/>
@@ -48,10 +50,12 @@ const AboutUser = () => {
 
                     <div className={styles.dataofAllMatches}>
                         История Матчей:
-                        {UserData.matches.map((match, index) => {
+                        {UserData.matches.map((match: Match, index) => {
+                            const charactersToRemove = ["T", "Z"];
+                            const modifiedString = match?.matchDate?.toLocaleString()
+                                .replace(new RegExp(`[${charactersToRemove.join('')}]`, 'g'), ' ');
                             return <div key={index} className={styles.dataofMatch}>
-                                {/*<div>{match.matchDate}</div>*/}
-
+                                <div>{modifiedString}</div>
                                 {match.players.map((player, index) => {
                                     const isWinner = match.winner && player._id === match.winner._id
                                     return <div key={index} className={styles.dataOfMatchPlayer}>
@@ -63,6 +67,7 @@ const AboutUser = () => {
                                         }
                                         <span style={{paddingRight: '10px'}}>{player.score}</span>
                                         <span>{player.fullName}</span>
+
                                     </div>
                                 })
                                 }

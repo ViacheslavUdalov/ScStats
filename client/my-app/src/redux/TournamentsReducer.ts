@@ -4,25 +4,29 @@ import {TournamentsAPI} from "../api/tournamentsAPI";
 import {rootStateType} from "./store";
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query";
 import {AsyncThunkRejectedActionCreator} from "@reduxjs/toolkit/dist/createAsyncThunk";
+import instance from "../api/MainAPI";
 
-
-// export const fetchTournaments = createAsyncThunk('tournaments/fetchTournaments', async () => {
-//     const data: DataTournamentModel  = await TournamentsAPI.fetchALL()
-//     console.log(data);
-//     return data;
-// })
-export const fetchTournament = createAsyncThunk('tournaments/fetchTournament', async (id: string) => {
-    const data: DataTournamentModel = await TournamentsAPI.fetchOne(id)
-    return data;
+interface ParamsType {
+    searchTerm: string,
+    page: number,
+    perPage: number
+}
+export const fetchTournaments = createAsyncThunk('tournaments/fetchTournaments', async (params: ParamsType) => {
+    const data = await
+        instance.get(`tournaments?searchTerm=${params.searchTerm}&page=${params.page}&perPage=${params.perPage}`)
+if (data.status === 200) {
+    return data.data;
+} else {
+    return data.statusText
+}
 })
-// export const fetchDeleteTournaments = createAsyncThunk('tournaments/fetchDeleteTournaments', async (id: string) => {
-//     await TournamentsAPI.fetchDelete(id)
-// })
-//
-const initialState = {
+interface InitialStateType{
+    tournaments: Array<TournamentModel> | null,
+    isLoading: boolean
+}
+const initialState : InitialStateType= {
     tournaments: [] as Array<TournamentModel>,
-    tournament: null as TournamentModel | null,
-    status: 'loading'
+   isLoading: false
 };
 
 const tournamentSlice = createSlice({
@@ -31,17 +35,17 @@ const tournamentSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchTournament.pending, (state) => {
-                state.tournament = null;
-                state.status = 'loading'
+            .addCase(fetchTournaments.pending, (state) => {
+                state.tournaments = null;
+                state.isLoading = true
             })
-            .addCase(fetchTournament.fulfilled, (state, action: rootStateType) => {
-                state.tournament = action.payload;
-                state.status = 'loaded'
+            .addCase(fetchTournaments.fulfilled, (state, action: rootStateType) => {
+                state.tournaments = action.payload;
+                state.isLoading = false
             })
-            .addCase(fetchTournament.rejected, (state) => {
-                state.tournament = null;
-                state.status = 'error'
+            .addCase(fetchTournaments.rejected, (state) => {
+                state.tournaments = null;
+                state.isLoading = false
             })
     },
 

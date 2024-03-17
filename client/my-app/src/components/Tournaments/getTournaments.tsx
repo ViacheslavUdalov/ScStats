@@ -26,7 +26,7 @@ const Tournaments = React.memo(() => {
         const pagesCount = totalCount ? Math.ceil(totalCount / perPage) : 0;
         const pages: Array<number> = [];
         createPages(pages, pagesCount, currentPage)
-        console.log(DataTournamentModel);
+        // console.log(DataTournamentModel);
         return (
             <React.Fragment>
                 <PreLoader isLoading={isLoading} />
