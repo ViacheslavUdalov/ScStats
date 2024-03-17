@@ -5,8 +5,8 @@ import {rootStateType, useAppDispatch, useAppSelector} from "../../../redux/stor
 import {fetchAuthMe, selectIsAuth} from "../../../redux/authReducer";
 import instance from "../../../api/MainAPI";
 import {useSelector} from "react-redux";
-import {fetchTournament} from "../../../redux/TournamentsReducer";
-import {TournamentOwner} from "../../../models/PlayerBracket";
+import {fetchTournament} from "../../../redux/TournamentReducer";
+import {UserModel} from "../../../models/user-model";
 
 const CreateTournament = () => {
     const navigate = useNavigate();
@@ -18,14 +18,10 @@ const CreateTournament = () => {
     const [imageUrl, setImageUrl] = useState('');
     const hiddenFileInput = useRef(null);
     const [submitButtonDisabled, setSubmitButtonDisabled] = useState(true);
-    let currentAuthUser: TournamentOwner | null = null;
-    const currentUserString = localStorage.getItem('currentUser');
-    if (currentUserString !== null) {
-         currentAuthUser = JSON.parse(currentUserString);
-    }
+   const UserData: UserModel = useAppSelector(state => state.auth.data)
     useEffect(() => {
         id && !tournament &&
-        dispatch(fetchTournament(id))
+        dispatch(fetchTournament({id: id, currentClientId: UserData?._id}))
         dispatch(fetchAuthMe())
     }, [])
     const tournament = useSelector((state: rootStateType) => state.tournament.data);
@@ -61,7 +57,7 @@ const CreateTournament = () => {
                 Name,
                 about,
                 imageUrl,
-                Owner: currentAuthUser
+                Owner: UserData
             }
             const {data} = isEditing ? await instance.patch(`/tournaments/${id}`, fields)
                 : await instance.post('/tournaments', fields);

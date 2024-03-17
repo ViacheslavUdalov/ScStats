@@ -23,128 +23,163 @@ import {getOneUser, updateUserRank} from "../../redux/userReducer";
 
 
 const FullTournament = React.memo(() => {
-    const {id} = useParams();
-    const dispatch = useAppDispatch();
-const userData: UserModel = useAppSelector((state) => state.auth.data)
+        const {id} = useParams();
+        const dispatch = useAppDispatch();
+        const userData: UserModel = useAppSelector((state) => state.auth.data)
         console.log(userData);
-    const tournament = useAppSelector(state => state.tournament.data);
+        const tournament = useAppSelector(state => state.tournament.data);
 
-    useEffect(() => {
-        if (!tournament) {
-            id && dispatch(fetchTournament({id: id, currentClientId: userData?._id}));
-            console.log(tournament)
+        useEffect(() => {
+            if (!tournament) {
+                id && dispatch(fetchTournament({id: id, currentClientId: userData?._id}));
+                console.log(tournament)
+            }
+        }, [tournament])
+
+        const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
+        type OpenIndexState = Record<number, number>;
+        const navigate = useNavigate();
+        const isParticipating = useAppSelector(state => state.tournament.isParticipating);
+        const isLoading: boolean = useAppSelector(state => state.tournament.isLoading);
+        const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
+        const [modalIsOpen, setModalOpen] = useState(false);
+        const [messageError, setMessageError] = useState('');
+        const [scoreP1, setScoreP1] = useState(0);
+        const [scoreP2, setScoreP2] = useState(0);
+        const [buttonTitle, setButtonTitle] = useState('');
+        const [processedMatches, setProcessedMatches] = useState(new Set<number>());
+        const handleScoreP1 = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setScoreP1(Number(e.target.value));
         }
-    }, [tournament])
-
-    const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
-    type OpenIndexState = Record<number, number>;
-    const navigate = useNavigate();
-    const isParticipating = useAppSelector(state => state.tournament.isParticipating);
-    const isLoading: boolean = useAppSelector(state => state.tournament.isLoading);
-    const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
-    const [modalIsOpen, setModalOpen] = useState(false);
-    const [messageError, setMessageError] = useState('');
-    const [scoreP1, setScoreP1] = useState(0);
-    const [scoreP2, setScoreP2] = useState(0);
-    const [buttonTitle, setButtonTitle] = useState('');
-    const handleScoreP1 = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setScoreP1(Number(e.target.value));
-    }
-    const handleScoreP2 = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setScoreP2(Number(e.target.value));
-    }
-    const closeModal = () => {
-        setModalOpen(false)
-    }
-    const RemoveTournament = async () => {
-        // if (window.confirm('Вы действительно хотите удалить турнир?')) {
-        setModalOpen(true);
-        setMessageError('Вы действительно хотите удалить турнир?')
-        setButtonTitle('Удалить');
+        const handleScoreP2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setScoreP2(Number(e.target.value));
+        }
+        const closeModal = () => {
+            setModalOpen(false)
+        }
+        const RemoveTournament = async () => {
+            // if (window.confirm('Вы действительно хотите удалить турнир?')) {
+            setModalOpen(true);
+            setMessageError('Вы действительно хотите удалить турнир?')
+            setButtonTitle('Удалить');
             if (tournament && tournament._id != null) {
                 id && dispatch(deleteTournament(id));
                 navigate('/tournaments');
             }
-        // }
-    }
-    const LeaveFromTournament = async () => {
+            // }
+        }
+        const LeaveFromTournament = async () => {
             dispatch(leaveFromTournament({localTournament: tournament, currentClient: CurrentClient}))
-    }
-    const followForTournament = async () => {
+        }
+        const followForTournament = async () => {
             dispatch(followTournament({localTournament: tournament, currentClient: CurrentClient}));
-    }
-    const openModal = (columnIndex: number, pairIndex: number) => {
-        if (openIndex[columnIndex] === pairIndex) {
-            const {[columnIndex]: removedIndex, ...rest} = openIndex;
-            setOpenIndex(rest);
-        } else {
-            setOpenIndex({...openIndex, [columnIndex]: pairIndex});
         }
-    }
-    const createBracket = async () => {
-             await dispatch(createBracketAsync(tournament));
-    }
-    const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number = 0, scoreForPlayer2: number = 0, colIndex: number, pairIndex: number) => {
-
-
-        let nextMatchIndex = Math.floor(pairIndex / 2);
-        let updatedBracket = JSON.parse(JSON.stringify(tournament.bracket));
-        let currMatch = updatedBracket[colIndex][pairIndex];
-
-
-        const updatedPlayers = currMatch.players.map((player: UserModelForTournament, index: number) => {
-            if (index === 0) {
-                return {...player, score: scoreForPlayer1}
+        const openModal = (columnIndex: number, pairIndex: number) => {
+            if (openIndex[columnIndex] === pairIndex) {
+                const {[columnIndex]: removedIndex, ...rest} = openIndex;
+                setOpenIndex(rest);
             } else {
-                return {...player, score: scoreForPlayer2}
+                setOpenIndex({...openIndex, [columnIndex]: pairIndex});
             }
-        })
-
-        const [userOneResponse, userTwoResponse] = await Promise.all([
-          await dispatch(getOneUser(updatedPlayers[0]._id)),
-          await dispatch(getOneUser(updatedPlayers[1]._id))
-        ]);
-        const playerOne = userOneResponse.payload;
-        const playerTwo = userTwoResponse.payload;
-
-
-        const winner: PlayerBracketWithoutScore = scoreForPlayer1 > scoreForPlayer2 ? {
-            _id: updatedPlayers[0]._id,
-            fullName: updatedPlayers[0].fullName,
-            rank: updatedBracket[0].rank
-        } : {
-            _id: updatedPlayers[1]._id,
-            fullName: updatedPlayers[1].fullName,
-            rank: updatedBracket[1].rank
-        };
-
-
-        currMatch.winner = winner;
-        currMatch.players = updatedPlayers;
-
-        if (scoreForPlayer1 > scoreForPlayer2) {
-            await dispatch(updateUserRank({playerOne, playerTwo, result: 1, currMatch}))
-            await dispatch(updateUserRank({playerTwo, playerOne, result: 0, currMatch}))
-        } else if (scoreForPlayer1 < scoreForPlayer2) {
-            await dispatch(updateUserRank({playerOne, playerTwo, result: 1, currMatch}))
-            await dispatch(updateUserRank({playerTwo, playerOne, result: 0, currMatch}))
         }
-        updatedBracket[colIndex][pairIndex] = currMatch;
-
-
-        if (tournament.bracket && colIndex !== tournament.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
-            const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
-            if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
-                setModalOpen(true)
-                setMessageError('игрок уже есть в следующем раунде')
-                setButtonTitle('закрыть');
+        const createBracket = async () => {
+            await dispatch(createBracketAsync(tournament));
+        }
+        const setWinnerWithOnePlayer = async (pairIndex: number, colIndex: number) => {
+            if (processedMatches.has(pairIndex)) {
                 return;
             }
-            updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
-        }
 
-        await dispatch(updateTournamentData({tournament, updatedBracket}))
-    }
+            let nextMatchIndex = Math.floor(pairIndex / 2);
+            let updatedBracket = JSON.parse(JSON.stringify(tournament.bracket));
+            if (updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.length === 0) {
+
+
+                let currMatch = updatedBracket[colIndex][pairIndex];
+                currMatch.players = currMatch.players.map((player: UserModelForTournament) => {
+                    return {...player, score: 99}
+                })
+                let updatedPlayer = currMatch.players[0];
+                await dispatch(getOneUser(updatedPlayer._id));
+                currMatch.winner = {
+                    _id: updatedPlayer._id,
+                    fullName: updatedPlayer.fullName,
+                    rank: updatedPlayer.rank
+                }
+                if (tournament.bracket && colIndex !== tournament.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
+                    updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
+                }
+            }
+            await dispatch(updateTournamentData({tournament, updatedBracket}))
+            setProcessedMatches(new Set<number>(processedMatches.add(pairIndex)));
+        }
+        const setWinner = async (pair: PlayerBracket[], scoreForPlayer1: number = 0, scoreForPlayer2: number = 0, colIndex: number, pairIndex: number) => {
+            if (scoreForPlayer2 === 0 && scoreForPlayer1 === 0) {
+                setModalOpen(true);
+                setOpenIndex({});
+                setMessageError('невозможно устаночить счёт 0 - 0')
+                setButtonTitle('закрыть')
+                return;
+            }
+
+            let nextMatchIndex = Math.floor(pairIndex / 2);
+            let updatedBracket = JSON.parse(JSON.stringify(tournament.bracket));
+            let currMatch = updatedBracket[colIndex][pairIndex];
+
+
+            const updatedPlayers = currMatch.players.map((player: UserModelForTournament, index: number) => {
+                if (index === 0) {
+                    return {...player, score: scoreForPlayer1}
+                } else {
+                    return {...player, score: scoreForPlayer2}
+                }
+            })
+
+            const [userOneResponse, userTwoResponse] = await Promise.all([
+                await dispatch(getOneUser(updatedPlayers[0]._id)),
+                await dispatch(getOneUser(updatedPlayers[1]._id))
+            ]);
+            const playerOne = userOneResponse.payload;
+            const playerTwo = userTwoResponse.payload;
+
+
+            const winner: PlayerBracketWithoutScore = scoreForPlayer1 > scoreForPlayer2 ? {
+                _id: updatedPlayers[0]._id,
+                fullName: updatedPlayers[0].fullName,
+                rank: updatedBracket[0].rank
+            } : {
+                _id: updatedPlayers[1]._id,
+                fullName: updatedPlayers[1].fullName,
+                rank: updatedBracket[1].rank
+            };
+
+
+            currMatch.winner = winner;
+            currMatch.players = updatedPlayers;
+
+            if (scoreForPlayer1 > scoreForPlayer2) {
+                await dispatch(updateUserRank({playerOne, playerTwo, result: 1, currMatch}))
+                await dispatch(updateUserRank({playerTwo, playerOne, result: 0, currMatch}))
+            } else if (scoreForPlayer1 < scoreForPlayer2) {
+                await dispatch(updateUserRank({playerOne, playerTwo, result: 1, currMatch}))
+                await dispatch(updateUserRank({playerTwo, playerOne, result: 0, currMatch}))
+            }
+            updatedBracket[colIndex][pairIndex] = currMatch;
+
+
+            if (tournament.bracket && colIndex !== tournament.bracket.length - 1 || updatedBracket[colIndex + 1] && updatedBracket[colIndex + 1][nextMatchIndex]) {
+                const nextMatch = updatedBracket[colIndex + 1][nextMatchIndex];
+                if (nextMatch.players.some((player: UserModel) => player._id === winner._id) || nextMatch.players.length === 2) {
+                    setModalOpen(true)
+                    setMessageError('игрок уже есть в следующем раунде')
+                    setButtonTitle('закрыть');
+                    return;
+                }
+                updatedBracket[colIndex + 1][Math.floor(pairIndex / 2)].players.push({...currMatch.winner, score: 0});
+            }
+
+            await dispatch(updateTournamentData({tournament, updatedBracket}))
+        }
 
         const charactersToRemove = ["T", "Z"];
         const modifiedString = tournament?.createdAt
@@ -191,8 +226,8 @@ const userData: UserModel = useAppSelector((state) => state.auth.data)
                                                             <span>Вы участвуете в этом турнире</span>
                                                             {tournament.bracket.length === 0 &&
                                                                 <button onClick={LeaveFromTournament}
-                                                                    className={styles.Buttons}>Покинуть турнир
-                                                            </button>
+                                                                        className={styles.Buttons}>Покинуть турнир
+                                                                </button>
                                                             }
                                                         </div>
                                                     }
@@ -263,39 +298,47 @@ const userData: UserModel = useAppSelector((state) => state.auth.data)
                             <span>Сетка (Если сетка не появилась, обновите страницу)</span>
                             <div className={styles.allColumns}>
 
-                                {tournament?.bracket.map((column : Match[], columnIndex: number) => {
+                                {tournament?.bracket.map((column: Match[], columnIndex: number) => {
                                     return (
                                         <div key={columnIndex} className={styles.allPairs}>
                                             <div>
                                                 {column.map((pair: Match, pairIndex: number) => {
+                                                    // pair.players.length === 1 && columnIndex !== tournament.bracket.length - 1 && setWinnerWithOnePlayer(pairIndex, columnIndex);
                                                     return (
-
                                                         <div className={styles.parentformodal} key={pairIndex}>
-
-
-                                                            <Modal isOpen={modalIsOpen} onClose={closeModal} ButtonTitle={buttonTitle}>
+                                                            <Modal isOpen={modalIsOpen} onClose={closeModal}
+                                                                   ButtonTitle={buttonTitle}>
                                                                 <div className={styles.inSideModal}>
                                                                     <span
                                                                         className={styles.LogoutFromAcc}>{messageError}
                                                                     </span>
                                                                 </div>
                                                             </Modal>
-
                                                             <div
                                                                 className={`${styles.modal} ${openIndex[columnIndex] === pairIndex ? styles.seemodal : styles.hidemodal}`}>
                                                                 {pair.winner ?
                                                                     <div className={styles.matchplayed}>Матч сыгран.</div> :
                                                                     <div>
-                                                                        Верхний игрок:
-                                                                        <input type="text" value={scoreP1}
-                                                                               onChange={handleScoreP1}/>
-                                                                        Нижний игрок:
-                                                                        <input type="text" value={scoreP2}
-                                                                               onChange={handleScoreP2}/>
-                                                                        <button
-                                                                            onClick={() => setWinner(pair.players, scoreP1, scoreP2, columnIndex, pairIndex)}>Отправить
-                                                                            результат.
-                                                                        </button>
+                                                                        {pair.players.length === 1 ?
+                                                                            <button
+                                                                                onClick={() => setWinnerWithOnePlayer(pairIndex, columnIndex)}>Пройти
+                                                                                дальше
+                                                                            </button> :
+                                                                            <div>
+                                                                                Верхний игрок:
+                                                                                <input type="text" value={scoreP1}
+                                                                                       onChange={handleScoreP1}/>
+                                                                                Нижний игрок:
+                                                                                <input type="text" value={scoreP2}
+                                                                                       onChange={handleScoreP2}/>
+                                                                                <button
+                                                                                    onClick={() => setWinner(pair.players, scoreP1, scoreP2, columnIndex, pairIndex)}>Отправить
+                                                                                    результат.
+                                                                                </button>
+                                                                            </div>
+                                                                        }
+
+
                                                                     </div>
                                                                 }
                                                             </div>

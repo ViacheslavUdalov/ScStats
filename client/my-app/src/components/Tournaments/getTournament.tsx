@@ -6,12 +6,10 @@ import {NavLink} from "react-router-dom";
 import styles from './Tournaments.module.css';
 import image from '../../common/StormGateLogo_BlackandWhite_Flat.png';
 import {UserModel} from "../../models/user-model";
-import {fetchAuthMe, selectIsAuth} from "../../redux/authReducer";
+import { selectIsAuth} from "../../redux/authReducer";
 import {
     fetchTournament,
     followTournament,
-    setIsParticipatingFalse,
-    setIsParticipatingTrue, updateTournamentData
 } from "../../redux/TournamentReducer";
 
 type props = {

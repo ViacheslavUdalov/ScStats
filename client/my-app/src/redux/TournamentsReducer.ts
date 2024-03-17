@@ -11,22 +11,25 @@ interface ParamsType {
     page: number,
     perPage: number
 }
+
 export const fetchTournaments = createAsyncThunk('tournaments/fetchTournaments', async (params: ParamsType) => {
     const data = await
         instance.get(`tournaments?searchTerm=${params.searchTerm}&page=${params.page}&perPage=${params.perPage}`)
-if (data.status === 200) {
-    return data.data;
-} else {
-    return data.statusText
-}
+    if (data.status === 200) {
+        return data.data;
+    } else {
+        return data.statusText
+    }
 })
-interface InitialStateType{
+
+interface InitialStateType {
     tournaments: Array<TournamentModel> | null,
     isLoading: boolean
 }
-const initialState : InitialStateType= {
+
+const initialState: InitialStateType = {
     tournaments: [] as Array<TournamentModel>,
-   isLoading: false
+    isLoading: false
 };
 
 const tournamentSlice = createSlice({
@@ -48,7 +51,6 @@ const tournamentSlice = createSlice({
                 state.isLoading = false
             })
     },
-
 });
 
 export const tournamentsReducer = tournamentSlice.reducer;
