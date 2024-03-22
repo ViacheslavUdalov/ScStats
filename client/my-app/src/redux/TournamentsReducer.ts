@@ -1,5 +1,5 @@
 import {createSlice, createAsyncThunk, AnyAction} from "@reduxjs/toolkit";
-import {DataTournamentModel, TournamentModel} from "../models/tournament-model";
+import {CommonDataModel, DataTournamentModel, TournamentModel} from "../models/tournament-model";
 import {TournamentsAPI} from "../api/tournamentsAPI";
 import {rootStateType} from "./store";
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query";
@@ -23,12 +23,12 @@ export const fetchTournaments = createAsyncThunk('tournaments/fetchTournaments',
 })
 
 interface InitialStateType {
-    tournaments: Array<TournamentModel> | null,
+    tournaments: CommonDataModel<TournamentModel> | null
     isLoading: boolean
 }
 
 const initialState: InitialStateType = {
-    tournaments: [] as Array<TournamentModel>,
+    tournaments:  {data: [], totalCount: 0},
     isLoading: false
 };
 

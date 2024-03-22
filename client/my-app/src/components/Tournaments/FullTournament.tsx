@@ -342,9 +342,10 @@ const FullTournament = React.memo(() => {
                                                                     </div>
                                                                 }
                                                             </div>
-
-                                                            <img src={Click} alt="click" className={styles.click}
-                                                                 onClick={() => openModal(columnIndex, pairIndex)}/>
+                                                            {pair.players.some((user: PlayerBracket) => user._id === CurrentClient._id) &&
+                                                                <img src={Click} alt="click" className={styles.click}
+                                                                     onClick={() => openModal(columnIndex, pairIndex)}/>
+                                                            }
                                                             <div key={pairIndex} className={styles.pair}>
                                                                 {pair.players?.map((user: PlayerBracket, index) => {
                                                                     const isWinner = pair.winner && user._id === pair.winner._id;

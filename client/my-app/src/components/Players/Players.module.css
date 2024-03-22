@@ -40,6 +40,20 @@
     text-decoration: none;
     color: var(--color);
 }
+.searchInput {
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 10px 80px;
+    background-color: black;
+    color: white;
+    border-radius: 10px;
+    font-size: large;
+    border: 1px solid white;
+}
+.searchInput:focus {
+    border: 1px solid #11de15;
+    box-shadow: inset 2px 2px 10px rgba(255, 255, 255, 0.5);
+}
 .containerForUsers {
     float: left;
     background-image: url("../../common/with Stormgate word.webp");

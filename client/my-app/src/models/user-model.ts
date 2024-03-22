@@ -17,3 +17,8 @@ export type UserModelForTournament = {
     score: number,
     rank: number
 }
+export interface UsersGetParams {
+    searchTerm: string,
+    pageIndex: number,
+    perPage: number
+}

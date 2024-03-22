@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {UserModel} from "../../models/user-model";
 import {useGetUsersQuery} from "../../redux/RTKtournaments";
 import styles from './Players.module.css';
@@ -8,27 +8,42 @@ import {NavLink} from "react-router-dom";
 import {useDebounce} from "../../helpers/debounce";
 import {createPages} from "../../helpers/Paginator";
 import ScrollToTop from "../../helpers/ScrollToTop";
+import {useAppDispatch, useAppSelector} from "../../redux/store";
+import {fetchAllUsers} from "../../redux/UsersReducer";
 
 const Players = () => {
-    const [search, setSearch] = useState('');
+    const dispatch = useAppDispatch();
+    const [searchTerm, setSearch] = useState('');
     const [perPage, setPerPage] = useState(100);
     const [pageIndex, setPageIndex] = useState(1);
-    const debounce = useDebounce(search);
-    const {data, isLoading} = useGetUsersQuery({
-        searchTerm: debounce,
-        perPage: perPage,
-        page: pageIndex
-    })
-    const totalUsersCount = data?.totalUsersCount;
+    const debounce = useDebounce(searchTerm);
+
+    const {users, isLoading} = useAppSelector(state => state.users);
+    console.log(users);
+
+
+    useEffect(() => {
+        dispatch(fetchAllUsers({ searchTerm, pageIndex, perPage}))
+    }, [debounce, pageIndex])
+
+
+    const totalUsersCount = users?.totalUsersCount;
     const totalPages = totalUsersCount ?  Math.ceil(totalUsersCount / perPage) : 0;
     const pages : Array<number>= [];
     createPages(pages, totalPages, pageIndex);
+
+
     return (
         <React.Fragment>
             <PreLoader isLoading={isLoading} />
         <div className={styles.containerForUsers}>
             <div>
-
+                <input type={'search'}
+                       onChange={((event) => setSearch(event.target.value))}
+                       value={searchTerm}
+                       placeholder={'Введите ник нейм игрока'}
+                       className={styles.searchInput}
+                />
                 <table className={styles.AllUsers}>
                     <thead>
                     <tr>
@@ -40,7 +55,7 @@ const Players = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {data?.users.map((user: UserModel, index: number) => {
+                    {users?.users?.map((user: UserModel, index: number) => {
                         return <tr key={index}
                                    className={styles.containerForOneUser}>
                             <td>{index + 1}.</td>

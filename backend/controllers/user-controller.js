@@ -97,9 +97,9 @@ const editMe = async (req, res) => {
 }
 const getUsers = async (req, res) => {
     try {
-        const {search, pageIndex, perPage} = req.query;
-        const searchTerm = new RegExp(search, 'i');
-        const filter = search ? {Name : {$regex: searchTerm}} : {};
+        const {searchTerm, pageIndex, perPage} = req.query;
+        const search = new RegExp(searchTerm, 'i');
+        const filter = searchTerm ? {fullName : {$regex: search}} : {};
         const users = await userModel.find(filter)
             .skip((pageIndex - 1) * perPage)
             .limit(perPage)

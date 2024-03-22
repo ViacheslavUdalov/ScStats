@@ -4,16 +4,25 @@ import instance from "../api/MainAPI";
 import {rootStateType} from "./store";
 import {fetchAuth, fetchRegister} from "./authReducer";
 import {AuthModel} from "../models/auth-model";
-import {TournamentModel} from "../models/tournament-model";
-import {UserModel} from "../models/user-model";
+import {CommonDataModel, TournamentModel} from "../models/tournament-model";
+import {UserModel, UsersGetParams} from "../models/user-model";
 
-export const fetchAllUsers = createAsyncThunk('auth/fetchAllUsers', async () => {
-    const response = await instance.get('/users');
-    return response.data;
+export const fetchAllUsers = createAsyncThunk('auth/fetchAllUsers', async (params: UsersGetParams) => {
+    const response = await instance.get(`users?searchTerm=${params.searchTerm}&pageIndex=${params.pageIndex}&perPage=${params.perPage}`);
+    if (response.status === 200) {
+        return response.data;
+    } else {
+        return response.status
+    }
+
 })
-const initialState = {
-    users: [] as Array<UserModel> | null,
-    status: 'loading'
+interface InitialStateType {
+    users: CommonDataModel<UserModel> | null,
+    isLoading: boolean
+}
+const initialState: InitialStateType= {
+    users: {data: [], totalCount: 0},
+    isLoading: false
 }
 const authSlice = createSlice({
     name: 'users',
@@ -22,17 +31,17 @@ const authSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchAllUsers.pending, (state) => {
-                state.status = 'loading'
+                state.isLoading= true
                 state.users = null
             })
             .addCase(fetchAllUsers.fulfilled, (state, action: rootStateType) => {
-                state.status = 'loaded'
+                state.isLoading = false
                 state.users = action.payload
 
             })
             .addCase(fetchAllUsers.rejected, (state) => {
                 state.users = null
-                state.status = 'error'
+                state.isLoading = false
 
             })
     }})
