@@ -192,6 +192,7 @@ h1 {
     inline-size: 300px;
     padding: 3px 0 3px 0;
     margin-top: 5px;
+    background-color: var(--Main-background-color);
 }
 .RemoveTournament {
     background-color: var(--Button-color);

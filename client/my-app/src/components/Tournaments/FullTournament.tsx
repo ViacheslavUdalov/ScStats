@@ -28,7 +28,7 @@ const FullTournament = React.memo(() => {
         const dispatch = useAppDispatch();
         const userData: UserModel = useAppSelector((state) => state.auth.data)
         console.log(userData);
-        const tournament = useAppSelector(state => state.tournament.data);
+        const {tournament, isLoading, isParticipating} = useAppSelector(state => state.tournament);
 
         useEffect(() => {
                 id && dispatch(fetchTournament({id: id, currentClientId: userData?._id}));
@@ -46,8 +46,6 @@ const FullTournament = React.memo(() => {
 
         type OpenIndexState = Record<number, number>;
         const navigate = useNavigate();
-        const isParticipating = useAppSelector(state => state.tournament.isParticipating);
-        const isLoading: boolean = useAppSelector(state => state.tournament.isLoading);
         const [openIndex, setOpenIndex] = useState<OpenIndexState>({});
         const [modalIsOpen, setModalOpen] = useState(false);
         const [messageError, setMessageError] = useState('');
