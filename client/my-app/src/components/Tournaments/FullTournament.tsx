@@ -12,11 +12,12 @@ import Modal from "../../helpers/Modal";
 import {PlayerBracket, PlayerBracketWithoutScore} from "../../models/PlayerBracket";
 import {Match} from "../../models/match";
 import {
+    clearTournamentData,
     createBracketAsync,
     deleteTournament,
     fetchTournament,
     followTournament,
-    leaveFromTournament,
+    leaveFromTournament, setIsParticipatingFalse, setIsParticipatingTrue,
     updateTournamentData
 } from "../../redux/TournamentReducer";
 import {getOneUser, updateUserRank} from "../../redux/userReducer";
@@ -30,13 +31,19 @@ const FullTournament = React.memo(() => {
         const tournament = useAppSelector(state => state.tournament.data);
 
         useEffect(() => {
-            if (!tournament) {
                 id && dispatch(fetchTournament({id: id, currentClientId: userData?._id}));
                 console.log(tournament)
-            }
-        }, [tournament])
 
-        const CurrentClient = useSelector((state: rootStateType) => state.auth.data);
+        }, [])
+
+    useEffect(() => {
+        if (tournament && tournament.players.some((player: UserModel) => player._id === userData._id)) {
+            dispatch(setIsParticipatingTrue());
+        } else {
+            dispatch(setIsParticipatingFalse());
+        }
+    }, [tournament])
+
         type OpenIndexState = Record<number, number>;
         const navigate = useNavigate();
         const isParticipating = useAppSelector(state => state.tournament.isParticipating);
@@ -69,10 +76,10 @@ const FullTournament = React.memo(() => {
             // }
         }
         const LeaveFromTournament = async () => {
-            dispatch(leaveFromTournament({localTournament: tournament, currentClient: CurrentClient}))
+            dispatch(leaveFromTournament({localTournament: tournament, currentClient: userData}))
         }
         const followForTournament = async () => {
-            dispatch(followTournament({localTournament: tournament, currentClient: CurrentClient}));
+            dispatch(followTournament({localTournament: tournament, currentClient: userData}));
         }
         const openModal = (columnIndex: number, pairIndex: number) => {
             if (openIndex[columnIndex] === pairIndex) {
@@ -215,7 +222,7 @@ const FullTournament = React.memo(() => {
                             </div>
                         </div>
                         <div className={styles.buttons}>
-                            {CurrentClient || window.localStorage.getItem('token') ?
+                            {userData || window.localStorage.getItem('token') ?
                                 <div>
                                     {tournament?.bracket.length === 0 &&
                                         <div>
@@ -251,7 +258,7 @@ const FullTournament = React.memo(() => {
                     </span>
                             }
                             <div>
-                                {CurrentClient?._id === tournament?.Owner._id && !tournament.bracket &&
+                                {userData?._id === tournament?.Owner._id && !tournament.bracket &&
                                     <div className={styles.updateAndDelete}>
                                         <NavLink className={styles.NavLink}
                                                  to={`/tournaments/${id}/edit`}>Редактировать</NavLink>
@@ -274,12 +281,12 @@ const FullTournament = React.memo(() => {
                             </div>
                             <span className={styles.time}>
                    <span style={{color: "white"}}>Дата создания: </span>{modifiedString?.slice(0, 16)}
-                                {CurrentClient?._id === tournament.Owner._id &&
+                                {userData?._id === tournament.Owner._id &&
                                     tournament.bracket.length === 0
                                     && tournament.players.length > 3 &&
                                     <div>Вы сможете создать сетку, когда будет более 4 игроков.</div>
                                 }
-                                {CurrentClient?._id === tournament.Owner._id &&
+                                {userData?._id === tournament.Owner._id &&
                                     tournament.bracket.length === 0
                                     && tournament.players.length > 3 &&
                                     <div>
@@ -342,7 +349,7 @@ const FullTournament = React.memo(() => {
                                                                     </div>
                                                                 }
                                                             </div>
-                                                            {pair.players.some((user: PlayerBracket) => user._id === CurrentClient._id) &&
+                                                            {pair.players.some((user: PlayerBracket) => user._id === userData._id) &&
                                                                 <img src={Click} alt="click" className={styles.click}
                                                                      onClick={() => openModal(columnIndex, pairIndex)}/>
                                                             }

@@ -1,11 +1,12 @@
-import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent, ChangeEventHandler, useEffect, useMemo, useRef, useState} from 'react';
 import styles from "../registration/Registration.module.css";
 import {rootStateType, useAppDispatch, useAppSelector} from "../../redux/store";
 import instance from "../../api/MainAPI";
 import {useNavigate, useParams} from "react-router-dom";
 import {fetchAuthMe} from "../../redux/authReducer";
 import {getOneUser} from "../../redux/userReducer";
-
+import {type} from "os";
+import Select from 'react-select'
 
 const EditUserData = () => {
     const {id} = useParams();
@@ -15,7 +16,8 @@ const EditUserData = () => {
     const [fullName, setUserName] = useState('')
     const [email, setEmail] = useState('')
     const [race, setRace] = useState('')
-    const [country, setCountry] = useState('')
+    const [country, setCountry] = useState('');
+  
     const UserData = useAppSelector((state: rootStateType) => state.auth.data);
 
     useEffect(() => {
@@ -26,10 +28,10 @@ const EditUserData = () => {
 
     useEffect(() => {
         if (UserData) {
+            setEmail(UserData.emai);
             setImage(UserData.avatarURL);
             setRace(UserData.race);
             setCountry(UserData.country);
-            setEmail(UserData.emai);
             setUserName(UserData.fullName);
         }
     }, [UserData]);
@@ -79,7 +81,7 @@ const EditUserData = () => {
                 {!avatarURL ? 'Выберите файл' : 'Выбрать другой файл'}</label>
             <input  ref={hiddenFileInput}  className={styles.inputFile} type="file" onChange={handleUploadImage}/>
                 <input value={fullName} className={styles.inputs} onChange={(e) => setUserName(e.target.value)} placeholder={'имя'}/>
-            <input value={country} className={styles.inputs} onChange={(e) => setCountry(e.target.value)} placeholder={'Старана'}/>
+            {/*<input value={country} className={styles.inputs} onChange={(e) => setCountry(e.target.value)} placeholder={'Старана'}/>*/}
             {/*<input value={race} className={styles.inputs} onChange={(e) => setRace(e.target.value)} placeholder={'раса'}/>*/}
             <select className={styles.inputs} value={race} onChange={(e) => setRace(e.target.value)}>
                 <option value=""></option>
