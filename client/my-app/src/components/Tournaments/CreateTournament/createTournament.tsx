@@ -40,9 +40,9 @@ const CreateTournament = () => {
                 const file = e.target.files[0];
                 formData.append('image', file);
                 const uploadResponse = await instance.post('/upload', formData);
-                console.log(uploadResponse)
+                // console.log(uploadResponse)
                 setImageUrl(uploadResponse.data.url);
-                console.log(imageUrl)
+                // console.log(imageUrl)
             }
 
         } catch (err) {

@@ -26,9 +26,13 @@ export const fetchEditMe = createAsyncThunk('auth/fetchEditMe', async (params: U
     const response = await instance.patch('auth/edit', params)
     return response.data
 })
-const initialState = {
-    data: null as UserModel | null,
-    status: 'loading'
+interface InitialStateType {
+    data: UserModel | null,
+    isLoading: boolean
+}
+const initialState: InitialStateType = {
+    data: null,
+   isLoading: false
 }
 const authSlice = createSlice({
     name: 'auth',
@@ -41,56 +45,56 @@ const authSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchAuth.pending, (state) => {
-                state.status = 'loading'
+                state.isLoading = true
                 state.data = null
             })
             .addCase(fetchAuth.fulfilled, (state, action: rootStateType) => {
-                state.status = 'loaded'
+                state.isLoading = false
                 state.data = action.payload
 
             })
             .addCase(fetchAuth.rejected, (state) => {
-                state.status = 'error'
+                state.isLoading = false
                 state.data = null
             })
             .addCase(fetchRegister.pending, (state, action: rootStateType) => {
-                state.status = 'loading'
+                state.isLoading = true
                 state.data = null
 
             })
             .addCase(fetchRegister.fulfilled, (state, action: rootStateType) => {
-                state.status = 'loaded'
+                state.isLoading = false
                 state.data = action.payload
 
             })
             .addCase(fetchRegister.rejected, (state) => {
-                state.status = 'error'
+                state.isLoading = false
                 state.data = null
             })
             .addCase(fetchAuthMe.pending, (state) => {
-                state.status = 'loading'
+                state.isLoading = true
                 state.data = null
             })
             .addCase(fetchAuthMe.fulfilled, (state, action: rootStateType) => {
-                state.status = 'loaded'
+                state.isLoading = false
                 state.data = action.payload
 
             })
             .addCase(fetchAuthMe.rejected, (state) => {
-                state.status = 'error'
+                state.isLoading =false
                 state.data = null
             })
             .addCase(fetchEditMe.pending, (state) => {
-                state.status = 'loading'
+                state.isLoading = true
                 state.data = null
             })
             .addCase(fetchEditMe.fulfilled, (state, action: rootStateType) => {
-                state.status = 'loaded'
+                state.isLoading = false
                 state.data = action.payload
 
             })
             .addCase(fetchEditMe.rejected, (state) => {
-                state.status = 'error'
+                state.isLoading = false
                 state.data = null
             })
     }

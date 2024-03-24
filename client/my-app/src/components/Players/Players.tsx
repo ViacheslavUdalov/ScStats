@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {UserModel} from "../../models/user-model";
-import {useGetUsersQuery} from "../../redux/RTKtournaments";
 import styles from './Players.module.css';
 import PreLoader from "../../helpers/isLoading";
 import IconUser from "../../common/images.png";

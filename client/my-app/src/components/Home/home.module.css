@@ -13,17 +13,23 @@
     /*background-color: var(--Main-background-color);*/
 }
 .secondfraction {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     background-color: rgba(0, 13, 173, 0.67);
-    padding: 200px 0;
+    padding: 100px 20%;
     border-top: 2px solid rgba(101, 224, 52, 0.99);
+}
+.secondfractioninside {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .block {
     opacity: 0;
     transform: translateY(-50px);
     transition: opacity 1s ease, transform 1s ease;
+}
+.image2 {
+    width: 40%;
+    height: 40%;
 }
 .tournamentsparent {
     background-color: rgba(17, 33, 121, 0.49);

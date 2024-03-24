@@ -83,9 +83,9 @@ const authMe = async (req, res) => {
 };
 const editMe = async (req, res) => {
     try {
-        const {fullName, avatarURL, email} = req.body
+        const {fullName, avatarURL, email, country, race} = req.body
         const {id} = req.params
-        const user = await userModel.findByIdAndUpdate(id, {fullName, avatarURL, email}, {new: true})
+        const user = await userModel.findByIdAndUpdate(id, {fullName, avatarURL, email, country, race}, {new: true})
         res.status(200).json(user)
     }
     catch (err) {

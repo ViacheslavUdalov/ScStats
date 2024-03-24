@@ -27,6 +27,18 @@
     align-items: center;
     background-color: rgba(5, 35, 161, 0.78);
     overflow-x: auto;
+
+}
+.parentbracket::-webkit-scrollbar {
+    height: 15px;
+}
+.parentbracket::-webkit-scrollbar-track {
+    background: #03f80f;
+}
+.parentbracket::-webkit-scrollbar-thumb  {
+    background: blue;
+    border-radius: 8px;
+    border: 1px solid white;
 }
 .pair {
     display: flex;
@@ -72,6 +84,7 @@ padding: 3px 5px;
     position: relative;
     right: 5px;
 }
+
 .lineUp
 {
     position: relative;

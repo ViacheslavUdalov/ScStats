@@ -41,6 +41,7 @@
 }
 .Main {
     display: flex;
+    justify-content: center;
 }
 .ChoseFile {
     border: 1px solid black;

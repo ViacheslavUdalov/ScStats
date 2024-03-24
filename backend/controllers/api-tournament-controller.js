@@ -6,6 +6,7 @@ const getTournaments = async (req, res) => {
     // С помощью  .populate('user').exec() подключаем к турниру связь с игроком
     try {
         const {searchTerm, page, perPage} = req.query;
+        searchTerm.trim();
         // new RegExp -  конструктор объекта регулярного выражения в JavaScript.
         // Позволяет искать сопостовления в строке без учёта регистра - 'i'
         const regex = new RegExp(searchTerm, 'i');

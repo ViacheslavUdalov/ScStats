@@ -1,11 +1,10 @@
-import IsLoading from "../../helpers/isLoading";
 import {DataUsersModel, TournamentModel} from "../../models/tournament-model";
-import {useAppDispatch} from "../../redux/store";
 import {useGetAllTournamentsQuery, useGetUsersQuery} from "../../redux/RTKtournaments";
 import styles from './home.module.css'
 import {NavLink} from "react-router-dom";
 import React, {useEffect, useLayoutEffect, useState} from "react";
 import image from '../../common/4151292-1.jpg';
+import image2 from '../../common/4151292-1.jpg';
 import PreLoader from "../../helpers/isLoading";
 
 const Home = React.memo(() => {
@@ -61,7 +60,7 @@ useLayoutEffect(() => {
                                     <img src={obj?.imageUrl ? `http://localhost:3000${obj.imageUrl}` : image}
                                          className={styles.TournamentImage}/>
                                     <NavLink to={`/tournaments/` + obj?._id}
-                                             className={styles.Participant}> {obj?.Name}</NavLink>
+                                             className={styles.Participant}>{obj?.Name}</NavLink>
                                 </div>
                                 {obj.about.length > 23 && <span>{obj?.about.slice(0, 30)}...</span>}
                                 <span className={styles.fullName}><span
@@ -77,12 +76,15 @@ useLayoutEffect(() => {
                 </div>
                 <div>
 
-                    <div className={styles.secondfraction} >
-                        <div className={`${styles.block}  ${visibleBlocks.includes('block2') ? styles.show : ''}`} id='block2'>
+                    <div className={styles.secondfraction}>
+                        <div className={`${styles.block} ${styles.secondfractioninside} ${visibleBlocks.includes('block2') ? styles.show : ''}`} id='block2'>
                             <h3>Создавайте турниры</h3>
                             <p>Создавайте турниры с призовым фондом с суммой любого размера,
-                                приглашайте игроков, привлекайте инвесторов со стороны.</p>
-                            <button>Создать турнир</button>
+                                приглашайте игроков, повышайте призовой фонд.
+                                <NavLink to={'/createtournament'}  className={styles.Participant}>Создать турнир</NavLink>
+                            </p>
+                            <img src={image2} alt="afasfafa" className={styles.image2}/>
+
                         </div>
                     </div>
                     <div className={styles.thirdfraction} >
