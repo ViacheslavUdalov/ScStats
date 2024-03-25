@@ -1,9 +1,6 @@
 import {createSlice, createAsyncThunk, AnyAction} from "@reduxjs/toolkit";
 import {CommonDataModel, DataTournamentModel, TournamentModel} from "../models/tournament-model";
-import {TournamentsAPI} from "../api/tournamentsAPI";
 import {rootStateType} from "./store";
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query";
-import {AsyncThunkRejectedActionCreator} from "@reduxjs/toolkit/dist/createAsyncThunk";
 import instance from "../api/MainAPI";
 
 interface ParamsType {

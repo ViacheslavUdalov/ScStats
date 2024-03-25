@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './App.module.css';
 import {Route, Routes} from "react-router-dom";
 import Tournaments from "./components/Tournaments/getTournaments";
@@ -16,10 +16,11 @@ import EditUserData from "./components/AboutUser/EditUserData";
 import Players from "./components/Players/Players";
 function App() {
     const dispatch = useAppDispatch();
-
+const [position, setPosition] = useState({x: 0, y: 0});
     useEffect(() => {
         dispatch(fetchAuthMe());
     }, [])
+
   return (
       <div className={styles.App}>
           <Header />

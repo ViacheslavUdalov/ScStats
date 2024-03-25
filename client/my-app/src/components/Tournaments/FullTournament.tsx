@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
 import styles from './FullTournament.module.css';
-import {useSelector} from "react-redux";
 import {rootStateType, useAppDispatch, useAppSelector} from "../../redux/store";
 import {UserModel, UserModelForTournament} from "../../models/user-model";
 import image from '../../common/StormGateLogo_BlackandWhite_Flat.png';
@@ -28,14 +27,13 @@ const FullTournament = React.memo(() => {
         const dispatch = useAppDispatch();
         const userData: UserModel = useAppSelector((state) => state.auth.data)
         console.log(userData);
-        const {tournament, isLoading, isParticipating} = useAppSelector(state => state.tournament);
+
 
         useEffect(() => {
                 id && dispatch(fetchTournament({id: id, currentClientId: userData?._id}));
                 console.log(tournament)
-
-        }, [])
-
+        }, [id])
+    const {data: tournament, isLoading, isParticipating} = useAppSelector(state => state.tournament);
     useEffect(() => {
         if (tournament && tournament.players.some((player: UserModel) => player._id === userData._id)) {
             dispatch(setIsParticipatingTrue());
@@ -298,7 +296,7 @@ const FullTournament = React.memo(() => {
                     </div>
                 }
                 <div>
-                    {tournament?.bracket ?
+                    {tournament?.bracket &&
                         <div className={styles.parentbracket}>
                             <span>Сетка (Если сетка не появилась, обновите страницу)</span>
                             <div className={styles.allColumns}>
@@ -385,8 +383,6 @@ const FullTournament = React.memo(() => {
                                 })}
                             </div>
                         </div>
-                        :
-                        <span>Ничего нет</span>
                     }
                 </div>
             </div>
