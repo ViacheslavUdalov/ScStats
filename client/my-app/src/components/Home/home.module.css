@@ -13,11 +13,20 @@
     /*background-color: var(--Main-background-color);*/
 }
 .secondfraction {
-    background-color: rgba(0, 13, 173, 0.67);
-    padding: 100px 20%;
-    border-top: 2px solid rgba(101, 224, 52, 0.99);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 200px 0;
 }
 .secondfractioninside {
+    padding: 70px;
+    border-top: 2px solid rgba(101, 224, 52, 0.99);
+    width: 50%;
+    background-color: rgba(112, 118, 152, 0.5);
+    background-blend-mode: multiply;
+    background-image: url("../../common/winter-lake.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -27,9 +36,29 @@
     transform: translateY(-50px);
     transition: opacity 1s ease, transform 1s ease;
 }
+.block.show {
+    opacity: 1;
+    transform: translateY(0px);
+}
 .image2 {
-    width: 40%;
-    height: 40%;
+    width: 35%;
+    height: 30%;
+    border-radius: 30px;
+}
+.navFroCreateTournament {
+    position: relative;
+    top: 20px;
+    padding: 10px;
+    background-color: rgba(27, 231, 5, 0.63);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--color);
+    transition: background-color 0.7s ease, border 0.7s ease, color 0.7s ease;
+}
+.navFroCreateTournament:hover {
+    color: green;
+    background-color: rgba(204, 4, 217, 0.77);
+    border: 1px solid white;
 }
 .tournamentsparent {
     background-color: rgba(17, 33, 121, 0.49);
@@ -39,17 +68,18 @@
     width: 50%;
 }
 .thirdfraction {
-    float: left;
+    /*float: left;*/
     background-image: url("../../common/background(2)jpg.jpg");
     background-blend-mode: multiply;
     background-color: rgba(113, 78, 126, 0.76);
     background-size: cover;
     background-attachment: fixed;
-    padding: 300px 0;
+    padding-bottom: 100px;
     width: 100%;
     text-align: center;
     color:rgb(253, 253, 253);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -74,7 +104,6 @@
     border: 1px solid white;
 }
 .usershome {
-
     border-radius: 30px;
     padding: 40px;
     border: 2px solid white;
@@ -88,20 +117,17 @@
     background-color: rgba(142, 255, 87, 0.33);
 }
 .main {
-border: 2px solid white;
+    border: 2px solid white;
     display: flex;
     justify-content: center;
-width: 40%;
+    width: 40%;
     align-items: center;
     background-color: rgba(57, 70, 236, 0.43);
     flex-direction: column;
     border-radius: 30px;
     padding: 40px;
 }
-.block.show {
-    opacity: 1;
-    transform: translateY(0px);
-}
+
 .oneTournament {
     padding: 10px 20px;
     display: flex;
@@ -117,31 +143,18 @@ box-shadow: inset 50px 0px 10px 5px black;
     overflow: auto;
 }
 .TournamentImage {
-    width: 30px; /* Заполните контейнер */
-    height: 30px; /* Заполните контейнер */
-    object-fit: cover; /* Сохраняйте пропорции картинки */
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
     border-radius: 50%;
     overflow: hidden;
 }
 .Participant {
-    padding-left: 20px;
-    color: var(--Text-color-bright);
+    color: green;
     text-decoration: none;
+    padding: 7px;
+    transition: background-color 0.7s ease, border 0.7s ease, color 0.7s ease, text-decoration 0.7s ease;
 }
 .Participant:hover {
-    color: #0032ef;
-    text-decoration: underline;
-}
-.ImbaCar {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-self: center;
-}
-.TwoCars {
-    display: flex;
-    flex-direction: row;
-
+    color: #f60909;
 }

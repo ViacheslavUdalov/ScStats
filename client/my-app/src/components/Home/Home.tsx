@@ -46,7 +46,6 @@ useLayoutEffect(() => {
         return (
             <React.Fragment>
                 <PreLoader isLoading={isLoading} />
-            <div className={styles.global}>
                 <div className={styles.container}>
                     <div className={`${styles.main} ${styles.block} ${visibleBlocks.includes('block1') ? styles.show : ''}`}
                          id='block1'>
@@ -76,18 +75,22 @@ useLayoutEffect(() => {
                 </div>
                 <div>
 
-                    <div className={styles.secondfraction}>
-                        <div className={`${styles.block} ${styles.secondfractioninside} ${visibleBlocks.includes('block2') ? styles.show : ''}`} id='block2'>
-                            <h3>Создавайте турниры</h3>
-                            <p>Создавайте турниры с призовым фондом с суммой любого размера,
-                                приглашайте игроков, повышайте призовой фонд.
-                                <NavLink to={'/createtournament'}  className={styles.Participant}>Создать турнир</NavLink>
-                            </p>
-                            <img src={image2} alt="afasfafa" className={styles.image2}/>
 
-                        </div>
-                    </div>
                     <div className={styles.thirdfraction} >
+                        <div className={styles.secondfraction}>
+                            <div className={`${styles.block} ${styles.secondfractioninside} ${visibleBlocks.includes('block2') ? styles.show : ''}`} id='block2'>
+                              <div>
+                                  <h3>Создавайте турниры</h3>
+                                  <p>Создавайте турниры с призовым фондом с суммой любого размера,
+                                      приглашайте игроков, повышайте призовой фонд.
+
+                                  </p>
+                                  <NavLink to={'/createtournament'}  className={styles.navFroCreateTournament}>Создать турнир</NavLink>
+                              </div>
+                                <img src={image2} alt="afasfafa" className={styles.image2}/>
+
+                            </div>
+                        </div>
                         <div className={`${styles.block} ${styles.parentusers} ${visibleBlocks.includes('block3') ? styles.show : ''}`} id='block3'>
                             <h3>Смотрите рейтинг лучших игроков</h3>
                             <div style={{width: '30%', margin: 'auto'}}>
@@ -106,7 +109,6 @@ useLayoutEffect(() => {
                         </div>
                     </div>
                 </div>
-            </div>
             </React.Fragment>
         )
     }
